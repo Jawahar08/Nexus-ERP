@@ -1,22 +1,22 @@
 import { Router } from 'express';
-import { prisma } from '../lib/db';
+import { prisma } from '../lib/db.js';
 
 const router = Router();
 
 // Keyed by tenantId to allow clean multi-tenant matrix overrides in-memory
-const tenantMatrixStore: any = {};
+const tenantMatrixStore = {};
 
 const defaultMatrix = {
-  Admin: { dashboard: true, inventory: true, crm: true, hr: true, finance: true, admin: true },
-  HR: { dashboard: true, inventory: false, crm: false, hr: true, finance: false, admin: false },
-  Finance: { dashboard: true, inventory: false, crm: true, hr: false, finance: true, admin: false },
-  Sales: { dashboard: true, inventory: true, crm: true, hr: false, finance: false, admin: false },
-  Inventory: { dashboard: true, inventory: true, crm: false, hr: false, finance: false, admin: false },
-  Manager: { dashboard: true, inventory: true, crm: true, hr: true, finance: true, admin: false }
+  Admin:     { dashboard: true,  inventory: true,  crm: true,  hr: true,  finance: true,  admin: true  },
+  HR:        { dashboard: true,  inventory: false, crm: false, hr: true,  finance: false, admin: false },
+  Finance:   { dashboard: true,  inventory: false, crm: true,  hr: false, finance: true,  admin: false },
+  Sales:     { dashboard: true,  inventory: true,  crm: true,  hr: false, finance: false, admin: false },
+  Inventory: { dashboard: true,  inventory: true,  crm: false, hr: false, finance: false, admin: false },
+  Manager:   { dashboard: true,  inventory: true,  crm: true,  hr: true,  finance: true,  admin: false }
 };
 
 // GET /api/admin/permissions
-router.get('/permissions', (req: any, res) => {
+router.get('/permissions', (req, res) => {
   const tenantId = req.tenantId || 'default';
   if (!tenantMatrixStore[tenantId]) {
     tenantMatrixStore[tenantId] = JSON.parse(JSON.stringify(defaultMatrix));
@@ -25,7 +25,7 @@ router.get('/permissions', (req: any, res) => {
 });
 
 // PUT /api/admin/permissions
-router.put('/permissions', async (req: any, res) => {
+router.put('/permissions', async (req, res) => {
   try {
     const tenantId = req.tenantId || 'default';
     const userId = req.userId;

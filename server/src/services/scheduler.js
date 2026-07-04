@@ -1,6 +1,6 @@
 import cron from 'node-cron';
-import { prisma } from '../lib/db';
-import { logger } from '../lib/logger';
+import { prisma } from '../lib/db.js';
+import { logger } from '../lib/logger.js';
 
 export function startBackgroundScheduler() {
   logger.info('Initializing Node-cron Background Task Scheduler...');
@@ -8,13 +8,12 @@ export function startBackgroundScheduler() {
   // ==========================================
   // TASK 1: LOW STOCK DAILY AUDIT SCANS
   // Runs every day at midnight: '0 0 * * *'
-  // (In dev, we run a check immediately on startup and then daily)
   // ==========================================
   cron.schedule('0 0 * * *', async () => {
     await performLowStockAudit();
   });
 
-  // Run a quick scan on boot
+  // Run an immediate scan on boot
   performLowStockAudit();
 
   // ==========================================
@@ -27,11 +26,8 @@ export function startBackgroundScheduler() {
       const ninetyDaysAgo = new Date();
       ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
 
-      // Clean up audit logs older than 90 days
       const result = await prisma.auditLog.deleteMany({
-        where: {
-          timestamp: { lt: ninetyDaysAgo }
-        }
+        where: { timestamp: { lt: ninetyDaysAgo } }
       });
 
       logger.info(`[Scheduler] Maintenance complete. Cleaned up ${result.count} historical audit logs.`);
@@ -44,21 +40,14 @@ export function startBackgroundScheduler() {
 async function performLowStockAudit() {
   logger.info('[Scheduler] Commencing daily low-stock inventory audit scan...');
   try {
-    const products = await prisma.product.findMany({
-      include: { warehouse: true }
-    });
-
+    const products = await prisma.product.findMany({ include: { warehouse: true } });
     let alertCount = 0;
 
     for (const prod of products) {
       if (prod.stock <= prod.minStock) {
-        // Find users belonging to the same tenant to alert
-        const tenantUsers = await prisma.user.findMany({
-          where: { tenantId: prod.tenantId }
-        });
+        const tenantUsers = await prisma.user.findMany({ where: { tenantId: prod.tenantId } });
 
         for (const user of tenantUsers) {
-          // Check if notification already exists to prevent duplicate spamming
           const exists = await prisma.notification.findFirst({
             where: {
               userId: user.id,

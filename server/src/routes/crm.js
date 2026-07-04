@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { prisma } from '../lib/db';
+import { prisma } from '../lib/db.js';
 
 const router = Router();
 
 // GET /api/crm
-router.get('/', async (req: any, res) => {
+router.get('/', async (req, res) => {
   try {
     const tenantId = req.tenantId;
 
@@ -26,11 +26,11 @@ router.get('/', async (req: any, res) => {
 });
 
 // POST /api/crm (Add customer or deal)
-router.post('/', async (req: any, res) => {
+router.post('/', async (req, res) => {
   try {
     const tenantId = req.tenantId;
     const userId = req.userId;
-    const { action } = req.body; // 'customer' | 'deal'
+    const { action } = req.body;
 
     if (action === 'customer') {
       const { name, email, phone, company } = req.body;
@@ -52,8 +52,8 @@ router.post('/', async (req: any, res) => {
       });
 
       return res.json(cust);
-    } 
-    
+    }
+
     if (action === 'deal') {
       const { company, contact, value, stage, notes } = req.body;
       if (!company || !contact) {
@@ -91,7 +91,7 @@ router.post('/', async (req: any, res) => {
 });
 
 // PUT /api/crm (Update deal stage)
-router.put('/', async (req: any, res) => {
+router.put('/', async (req, res) => {
   try {
     const tenantId = req.tenantId;
     const userId = req.userId;
@@ -101,18 +101,12 @@ router.put('/', async (req: any, res) => {
       return res.status(400).json({ error: 'Deal ID and Stage parameter are required' });
     }
 
-    const deal = await prisma.deal.findFirst({
-      where: { id, tenantId }
-    });
-
+    const deal = await prisma.deal.findFirst({ where: { id, tenantId } });
     if (!deal) {
       return res.status(404).json({ error: 'Deal not found in organization context' });
     }
 
-    const updated = await prisma.deal.update({
-      where: { id },
-      data: { stage }
-    });
+    const updated = await prisma.deal.update({ where: { id }, data: { stage } });
 
     await prisma.auditLog.create({
       data: {

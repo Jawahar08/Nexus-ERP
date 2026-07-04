@@ -1,19 +1,20 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import authRouter from './routes/auth';
-import inventoryRouter from './routes/inventory';
-import crmRouter from './routes/crm';
-import hrRouter from './routes/hr';
-import financeRouter from './routes/finance';
-import invoicesRouter from './routes/invoices';
-import workflowsRouter from './routes/workflows';
-import adminRouter from './routes/admin';
-import notificationsRouter from './routes/notifications';
-import auditRouter from './routes/audit';
-import aiRouter from './routes/ai';
-import { authMiddleware } from './middleware/auth';
-import { logger } from './lib/logger';
+import authRouter from './routes/auth.js';
+import inventoryRouter from './routes/inventory.js';
+import crmRouter from './routes/crm.js';
+import hrRouter from './routes/hr.js';
+import financeRouter from './routes/finance.js';
+import invoicesRouter from './routes/invoices.js';
+import workflowsRouter from './routes/workflows.js';
+import adminRouter from './routes/admin.js';
+import notificationsRouter from './routes/notifications.js';
+import auditRouter from './routes/audit.js';
+import aiRouter from './routes/ai.js';
+import { authMiddleware } from './middleware/auth.js';
+import { logger } from './lib/logger.js';
+import { startBackgroundScheduler } from './services/scheduler.js';
 
 // Load environment variables
 dotenv.config();
@@ -30,7 +31,7 @@ app.use(cors({
 // Parse request bodies
 app.use(express.json());
 
-// Global Logging request logger
+// Global request logger
 app.use((req, res, next) => {
   logger.info(`${req.method} ${req.path}`);
   next();
@@ -50,12 +51,10 @@ app.use('/api/audit', authMiddleware, auditRouter);
 app.use('/api/ai', authMiddleware, aiRouter);
 
 // Standard error fallback handler
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error('Unhandled runtime server error:', err);
+app.use((err, req, res, next) => {
+  logger.error('Unhandled runtime server error:', err);
   res.status(500).json({ error: 'Internal Server Error' });
 });
-
-import { startBackgroundScheduler } from './services/scheduler';
 
 // Boot listener
 app.listen(PORT, () => {

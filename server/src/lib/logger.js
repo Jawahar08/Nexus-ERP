@@ -1,5 +1,10 @@
 import winston from 'winston';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+// ESM-compatible __dirname equivalent
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Output formatting
 const logFormat = winston.format.combine(
@@ -14,13 +19,13 @@ export const logger = winston.createLogger({
   format: logFormat,
   transports: [
     // Write error logs to error.log
-    new winston.transports.File({ 
-      filename: path.join(__dirname, '../../logs/error.log'), 
-      level: 'error' 
+    new winston.transports.File({
+      filename: path.join(__dirname, '../../logs/error.log'),
+      level: 'error'
     }),
     // Write all logs to combined.log
-    new winston.transports.File({ 
-      filename: path.join(__dirname, '../../logs/combined.log') 
+    new winston.transports.File({
+      filename: path.join(__dirname, '../../logs/combined.log')
     })
   ]
 });

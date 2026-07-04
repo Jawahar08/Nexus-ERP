@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { prisma } from '../lib/db';
+import { prisma } from '../lib/db.js';
 
 const router = Router();
 
 // GET /api/workflows/approvals
-router.get('/approvals', async (req: any, res) => {
+router.get('/approvals', async (req, res) => {
   try {
     const tenantId = req.tenantId;
 
@@ -24,11 +24,7 @@ router.get('/approvals', async (req: any, res) => {
       orderBy: { date: 'desc' }
     });
 
-    return res.json({
-      pendingPOs,
-      pendingLeaves,
-      approvedPOs
-    });
+    return res.json({ pendingPOs, pendingLeaves, approvedPOs });
   } catch (error) {
     console.error('Approvals GET error:', error);
     return res.status(500).json({ error: 'Failed to retrieve workflow items' });
@@ -36,7 +32,7 @@ router.get('/approvals', async (req: any, res) => {
 });
 
 // PUT /api/workflows/approvals
-router.put('/approvals', async (req: any, res) => {
+router.put('/approvals', async (req, res) => {
   try {
     const tenantId = req.tenantId;
     const userId = req.userId;
@@ -47,27 +43,19 @@ router.put('/approvals', async (req: any, res) => {
     }
 
     const result = await prisma.$transaction(async (tx) => {
-      
+
       // PO approvals workflow
       if (type === 'po') {
-        const po = await tx.purchaseOrder.findFirst({
-          where: { id, tenantId }
-        });
-
+        const po = await tx.purchaseOrder.findFirst({ where: { id, tenantId } });
         if (!po) throw new Error('Purchase order not found');
         if (po.status !== 'pending') throw new Error('Purchase order already processed');
 
-        const updatedPO = await tx.purchaseOrder.update({
-          where: { id },
-          data: { status }
-        });
+        const updatedPO = await tx.purchaseOrder.update({ where: { id }, data: { status } });
 
         await tx.auditLog.create({
           data: {
             message: `Purchase Order PO-${id.substring(0, 5).toUpperCase()} was ${status} by Manager.`,
-            module: 'Admin',
-            tenantId,
-            userId
+            module: 'Admin', tenantId, userId
           }
         });
 
@@ -78,29 +66,17 @@ router.put('/approvals', async (req: any, res) => {
           });
 
           if (product) {
-            await tx.product.update({
-              where: { id: po.productId },
-              data: { stock: { increment: po.qty } }
-            });
+            await tx.product.update({ where: { id: po.productId }, data: { stock: { increment: po.qty } } });
 
             await tx.stockMovement.create({
-              data: {
-                type: 'intake',
-                qty: po.qty,
-                toWarehouse: product.warehouse.name,
-                productId: product.id,
-                tenantId
-              }
+              data: { type: 'intake', qty: po.qty, toWarehouse: product.warehouse.name, productId: product.id, tenantId }
             });
 
             await tx.transaction.create({
               data: {
-                type: 'expense',
-                category: 'Purchasing',
-                amount: po.total,
+                type: 'expense', category: 'Purchasing', amount: po.total,
                 description: `PO approved restocking: ${product.name} (+${po.qty} units)`,
-                reference: `PO-${po.id.substring(0, 5).toUpperCase()}`,
-                tenantId
+                reference: `PO-${po.id.substring(0, 5).toUpperCase()}`, tenantId
               }
             });
           }
@@ -111,24 +87,16 @@ router.put('/approvals', async (req: any, res) => {
 
       // Sabbatical Leave approval workflow
       if (type === 'leave') {
-        const leave = await tx.leaveRequest.findFirst({
-          where: { id, tenantId }
-        });
-
+        const leave = await tx.leaveRequest.findFirst({ where: { id, tenantId } });
         if (!leave) throw new Error('Leave request not found');
         if (leave.status !== 'pending') throw new Error('Leave request already processed');
 
-        const updatedLeave = await tx.leaveRequest.update({
-          where: { id },
-          data: { status }
-        });
+        const updatedLeave = await tx.leaveRequest.update({ where: { id }, data: { status } });
 
         await tx.auditLog.create({
           data: {
             message: `Leave request by ${leave.employeeName} was ${status} by Manager.`,
-            module: 'HR',
-            tenantId,
-            userId
+            module: 'HR', tenantId, userId
           }
         });
 
@@ -138,24 +106,12 @@ router.put('/approvals', async (req: any, res) => {
 
           for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
             const dateStr = d.toISOString().split('T')[0];
-
-            const att = await tx.attendance.findFirst({
-              where: { employeeId: leave.employeeId, date: dateStr }
-            });
+            const att = await tx.attendance.findFirst({ where: { employeeId: leave.employeeId, date: dateStr } });
 
             if (att) {
-              await tx.attendance.update({
-                where: { id: att.id },
-                data: { status: 'leave' }
-              });
+              await tx.attendance.update({ where: { id: att.id }, data: { status: 'leave' } });
             } else {
-              await tx.attendance.create({
-                data: {
-                  employeeId: leave.employeeId,
-                  date: dateStr,
-                  status: 'leave'
-                }
-              });
+              await tx.attendance.create({ data: { employeeId: leave.employeeId, date: dateStr, status: 'leave' } });
             }
           }
         }
@@ -167,7 +123,7 @@ router.put('/approvals', async (req: any, res) => {
     });
 
     return res.json(result);
-  } catch (error: any) {
+  } catch (error) {
     console.error('Approvals PUT error:', error);
     return res.status(400).json({ error: error.message || 'Workflow approval execution failed' });
   }

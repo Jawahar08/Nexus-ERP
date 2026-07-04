@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { prisma } from '../lib/db';
+import { prisma } from '../lib/db.js';
 
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'NEXUS_SUPER_SECRET_KEY_2026_ENTERPRISE';
@@ -15,9 +15,7 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    const user = await prisma.user.findFirst({
-      where: { email }
-    });
+    const user = await prisma.user.findFirst({ where: { email } });
 
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
@@ -34,7 +32,7 @@ router.post('/login', async (req, res) => {
       { expiresIn: '7d' }
     );
 
-    // Set cookie
+    // Set session cookie
     res.cookie('nexus_session', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -64,16 +62,13 @@ router.post('/logout', (req, res) => {
 });
 
 // POST /api/auth/switch-role
-router.post('/switch-role', async (req: any, res) => {
+router.post('/switch-role', async (req, res) => {
   try {
     const tenantId = req.tenantId;
     const userId = req.userId;
     const { role } = req.body;
 
-    const user = await prisma.user.findFirst({
-      where: { id: userId, tenantId }
-    });
-
+    const user = await prisma.user.findFirst({ where: { id: userId, tenantId } });
     if (!user) {
       return res.status(404).json({ error: 'User profile not found' });
     }

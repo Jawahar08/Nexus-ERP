@@ -1,15 +1,8 @@
-import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'NEXUS_SUPER_SECRET_KEY_2026_ENTERPRISE';
 
-export interface AuthenticatedRequest extends Request {
-  userId?: string;
-  tenantId?: string;
-  userRole?: string;
-}
-
-export function authMiddleware(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+export function authMiddleware(req, res, next) {
   // Allow login / signup without tokens
   if (req.path.startsWith('/api/auth/login')) {
     return next();
@@ -17,14 +10,14 @@ export function authMiddleware(req: AuthenticatedRequest, res: Response, next: N
 
   let token = '';
 
-  // Extract from Auth header
+  // Extract from Authorization header
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith('Bearer ')) {
     token = authHeader.split(' ')[1];
-  } 
+  }
   // Extract from cookies
   else if (req.headers.cookie) {
-    const cookies = req.headers.cookie.split(';').reduce((acc: any, c) => {
+    const cookies = req.headers.cookie.split(';').reduce((acc, c) => {
       const parts = c.trim().split('=');
       const name = parts[0];
       const val = parts.slice(1).join('=');
@@ -39,7 +32,7 @@ export function authMiddleware(req: AuthenticatedRequest, res: Response, next: N
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    const decoded = jwt.verify(token, JWT_SECRET);
     req.userId = decoded.userId;
     req.tenantId = decoded.tenantId;
     req.userRole = decoded.role;

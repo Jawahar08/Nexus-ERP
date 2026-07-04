@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { prisma } from '../lib/db';
+import { prisma } from '../lib/db.js';
 
 const router = Router();
 
 // GET /api/notifications
-router.get('/', async (req: any, res) => {
+router.get('/', async (req, res) => {
   try {
     const userId = req.userId;
 
@@ -22,22 +22,18 @@ router.get('/', async (req: any, res) => {
 });
 
 // DELETE /api/notifications (Dismiss alert)
-router.delete('/', async (req: any, res) => {
+router.delete('/', async (req, res) => {
   try {
     const { id } = req.query;
 
     if (id) {
-      await prisma.notification.delete({
-        where: { id: String(id) }
-      });
+      await prisma.notification.delete({ where: { id: String(id) } });
       return res.json({ success: true });
     }
 
-    // fallback: dismiss all if no id is provided
+    // Dismiss all if no id provided
     const userId = req.userId;
-    await prisma.notification.deleteMany({
-      where: { userId }
-    });
+    await prisma.notification.deleteMany({ where: { userId } });
 
     return res.json({ success: true });
   } catch (error) {

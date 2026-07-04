@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { prisma } from '../lib/db';
+import { prisma } from '../lib/db.js';
 
 const router = Router();
 
 // GET /api/audit
-router.get('/', async (req: any, res) => {
+router.get('/', async (req, res) => {
   try {
     const tenantId = req.tenantId;
 

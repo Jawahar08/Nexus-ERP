@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { prisma } from '../lib/db';
+import { prisma } from '../lib/db.js';
 
 const router = Router();
 
 // GET /api/inventory
-router.get('/', async (req: any, res) => {
+router.get('/', async (req, res) => {
   try {
     const tenantId = req.tenantId;
 
@@ -13,13 +13,8 @@ router.get('/', async (req: any, res) => {
       include: { warehouse: true, supplier: true }
     });
 
-    const warehouses = await prisma.warehouse.findMany({
-      where: { tenantId }
-    });
-
-    const suppliers = await prisma.supplier.findMany({
-      where: { tenantId }
-    });
+    const warehouses = await prisma.warehouse.findMany({ where: { tenantId } });
+    const suppliers = await prisma.supplier.findMany({ where: { tenantId } });
 
     const movements = await prisma.stockMovement.findMany({
       where: { tenantId },
@@ -33,13 +28,7 @@ router.get('/', async (req: any, res) => {
       orderBy: { date: 'desc' }
     });
 
-    return res.json({
-      products,
-      warehouses,
-      suppliers,
-      movements,
-      purchaseOrders
-    });
+    return res.json({ products, warehouses, suppliers, movements, purchaseOrders });
   } catch (error) {
     console.error('Inventory GET error:', error);
     return res.status(500).json({ error: 'Failed to retrieve inventory datasets' });
@@ -47,7 +36,7 @@ router.get('/', async (req: any, res) => {
 });
 
 // POST /api/inventory (Add product)
-router.post('/', async (req: any, res) => {
+router.post('/', async (req, res) => {
   try {
     const tenantId = req.tenantId;
     const userId = req.userId;
@@ -59,16 +48,13 @@ router.post('/', async (req: any, res) => {
 
     const product = await prisma.product.create({
       data: {
-        name,
-        sku,
+        name, sku,
         stock: Number(stock) || 0,
         minStock: Number(minStock) || 10,
         price: Number(price) || 0,
         cost: Number(cost) || 0,
         category: category || 'Default',
-        warehouseId,
-        supplierId,
-        tenantId
+        warehouseId, supplierId, tenantId
       }
     });
 
@@ -89,11 +75,10 @@ router.post('/', async (req: any, res) => {
 });
 
 // POST /api/inventory/movement (Stock movement workflows)
-router.post('/movement', async (req: any, res) => {
+router.post('/movement', async (req, res) => {
   try {
     const tenantId = req.tenantId;
     const userId = req.userId;
-
     const { type, productId, qty, fromWarehouseId, toWarehouseId, supplierId, totalCost } = req.body;
     const parsedQty = Math.max(1, Number(qty));
 
@@ -107,7 +92,7 @@ router.post('/movement', async (req: any, res) => {
         include: { warehouse: true }
       });
 
-      if (!sourceProduct) throw new Error('Product not found in this organization catalogue.');
+      if (!sourceProduct) throw new Error('Product not found in this organisation catalogue.');
 
       // ==========================================
       // WORKFLOW 1: WAREHOUSE TRANSFERS
@@ -116,63 +101,43 @@ router.post('/movement', async (req: any, res) => {
         if (!toWarehouseId) throw new Error('Destination warehouse is required for transfers.');
         if (sourceProduct.stock < parsedQty) throw new Error('Insufficient stock for transfer.');
 
-        const destWarehouse = await tx.warehouse.findFirst({
-          where: { id: toWarehouseId, tenantId }
-        });
+        const destWarehouse = await tx.warehouse.findFirst({ where: { id: toWarehouseId, tenantId } });
         if (!destWarehouse) throw new Error('Destination warehouse not found.');
 
-        // Deduct from source product
         const updatedSource = await tx.product.update({
           where: { id: productId },
           data: { stock: { decrement: parsedQty } }
         });
 
-        // Find or create product in destination warehouse
         const destSku = `${sourceProduct.sku.split('-')[0]}-${destWarehouse.name.substring(0, 3).toUpperCase()}`;
-        let destProduct = await tx.product.findFirst({
-          where: { sku: destSku, warehouseId: toWarehouseId, tenantId }
-        });
+        let destProduct = await tx.product.findFirst({ where: { sku: destSku, warehouseId: toWarehouseId, tenantId } });
 
         if (destProduct) {
-          await tx.product.update({
-            where: { id: destProduct.id },
-            data: { stock: { increment: parsedQty } }
-          });
+          await tx.product.update({ where: { id: destProduct.id }, data: { stock: { increment: parsedQty } } });
         } else {
           destProduct = await tx.product.create({
             data: {
-              name: sourceProduct.name,
-              sku: destSku,
-              stock: parsedQty,
-              minStock: sourceProduct.minStock,
-              price: sourceProduct.price,
-              cost: sourceProduct.cost,
-              category: sourceProduct.category,
-              warehouseId: toWarehouseId,
-              supplierId: sourceProduct.supplierId,
-              tenantId
+              name: sourceProduct.name, sku: destSku, stock: parsedQty,
+              minStock: sourceProduct.minStock, price: sourceProduct.price, cost: sourceProduct.cost,
+              category: sourceProduct.category, warehouseId: toWarehouseId,
+              supplierId: sourceProduct.supplierId, tenantId
             }
           });
         }
 
-        // Record log
         await tx.stockMovement.create({
           data: {
-            type: 'transfer',
-            qty: parsedQty,
+            type: 'transfer', qty: parsedQty,
             fromWarehouse: sourceProduct.warehouse.name,
             toWarehouse: destWarehouse.name,
-            productId: sourceProduct.id,
-            tenantId
+            productId: sourceProduct.id, tenantId
           }
         });
 
         await tx.auditLog.create({
           data: {
             message: `Transferred ${parsedQty} units of "${sourceProduct.name}" from ${sourceProduct.warehouse.name} to ${destWarehouse.name}.`,
-            module: 'Inventory',
-            tenantId,
-            userId
+            module: 'Inventory', tenantId, userId
           }
         });
 
@@ -183,44 +148,32 @@ router.post('/movement', async (req: any, res) => {
       // WORKFLOW 2: PURCHASE RESTOCK REPLENISHMENTS
       // ==========================================
       if (type === 'replenish') {
-        if (!supplierId || !totalCost) {
-          throw new Error('Supplier details and costs are required for replenishment.');
-        }
+        if (!supplierId || !totalCost) throw new Error('Supplier details and costs are required for replenishment.');
 
         const cost = Number(totalCost);
 
         if (cost > 10000) {
           const po = await tx.purchaseOrder.create({
-            data: {
-              supplierId,
-              total: cost,
-              status: 'pending',
-              productId,
-              qty: parsedQty,
-              tenantId
-            }
+            data: { supplierId, total: cost, status: 'pending', productId, qty: parsedQty, tenantId }
           });
 
           await tx.notification.create({
             data: {
               message: `High-value PO created for "${sourceProduct.name}" valued at $${cost.toLocaleString()} - Pending approval.`,
-              type: 'warning',
-              userId
+              type: 'warning', userId
             }
           });
 
           await tx.auditLog.create({
             data: {
               message: `Submitted Purchase Order PO-${po.id.substring(0, 5).toUpperCase()} pending approval.`,
-              module: 'Inventory',
-              tenantId,
-              userId
+              module: 'Inventory', tenantId, userId
             }
           });
 
-          return { 
-            pending: true, 
-            message: `Purchase Order submitted. Value $${cost.toLocaleString()} exceeds threshold and is pending manager approval.` 
+          return {
+            pending: true,
+            message: `Purchase Order submitted. Value $${cost.toLocaleString()} exceeds threshold and is pending manager approval.`
           };
         }
 
@@ -231,43 +184,25 @@ router.post('/movement', async (req: any, res) => {
         });
 
         const po = await tx.purchaseOrder.create({
-          data: {
-            supplierId,
-            total: cost,
-            status: 'approved',
-            productId,
-            qty: parsedQty,
-            tenantId
-          }
+          data: { supplierId, total: cost, status: 'approved', productId, qty: parsedQty, tenantId }
         });
 
         await tx.stockMovement.create({
-          data: {
-            type: 'intake',
-            qty: parsedQty,
-            toWarehouse: sourceProduct.warehouse.name,
-            productId: sourceProduct.id,
-            tenantId
-          }
+          data: { type: 'intake', qty: parsedQty, toWarehouse: sourceProduct.warehouse.name, productId: sourceProduct.id, tenantId }
         });
 
         await tx.transaction.create({
           data: {
-            type: 'expense',
-            category: 'Purchasing',
-            amount: cost,
+            type: 'expense', category: 'Purchasing', amount: cost,
             description: `Restock replenishment PO: ${sourceProduct.name} (+${parsedQty} units)`,
-            reference: `PO-${po.id.substring(0, 5).toUpperCase()}`,
-            tenantId
+            reference: `PO-${po.id.substring(0, 5).toUpperCase()}`, tenantId
           }
         });
 
         await tx.auditLog.create({
           data: {
             message: `Replenished stock for "${sourceProduct.name}" (+${parsedQty} units) via auto-approved PO.`,
-            module: 'Inventory',
-            tenantId,
-            userId
+            module: 'Inventory', tenantId, userId
           }
         });
 
@@ -284,32 +219,22 @@ router.post('/movement', async (req: any, res) => {
         });
 
         await tx.stockMovement.create({
-          data: {
-            type: 'return',
-            qty: parsedQty,
-            toWarehouse: sourceProduct.warehouse.name,
-            productId: sourceProduct.id,
-            tenantId
-          }
+          data: { type: 'return', qty: parsedQty, toWarehouse: sourceProduct.warehouse.name, productId: sourceProduct.id, tenantId }
         });
 
         await tx.transaction.create({
           data: {
-            type: 'expense',
-            category: 'Sales Return',
+            type: 'expense', category: 'Sales Return',
             amount: sourceProduct.price * parsedQty,
             description: `Sales Refund: Return of ${sourceProduct.name} (${parsedQty} units)`,
-            reference: 'REF-RET',
-            tenantId
+            reference: 'REF-RET', tenantId
           }
         });
 
         await tx.auditLog.create({
           data: {
             message: `Processed customer return for "${sourceProduct.name}" (+${parsedQty} units).`,
-            module: 'Inventory',
-            tenantId,
-            userId
+            module: 'Inventory', tenantId, userId
           }
         });
 
@@ -320,7 +245,7 @@ router.post('/movement', async (req: any, res) => {
     });
 
     return res.json(result);
-  } catch (error: any) {
+  } catch (error) {
     console.error('Movement POST error:', error);
     return res.status(400).json({ error: error.message || 'Movement transaction aborted' });
   }

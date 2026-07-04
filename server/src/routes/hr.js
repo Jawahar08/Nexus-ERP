@@ -1,19 +1,16 @@
 import { Router } from 'express';
-import { prisma } from '../lib/db';
+import { prisma } from '../lib/db.js';
 
 const router = Router();
 
 // GET /api/hr
-router.get('/', async (req: any, res) => {
+router.get('/', async (req, res) => {
   try {
     const tenantId = req.tenantId;
 
     const employees = await prisma.employee.findMany({
       where: { tenantId },
-      include: {
-        attendances: true,
-        leaveRequests: true
-      },
+      include: { attendances: true, leaveRequests: true },
       orderBy: { name: 'asc' }
     });
 
@@ -30,7 +27,7 @@ router.get('/', async (req: any, res) => {
 });
 
 // POST /api/hr (Add employee, register attendance, file leave requests)
-router.post('/', async (req: any, res) => {
+router.post('/', async (req, res) => {
   try {
     const tenantId = req.tenantId;
     const userId = req.userId;
@@ -43,14 +40,7 @@ router.post('/', async (req: any, res) => {
       }
 
       const emp = await prisma.employee.create({
-        data: {
-          name,
-          role,
-          department,
-          salary: Number(salary) || 0,
-          email,
-          tenantId
-        }
+        data: { name, role, department, salary: Number(salary) || 0, email, tenantId }
       });
 
       await prisma.auditLog.create({
@@ -71,31 +61,18 @@ router.post('/', async (req: any, res) => {
         return res.status(400).json({ error: 'Employee ID and Date are required' });
       }
 
-      // Check if attendance already exists
-      const existing = await prisma.attendance.findFirst({
-        where: { employeeId, date }
-      });
+      const existing = await prisma.attendance.findFirst({ where: { employeeId, date } });
 
       if (status === null) {
-        // delete if status is null
-        if (existing) {
-          await prisma.attendance.delete({
-            where: { id: existing.id }
-          });
-        }
+        if (existing) await prisma.attendance.delete({ where: { id: existing.id } });
         return res.json({ success: true, message: 'Attendance record deleted' });
       }
 
       let log;
       if (existing) {
-        log = await prisma.attendance.update({
-          where: { id: existing.id },
-          data: { status }
-        });
+        log = await prisma.attendance.update({ where: { id: existing.id }, data: { status } });
       } else {
-        log = await prisma.attendance.create({
-          data: { employeeId, date, status }
-        });
+        log = await prisma.attendance.create({ data: { employeeId, date, status } });
       }
 
       return res.json(log);
@@ -107,23 +84,13 @@ router.post('/', async (req: any, res) => {
         return res.status(400).json({ error: 'All sabbatical details are required' });
       }
 
-      const employee = await prisma.employee.findFirst({
-        where: { id: employeeId, tenantId }
-      });
+      const employee = await prisma.employee.findFirst({ where: { id: employeeId, tenantId } });
       if (!employee) {
         return res.status(404).json({ error: 'Employee profile not found' });
       }
 
       const leave = await prisma.leaveRequest.create({
-        data: {
-          employeeId,
-          employeeName: employee.name,
-          startDate,
-          endDate,
-          reason,
-          status: 'pending',
-          tenantId
-        }
+        data: { employeeId, employeeName: employee.name, startDate, endDate, reason, status: 'pending', tenantId }
       });
 
       await prisma.auditLog.create({
@@ -145,30 +112,24 @@ router.post('/', async (req: any, res) => {
   }
 });
 
-// PUT /api/hr (Approve/Reject leaves directly)
-router.put('/', async (req: any, res) => {
+// PUT /api/hr (Approve/Reject leaves)
+router.put('/', async (req, res) => {
   try {
     const tenantId = req.tenantId;
     const userId = req.userId;
-    const { id, status } = req.body; // approved, rejected
+    const { id, status } = req.body;
 
     if (!id || !status) {
       return res.status(400).json({ error: 'Request ID and Status are required' });
     }
 
-    const leave = await prisma.leaveRequest.findFirst({
-      where: { id, tenantId }
-    });
-
+    const leave = await prisma.leaveRequest.findFirst({ where: { id, tenantId } });
     if (!leave) {
       return res.status(404).json({ error: 'Leave request not found' });
     }
 
     const updated = await prisma.$transaction(async (tx) => {
-      const log = await tx.leaveRequest.update({
-        where: { id },
-        data: { status }
-      });
+      const log = await tx.leaveRequest.update({ where: { id }, data: { status } });
 
       // Seed attendance as leave if approved
       if (status === 'approved') {
@@ -177,24 +138,12 @@ router.put('/', async (req: any, res) => {
 
         for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
           const dateStr = d.toISOString().split('T')[0];
-
-          const att = await tx.attendance.findFirst({
-            where: { employeeId: leave.employeeId, date: dateStr }
-          });
+          const att = await tx.attendance.findFirst({ where: { employeeId: leave.employeeId, date: dateStr } });
 
           if (att) {
-            await tx.attendance.update({
-              where: { id: att.id },
-              data: { status: 'leave' }
-            });
+            await tx.attendance.update({ where: { id: att.id }, data: { status: 'leave' } });
           } else {
-            await tx.attendance.create({
-              data: {
-                employeeId: leave.employeeId,
-                date: dateStr,
-                status: 'leave'
-              }
-            });
+            await tx.attendance.create({ data: { employeeId: leave.employeeId, date: dateStr, status: 'leave' } });
           }
         }
       }
