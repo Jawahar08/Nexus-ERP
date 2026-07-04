@@ -1,0 +1,242 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// 1. Tenant Model (Organization Isolation)
+model Tenant {
+  id        String   @id @default(uuid())
+  name      String
+  domain    String   @unique
+  createdAt DateTime @default(now())
+
+  users          User[]
+  products       Product[]
+  warehouses     Warehouse[]
+  customers      Customer[]
+  suppliers      Supplier[]
+  purchaseOrders PurchaseOrder[]
+  deals          Deal[]
+  employees      Employee[]
+  leaveRequests  LeaveRequest[]
+  transactions   Transaction[]
+  auditLogs      AuditLog[]
+  stockMovements StockMovement[]
+}
+
+// 2. User Model
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   // Admin, HR, Finance, Sales, Inventory, Manager
+  createdAt    DateTime @default(now())
+
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  auditLogs     AuditLog[]
+  notifications Notification[]
+}
+
+// 3. Warehouse Model
+model Warehouse {
+  id        String   @id @default(uuid())
+  name      String
+  location  String
+  createdAt DateTime @default(now())
+
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  products Product[]
+}
+
+// 4. Product Model (Inventory Catalogue)
+model Product {
+  id        String   @id @default(uuid())
+  name      String
+  sku       String   @unique
+  stock     Int      @default(0)
+  minStock  Int      @default(10)
+  price     Float
+  cost      Float
+  category  String
+  createdAt DateTime @default(now())
+
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  warehouseId String
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+
+  supplierId String?
+  supplier   Supplier? @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+
+  stockMovements StockMovement[]
+}
+
+// 5. Stock Movement Model (Inventory Audits & Transfers)
+model StockMovement {
+  id             String   @id @default(uuid())
+  type           String   // transfer, return, intake, sale
+  qty            Int
+  fromWarehouse  String?
+  toWarehouse    String?
+  date           DateTime @default(now())
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+// 6. Customer Model (CRM)
+model Customer {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  phone     String?
+  company   String
+  createdAt DateTime @default(now())
+
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+// 7. Supplier Model (Purchasing)
+model Supplier {
+  id        String   @id @default(uuid())
+  name      String
+  contact   String
+  email     String
+  phone     String?
+  createdAt DateTime @default(now())
+
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  products       Product[]
+  purchaseOrders PurchaseOrder[]
+}
+
+// 8. Purchase Order Model (Restocking & Purchasing approvals)
+model PurchaseOrder {
+  id        String   @id @default(uuid())
+  total     Float
+  status    String   // pending, approved, received
+  date      DateTime @default(now())
+
+  productId String?
+  qty       Int?
+
+  supplierId String
+  supplier   Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+// 9. CRM Deals
+model Deal {
+  id        String   @id @default(uuid())
+  company   String
+  contact   String
+  value     Float
+  stage     String   // lead, contacted, proposal, won, lost
+  notes     String?
+  createdAt DateTime @default(now())
+
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+// 10. Personnel Model (HR)
+model Employee {
+  id         String   @id @default(uuid())
+  name       String
+  role       String
+  department String
+  salary     Float
+  email      String
+  createdAt  DateTime @default(now())
+
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  attendances   Attendance[]
+  leaveRequests LeaveRequest[]
+}
+
+// 11. Attendance logs (HR)
+model Attendance {
+  id     String   @id @default(uuid())
+  date   String   // yyyy-mm-dd
+  status String   // present, leave, absent
+
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+}
+
+// 12. Sabbatical Leave Requests (HR Approvals)
+model LeaveRequest {
+  id           String   @id @default(uuid())
+  startDate    String   // yyyy-mm-dd
+  endDate      String   // yyyy-mm-dd
+  reason       String
+  status       String   // pending, approved, rejected
+  employeeName String
+  createdAt    DateTime @default(now())
+
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+// 13. Transactions Ledger (Finance Expenses/Inflows)
+model Transaction {
+  id          String   @id @default(uuid())
+  date        DateTime @default(now())
+  type        String   // income, expense
+  category    String
+  amount      Float
+  description String
+  reference   String
+
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+// 14. Real-time Notifications Panel
+model Notification {
+  id        String   @id @default(uuid())
+  message   String
+  type      String   // success, info, warning, danger
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// 15. Audit Logs Trail (Auditing Admin actions)
+model AuditLog {
+  id        String   @id @default(uuid())
+  message   String
+  timestamp DateTime @default(now())
+  module    String   // Admin, Inventory, CRM, HR, Finance, Sales
+
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
