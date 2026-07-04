@@ -13,6 +13,7 @@ import notificationsRouter from './routes/notifications';
 import auditRouter from './routes/audit';
 import aiRouter from './routes/ai';
 import { authMiddleware } from './middleware/auth';
+import { logger } from './lib/logger';
 
 // Load environment variables
 dotenv.config();
@@ -31,7 +32,7 @@ app.use(express.json());
 
 // Global Logging request logger
 app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  logger.info(`${req.method} ${req.path}`);
   next();
 });
 
@@ -54,9 +55,12 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   res.status(500).json({ error: 'Internal Server Error' });
 });
 
+import { startBackgroundScheduler } from './services/scheduler';
+
 // Boot listener
 app.listen(PORT, () => {
   console.log(`==================================================`);
   console.log(`🚀 STANDALONE NEXUS ERP SERVER RUNNING ON PORT ${PORT}`);
   console.log(`==================================================`);
+  startBackgroundScheduler();
 });

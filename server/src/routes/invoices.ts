@@ -94,4 +94,30 @@ router.post('/', async (req: any, res) => {
   }
 });
 
+import { generateInvoicePDF } from '../services/pdf';
+
+// GET /api/invoices/:id/pdf
+router.get('/:id/pdf', async (req: any, res) => {
+  try {
+    const tenantId = req.tenantId;
+    const { id } = req.params;
+
+    const transaction = await prisma.transaction.findFirst({
+      where: { id, tenantId }
+    });
+
+    if (!transaction) {
+      return res.status(404).json({ error: 'Invoice transaction record not found' });
+    }
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=invoice-${transaction.reference}.pdf`);
+
+    generateInvoicePDF(transaction, res);
+  } catch (error) {
+    console.error('Invoice PDF download error:', error);
+    return res.status(500).json({ error: 'Failed to generate PDF document' });
+  }
+});
+
 export default router;
