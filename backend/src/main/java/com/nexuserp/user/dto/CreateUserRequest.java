@@ -6,12 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import java.util.UUID;
-
 public record CreateUserRequest(
-
-        @NotNull(message = "Tenant ID is required")
-        UUID tenantId,
 
         @NotBlank(message = "Full name is required")
         @Size(max = 150)
@@ -26,7 +21,8 @@ public record CreateUserRequest(
         @Size(
                 min = 8,
                 max = 72,
-                message = "Password must be between 8 and 72 characters"
+                message =
+                        "Password must be between 8 and 72 characters"
         )
         String password,
 

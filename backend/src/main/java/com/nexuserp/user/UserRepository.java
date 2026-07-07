@@ -19,4 +19,9 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     );
 
     List<User> findAllByTenantId(UUID tenantId);
+
+    Optional<User> findByIdAndStatus(
+            UUID id,
+            UserStatus status
+    );
 }

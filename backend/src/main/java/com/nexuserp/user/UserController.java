@@ -1,16 +1,17 @@
 package com.nexuserp.user;
 
 import com.nexuserp.common.api.ApiResponse;
+import com.nexuserp.security.AuthenticatedUser;
 import com.nexuserp.user.dto.CreateUserRequest;
 import com.nexuserp.user.dto.UserResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -21,10 +22,19 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<UserResponse>> createUser(
-            @Valid @RequestBody CreateUserRequest request
+            @AuthenticationPrincipal
+            AuthenticatedUser authenticatedUser,
+
+            @Valid
+            @RequestBody
+            CreateUserRequest request
     ) {
 
-        UserResponse user = userService.createUser(request);
+        UserResponse user =
+                userService.createUserForTenant(
+                        authenticatedUser.tenantId(),
+                        request
+                );
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -36,15 +46,18 @@ public class UserController {
                 );
     }
 
-    @GetMapping("/tenant/{tenantId}")
-    public ResponseEntity<ApiResponse<List<UserResponse>>> getUsersByTenant(
-            @PathVariable UUID tenantId
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getUsers(
+            @AuthenticationPrincipal
+            AuthenticatedUser authenticatedUser
     ) {
 
         return ResponseEntity.ok(
                 ApiResponse.success(
                         "Users retrieved successfully",
-                        userService.getUsersByTenant(tenantId)
+                        userService.getUsersByTenant(
+                                authenticatedUser.tenantId()
+                        )
                 )
         );
     }

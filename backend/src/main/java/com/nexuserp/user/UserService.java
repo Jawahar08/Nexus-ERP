@@ -22,41 +22,50 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public UserResponse createUser(CreateUserRequest request) {
+public UserResponse createUserForTenant(
+        UUID tenantId,
+        CreateUserRequest request
+) {
 
-        Tenant tenant = tenantRepository.findById(request.tenantId())
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Tenant not found: " + request.tenantId()
-                        )
-                );
-
-        String normalizedEmail = request.email()
-                .trim()
-                .toLowerCase(Locale.ROOT);
-
-        if (userRepository.existsByTenantIdAndEmailIgnoreCase(
-                tenant.getId(),
-                normalizedEmail
-        )) {
-            throw new IllegalArgumentException(
-                    "User email already exists in this tenant"
+    Tenant tenant = tenantRepository.findById(tenantId)
+            .orElseThrow(() ->
+                    new IllegalArgumentException(
+                            "Tenant not found"
+                    )
             );
-        }
 
-        User user = User.builder()
-                .tenant(tenant)
-                .fullName(request.fullName().trim())
-                .email(normalizedEmail)
-                .passwordHash(passwordEncoder.encode(request.password()))
-                .role(request.role())
-                .status(UserStatus.ACTIVE)
-                .build();
+    String normalizedEmail = request.email()
+            .trim()
+            .toLowerCase(Locale.ROOT);
 
-        return UserResponse.from(
-                userRepository.save(user)
+    if (userRepository
+            .existsByTenantIdAndEmailIgnoreCase(
+                    tenantId,
+                    normalizedEmail
+            )) {
+
+        throw new IllegalArgumentException(
+                "User email already exists in this tenant"
         );
     }
+
+    User user = User.builder()
+            .tenant(tenant)
+            .fullName(request.fullName().trim())
+            .email(normalizedEmail)
+            .passwordHash(
+                    passwordEncoder.encode(
+                            request.password()
+                    )
+            )
+            .role(request.role())
+            .status(UserStatus.ACTIVE)
+            .build();
+
+    return UserResponse.from(
+            userRepository.save(user)
+    );
+}
 
     @Transactional(readOnly = true)
     public List<UserResponse> getUsersByTenant(UUID tenantId) {
