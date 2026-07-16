@@ -1,10 +1,12 @@
 package com.nexuserp.user;
 
+import com.nexuserp.security.AuthenticatedUser;
 import com.nexuserp.tenant.Tenant;
 import com.nexuserp.tenant.TenantRepository;
 import com.nexuserp.user.dto.CreateUserRequest;
 import com.nexuserp.user.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,9 +25,19 @@ public class UserService {
 
     @Transactional
 public UserResponse createUserForTenant(
-        UUID tenantId,
+        AuthenticatedUser currentUser,
         CreateUserRequest request
 ) {
+
+    if (currentUser.role() == UserRole.INVENTORY || currentUser.role() == UserRole.SALES) {
+        throw new AccessDeniedException("User does not have permission to create users");
+    }
+
+    if (request.role() == UserRole.ADMIN && currentUser.role() != UserRole.ADMIN) {
+        throw new AccessDeniedException("Only ADMIN can create ADMIN users");
+    }
+
+    UUID tenantId = currentUser.tenantId();
 
     Tenant tenant = tenantRepository.findById(tenantId)
             .orElseThrow(() ->

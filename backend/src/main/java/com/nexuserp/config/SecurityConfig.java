@@ -1,5 +1,7 @@
 package com.nexuserp.config;
 
+import com.nexuserp.security.CustomAccessDeniedHandler;
+import com.nexuserp.security.CustomAuthenticationEntryPoint;
 import com.nexuserp.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +19,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
     @Bean
     SecurityFilterChain securityFilterChain(
@@ -43,14 +47,12 @@ public class SecurityConfig {
                                 "/api/v1/tenants/**"
                         ).hasRole("ADMIN")
 
-                        .requestMatchers(
-                                "/api/v1/users/**"
-                        ).hasAnyRole(
-                                "ADMIN",
-                                "MANAGER"
-                        )
-
                         .anyRequest().authenticated()
+                )
+
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
                 )
 
                 .addFilterBefore(

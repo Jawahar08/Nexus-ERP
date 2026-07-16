@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ public class UserController {
 
     private final UserService userService;
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'HR')")
     @PostMapping
     public ResponseEntity<ApiResponse<UserResponse>> createUser(
             @AuthenticationPrincipal
@@ -32,7 +34,7 @@ public class UserController {
 
         UserResponse user =
                 userService.createUserForTenant(
-                        authenticatedUser.tenantId(),
+                        authenticatedUser,
                         request
                 );
 
@@ -46,6 +48,7 @@ public class UserController {
                 );
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'HR')")
     @GetMapping
     public ResponseEntity<ApiResponse<List<UserResponse>>> getUsers(
             @AuthenticationPrincipal
