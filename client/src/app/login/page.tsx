@@ -55,7 +55,8 @@ export default function LoginPage() {
       localStorage.setItem("nexus_user", JSON.stringify(data.data));
 
       // Save cookie for middleware verification
-      document.cookie = `nexus_token=${data.data.accessToken}; path=/; max-age=86400; SameSite=Lax; Secure`;
+      const isSecure = window.location.protocol === "https:";
+      document.cookie = `nexus_token=${data.data.accessToken}; path=/; max-age=86400; SameSite=Lax${isSecure ? "; Secure" : ""}`;
 
       router.push("/dashboard");
     } catch (err: any) {
