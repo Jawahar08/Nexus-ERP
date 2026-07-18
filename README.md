@@ -30,7 +30,11 @@
 
 <br />
 
-<img src="https://github-readme-stats.vercel.app/api/pin/?username=Jawahar08&repo=Nexus-ERP&theme=tokyonight&hide_border=true&bg_color=0D1117&title_color=6366F1&icon_color=818CF8&text_color=C9D1D9" alt="Repo Card" />
+[![Stars](https://img.shields.io/github/stars/Jawahar08/Nexus-ERP?style=for-the-badge&logo=github&logoColor=white&label=Stars&color=FFD700)](https://github.com/Jawahar08/Nexus-ERP/stargazers)
+[![Forks](https://img.shields.io/github/forks/Jawahar08/Nexus-ERP?style=for-the-badge&logo=git&logoColor=white&label=Forks&color=818CF8)](https://github.com/Jawahar08/Nexus-ERP/forks)
+[![Issues](https://img.shields.io/github/issues/Jawahar08/Nexus-ERP?style=for-the-badge&logo=github&logoColor=white&label=Issues&color=F97316)](https://github.com/Jawahar08/Nexus-ERP/issues)
+[![Last Commit](https://img.shields.io/github/last-commit/Jawahar08/Nexus-ERP?style=for-the-badge&logo=github&logoColor=white&label=Last+Commit&color=4ADE80)](https://github.com/Jawahar08/Nexus-ERP/commits)
+[![Repo Size](https://img.shields.io/github/repo-size/Jawahar08/Nexus-ERP?style=for-the-badge&logo=github&logoColor=white&label=Size&color=6366F1)](https://github.com/Jawahar08/Nexus-ERP)
 
 <br /><br />
 
