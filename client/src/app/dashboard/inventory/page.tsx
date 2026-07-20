@@ -185,6 +185,7 @@ export default function InventoryPage() {
                     <th className="pb-2">Category</th>
                     <th className="pb-2 text-right">Price</th>
                     <th className="pb-2 text-right">Stock</th>
+                    <th className="pb-2 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -192,7 +193,16 @@ export default function InventoryPage() {
                     const isLow = p.stock <= p.minStock;
                     return (
                       <tr key={p.id} className="border-b border-[var(--border)] hover:bg-[rgba(255,255,255,0.01)] h-12 transition-colors">
-                        <td className="font-bold text-white">{p.name}</td>
+                        <td className="font-bold text-white">
+                          <div className="flex items-center gap-2">
+                            {p.name}
+                            {isLow && (
+                              <span className="bg-red-950/80 text-red-400 border border-red-800/40 px-2 py-0.5 rounded-full text-[9px] uppercase tracking-wider font-bold animate-pulse">
+                                Low Stock
+                              </span>
+                            )}
+                          </div>
+                        </td>
                         <td className="font-mono text-[var(--text-muted)]">{p.sku}</td>
                         <td>{p.warehouse?.name}</td>
                         <td>
@@ -205,6 +215,21 @@ export default function InventoryPage() {
                           <span className={`font-mono font-bold px-2 py-0.5 rounded ${isLow ? 'bg-red-950/40 text-red-400 border border-red-800/20' : 'text-white'}`}>
                             {p.stock}
                           </span>
+                        </td>
+                        <td className="text-right">
+                          <button 
+                            onClick={() => {
+                              setMovementForm(prev => ({ 
+                                ...prev, 
+                                productId: p.id,
+                                fromWarehouseId: p.warehouseId || '',
+                              }));
+                              setShowMovementModal(true);
+                            }}
+                            className="bg-[var(--primary)]/10 hover:bg-[var(--primary)]/20 text-[var(--primary)] px-2.5 py-1 rounded text-[10px] font-bold border border-[var(--primary)]/20 transition cursor-pointer"
+                          >
+                            Record Movement
+                          </button>
                         </td>
                       </tr>
                     );
