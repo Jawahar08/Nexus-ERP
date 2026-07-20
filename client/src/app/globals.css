@@ -215,3 +215,53 @@
   background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
   background-size: 24px 24px;
 }
+
+/* Standardized Input & Label Styles */
+.input-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #a1a1aa; /* text-zinc-400 */
+  letter-spacing: 0.025em; /* tracking-wide */
+  margin-bottom: 0.35rem;
+}
+
+.input-field {
+  width: 100%;
+  height: 2.5rem; /* 40px, same as h-10 */
+  background-color: rgba(9, 9, 11, 0.8) !important; /* deep obsidian dark */
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 0.5rem !important; /* rounded-lg */
+  padding-left: 0.875rem;
+  padding-right: 0.875rem;
+  font-size: 0.875rem; /* text-sm */
+  color: #ffffff !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  outline: none !important;
+}
+
+.input-field::placeholder {
+  color: #52525b; /* text-zinc-600 placeholder */
+}
+
+.input-field:focus {
+  border-color: rgba(99, 102, 241, 0.5) !important; /* indigo border focus */
+  background-color: rgba(9, 9, 11, 0.95) !important;
+  box-shadow: 
+    0 0 0 2px rgba(99, 102, 241, 0.2),
+    0 4px 12px -2px rgba(0, 0, 0, 0.5) !important;
+}
+
+.input-field:hover:not(:focus) {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  background-color: rgba(9, 9, 11, 0.85) !important;
+}
+
+select.input-field {
+  appearance: none !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23a1a1aa' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e") !important;
+  background-position: right 0.75rem center !important;
+  background-repeat: no-repeat !important;
+  background-size: 1.25rem !important;
+  padding-right: 2.25rem !important;
+}
