@@ -70,6 +70,58 @@ export default function DashboardHero() {
     { role: "assistant", content: "Good day Jawahar! I can assist with low stock alerts, inventory risk warnings, or generating financial summaries. What can I calculate for you today?" }
   ]);
 
+  const handleExportReport = () => {
+    const dateStr = new Date().toLocaleDateString();
+    const storeState = useCurrencyStore.getState();
+    const currency = storeState.currentCountry;
+    
+    let csvContent = "\uFEFF";
+    csvContent += `Nexus ERP - Executive Workspace Report\n`;
+    csvContent += `Generated Date,${dateStr}\n`;
+    csvContent += `Active Workspace,Acme Corp\n`;
+    csvContent += `Workspace Currency,${currency.currencyCode} (${currency.symbol})\n`;
+    csvContent += `Exchange Rate relative to USD,${currency.rate}\n\n`;
+    
+    csvContent += `Key Performance Indicators\n`;
+    csvContent += `Indicator,Value,Trend,Description\n`;
+    kpis.forEach(kpi => {
+      let displayVal = kpi.value;
+      if (kpi.prefix === "$") {
+        const converted = storeState.convertAmount(kpi.value);
+        const formatted = `${currency.symbol}${converted.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+        csvContent += `"${kpi.title}","${formatted}","${kpi.trend}","${kpi.desc}"\n`;
+      } else {
+        csvContent += `"${kpi.title}","${displayVal}${kpi.suffix || ''}","${kpi.trend}","${kpi.desc}"\n`;
+      }
+    });
+    csvContent += `\n`;
+    
+    csvContent += `System AI Insights\n`;
+    csvContent += `Title,Risk Level,Description\n`;
+    aiInsights.forEach(insight => {
+      const descText = replaceUSDInText(insight.desc, formatAmount);
+      csvContent += `"${insight.title}","${insight.risk}","${descText.replace(/"/g, '""')}"\n`;
+    });
+    csvContent += `\n`;
+    
+    csvContent += `Recent Activity Audit Logs\n`;
+    csvContent += `Activity,Responsible User,Time,Module\n`;
+    timelineItems.forEach(item => {
+      const actionText = replaceUSDInText(item.action, formatAmount);
+      csvContent += `"${actionText.replace(/"/g, '""')}","${item.user}","${item.time}","${item.module}"\n`;
+    });
+    
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Nexus_ERP_Executive_Report_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   // Handle AI Chat Input submission
   const handleChatSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -160,7 +212,12 @@ export default function DashboardHero() {
           <AnimatedButton variant="outline" size="sm" className="gap-1.5">
             <RefreshCw size={12} /> Sync Ledger
           </AnimatedButton>
-          <AnimatedButton variant="default" size="sm" className="gap-1.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white border-0 shadow-lg shadow-indigo-500/20">
+          <AnimatedButton 
+            onClick={handleExportReport}
+            variant="default" 
+            size="sm" 
+            className="gap-1.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white border-0 shadow-lg shadow-indigo-500/20 cursor-pointer"
+          >
             Export Report <ArrowUpRight size={14} />
           </AnimatedButton>
         </motion.div>
