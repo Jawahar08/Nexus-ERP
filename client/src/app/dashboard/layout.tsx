@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { cn } from "@/lib/utils";
+import { useCurrencyStore, COUNTRIES } from "@/store/currencyStore";
 
 interface DashboardContextType {
   user: any;
@@ -47,6 +48,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter();
   const pathname = usePathname();
   const [user, setUser] = useState<any>(null);
+  const { currentCountry, setCountry } = useCurrencyStore();
+  const [currencyDropdownOpen, setCurrencyDropdownOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -312,6 +315,58 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <div className="hidden md:flex items-center gap-1.5 border border-white/5 bg-white/[0.02] rounded-lg px-3 py-1.5 text-xs text-zinc-400">
                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
                 <span>Role: <strong className="text-white font-semibold">{user.role}</strong></span>
+              </div>
+
+              {/* Country & Currency Switcher */}
+              <div className="relative">
+                <button
+                  onClick={() => setCurrencyDropdownOpen(!currencyDropdownOpen)}
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-white/5 bg-white/[0.02] text-zinc-400 hover:text-white hover:bg-white/5 transition cursor-pointer text-xs"
+                >
+                  <span className="text-sm leading-none">{currentCountry.flag}</span>
+                  <span className="font-semibold text-white">{currentCountry.currencyCode}</span>
+                  <span className="text-[10px] text-zinc-500">({currentCountry.symbol})</span>
+                </button>
+
+                <AnimatePresence>
+                  {currencyDropdownOpen && (
+                    <>
+                      <div className="fixed inset-0 z-30" onClick={() => setCurrencyDropdownOpen(false)} />
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+                        className="glass-panel absolute right-0 mt-2 w-56 p-2 rounded-xl z-40 shadow-xl space-y-1"
+                      >
+                        <div className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider px-2 py-1 border-b border-white/5 mb-1">
+                          Workspace Currency
+                        </div>
+                        {COUNTRIES.map((c) => (
+                          <button
+                            key={c.code}
+                            onClick={() => {
+                              setCountry(c.code);
+                              setCurrencyDropdownOpen(false);
+                            }}
+                            className={cn(
+                              "w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer text-left",
+                              currentCountry.code === c.code
+                                ? "bg-indigo-600/95 text-white"
+                                : "text-zinc-400 hover:text-white hover:bg-white/5"
+                            )}
+                          >
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm leading-none">{c.flag}</span>
+                              <span>{c.name}</span>
+                            </div>
+                            <span className="font-mono text-[9px] opacity-80">{c.currencyCode} ({c.symbol})</span>
+                          </button>
+                        ))}
+                      </motion.div>
+                    </>
+                  )}
+                </AnimatePresence>
               </div>
 
               {/* Notifications Center */}

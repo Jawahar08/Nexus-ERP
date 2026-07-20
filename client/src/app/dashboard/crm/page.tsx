@@ -5,8 +5,10 @@ import {
   Users, Plus, Briefcase, ShoppingCart, 
   DollarSign, Mail, Phone, Landmark, Sparkles, Trash2, CheckCircle2
 } from 'lucide-react';
+import { useCurrencyStore } from '@/store/currencyStore';
 
 export default function CRMPage() {
+  const { formatAmount, currentCountry } = useCurrencyStore();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>({
     customers: [],
@@ -261,7 +263,7 @@ export default function CRMPage() {
                           <div className="font-bold text-white truncate">{deal.company}</div>
                           <div className="text-[9px] text-[var(--text-muted)] mt-0.5">{deal.contact}</div>
                         </div>
-                        <div className="font-mono font-bold text-[var(--accent)] text-xs">${deal.value.toLocaleString()}</div>
+                        <div className="font-mono font-bold text-[var(--accent)] text-xs">{formatAmount(deal.value)}</div>
                         
                         {/* Status swappers */}
                         <div className="flex gap-1 border-t border-[var(--border)] pt-2 mt-1">
@@ -317,7 +319,7 @@ export default function CRMPage() {
                   value={cartProductId} onChange={e => setCartProductId(e.target.value)}
                 >
                   {products.map((p: any) => (
-                    <option key={p.id} value={p.id}>{p.name} (${p.price} | Stock: {p.stock})</option>
+                    <option key={p.id} value={p.id}>{p.name} ({formatAmount(p.price, { decimals: 2 })} | Stock: {p.stock})</option>
                   ))}
                 </select>
               </div>
@@ -344,10 +346,10 @@ export default function CRMPage() {
                 <div key={index} className="flex justify-between items-center text-[11px] border-b border-[var(--border)] pb-1.5">
                   <div className="flex flex-col gap-0.5">
                     <span className="font-semibold text-white">{item.name}</span>
-                    <span className="text-[10px] text-[var(--text-muted)] font-mono">{item.qty} &bull; ${item.price} each</span>
+                    <span className="text-[10px] text-[var(--text-muted)] font-mono">{item.qty} &bull; {formatAmount(item.price, { decimals: 2 })} each</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="font-mono font-bold text-white">${(item.price * item.qty).toFixed(2)}</span>
+                    <span className="font-mono font-bold text-white">{formatAmount(item.price * item.qty, { decimals: 2 })}</span>
                     <button 
                       onClick={() => handleRemoveFromCart(index)}
                       className="text-red-400 hover:text-red-500 cursor-pointer"
@@ -363,15 +365,15 @@ export default function CRMPage() {
             <div className="border-t border-[var(--border)] pt-3 text-xs flex flex-col gap-1.5 font-mono">
               <div className="flex justify-between">
                 <span className="text-[var(--text-muted)]">Subtotal:</span>
-                <span className="text-white">${cartSubtotal.toFixed(2)}</span>
+                <span className="text-white">{formatAmount(cartSubtotal, { decimals: 2 })}</span>
               </div>
               <div className="flex justify-between border-b border-[var(--border)] pb-1.5">
                 <span className="text-[var(--text-muted)]">VAT (10%):</span>
-                <span className="text-white">${cartTax.toFixed(2)}</span>
+                <span className="text-white">{formatAmount(cartTax, { decimals: 2 })}</span>
               </div>
               <div className="flex justify-between font-bold text-sm">
                 <span className="text-[var(--accent)]">Grand Total:</span>
-                <span className="text-white">${cartTotal.toFixed(2)}</span>
+                <span className="text-white">{formatAmount(cartTotal, { decimals: 2 })}</span>
               </div>
             </div>
 

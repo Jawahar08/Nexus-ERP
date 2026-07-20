@@ -5,8 +5,10 @@ import {
   Users, Plus, Calendar, ShieldCheck, Mail, DollarSign, 
   Printer, UserCheck, X, FileText, CheckCircle2, XCircle
 } from 'lucide-react';
+import { useCurrencyStore } from '@/store/currencyStore';
 
 export default function HRPage() {
+  const { formatAmount, currentCountry } = useCurrencyStore();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>({
     employees: [],
@@ -205,7 +207,7 @@ export default function HRPage() {
                           {emp.department}
                         </span>
                       </td>
-                      <td className="text-right font-mono font-bold">${emp.salary.toLocaleString()}/mo</td>
+                      <td className="text-right font-mono font-bold">{formatAmount(emp.salary)}/mo</td>
                       <td>
                         <div className="flex justify-center gap-1">
                           {daysOfWeek.map(date => {
@@ -340,19 +342,19 @@ export default function HRPage() {
               <h3 className="font-bold text-slate-500 uppercase tracking-wider text-[10px] mb-1">Payroll metrics</h3>
               <div className="flex justify-between">
                 <span>Base Gross Salary:</span>
-                <span className="font-mono font-bold text-slate-900">${activePayslip.salary.toLocaleString()}</span>
+                <span className="font-mono font-bold text-slate-900">{formatAmount(activePayslip.salary)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Tax Deductions (15%):</span>
-                <span className="font-mono font-bold text-slate-900">-${(activePayslip.salary * 0.15).toLocaleString()}</span>
+                <span className="font-mono font-bold text-slate-900">-{formatAmount(activePayslip.salary * 0.15)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Healthcare allowance:</span>
-                <span className="font-mono font-bold text-slate-900">+$250.00</span>
+                <span className="font-mono font-bold text-slate-900">+{formatAmount(250)}</span>
               </div>
               <div className="flex justify-between border-t border-slate-900 pt-3 font-extrabold text-sm">
                 <span>Net Pay Credit:</span>
-                <span className="font-mono text-slate-900">${(activePayslip.salary * 0.85 + 250).toLocaleString()}</span>
+                <span className="font-mono text-slate-900">{formatAmount(activePayslip.salary * 0.85 + 250)}</span>
               </div>
             </div>
 
@@ -417,7 +419,7 @@ export default function HRPage() {
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="input-label">Monthly Salary ($)</label>
+                <label className="input-label">Monthly Salary ({currentCountry.symbol})</label>
                 <input 
                   type="number" className="input-field font-mono" required
                   value={newEmp.salary} onChange={e => setNewEmp({...newEmp, salary: Number(e.target.value)})}

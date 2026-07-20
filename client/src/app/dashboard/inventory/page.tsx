@@ -5,8 +5,10 @@ import {
   Package, Plus, ArrowLeftRight, ShoppingBag, 
   RotateCcw, Warehouse, AlertCircle, ShoppingCart, Trash2
 } from 'lucide-react';
+import { useCurrencyStore } from '@/store/currencyStore';
 
 export default function InventoryPage() {
+  const { formatAmount, currentCountry } = useCurrencyStore();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>({
     products: [],
@@ -210,7 +212,7 @@ export default function InventoryPage() {
                             {p.category}
                           </span>
                         </td>
-                        <td className="text-right font-mono font-bold">${p.price.toFixed(2)}</td>
+                        <td className="text-right font-mono font-bold">{formatAmount(p.price, { decimals: 2 })}</td>
                         <td className="text-right">
                           <span className={`font-mono font-bold px-2 py-0.5 rounded ${isLow ? 'bg-red-950/40 text-red-400 border border-red-800/20' : 'text-white'}`}>
                             {p.stock}
@@ -399,7 +401,7 @@ export default function InventoryPage() {
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="input-label">Sales Unit Price ($)</label>
+                <label className="input-label">Sales Unit Price ({currentCountry.symbol})</label>
                 <input 
                   type="number" step="0.01" className="input-field" required
                   value={newProd.price} onChange={e => setNewProd({...newProd, price: Number(e.target.value)})}
@@ -407,7 +409,7 @@ export default function InventoryPage() {
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="input-label">Procurement Cost ($)</label>
+                <label className="input-label">Procurement Cost ({currentCountry.symbol})</label>
                 <input 
                   type="number" step="0.01" className="input-field" required
                   value={newProd.cost} onChange={e => setNewProd({...newProd, cost: Number(e.target.value)})}
@@ -564,7 +566,7 @@ export default function InventoryPage() {
                     </select>
                   </div>
                   <div className="flex flex-col gap-1">
-                    <label className="input-label">Total Cost ($)</label>
+                    <label className="input-label">Total Cost ({currentCountry.symbol})</label>
                     <input 
                       type="number" step="0.01" className="input-field" required
                       value={movementForm.totalCost} onChange={e => setMovementForm({...movementForm, totalCost: Number(e.target.value)})}

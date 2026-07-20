@@ -20,15 +20,21 @@ import {
 import { GlassCard } from "@/components/ui/GlassCard";
 import { AnimatedButton } from "@/components/ui/AnimatedButton";
 import { cn } from "@/lib/utils";
+import { useCurrencyStore, replaceUSDInText } from "@/store/currencyStore";
 
 // Helper for Animated Counters
 function Counter({ value, prefix = "", suffix = "" }: { value: number; prefix?: string; suffix?: string }) {
   const [count, setCount] = useState(0);
+  const { currentCountry, convertAmount } = useCurrencyStore();
+  const isCurrency = prefix === "$";
+  const end = isCurrency ? convertAmount(value) : value;
 
   useEffect(() => {
     let start = 0;
-    const end = value;
-    if (start === end) return;
+    if (start === end) {
+      setCount(end);
+      return;
+    }
 
     const totalDuration = 1000; // 1 second
     const incrementTime = Math.abs(Math.floor(totalDuration / end));
@@ -44,18 +50,19 @@ function Counter({ value, prefix = "", suffix = "" }: { value: number; prefix?: 
     }, Math.max(incrementTime, 16));
 
     return () => clearInterval(timer);
-  }, [value]);
+  }, [end]);
 
   return (
     <span>
-      {prefix}
-      {count.toLocaleString()}
+      {isCurrency ? currentCountry.symbol : prefix}
+      {count.toLocaleString(undefined, { maximumFractionDigits: 0 })}
       {suffix}
     </span>
   );
 }
 
 export default function DashboardHero() {
+  const formatAmount = useCurrencyStore((state) => state.formatAmount);
   const [activeTab, setActiveTab] = useState("overview");
   const [chatOpen, setChatOpen] = useState(false);
   const [chatInput, setChatInput] = useState("");
@@ -322,7 +329,7 @@ export default function DashboardHero() {
                     <span className="text-xs font-bold text-white">{insight.title}</span>
                   </div>
                   <p className="text-xs text-zinc-400 mt-2 leading-relaxed">
-                    {insight.desc}
+                    {replaceUSDInText(insight.desc, formatAmount)}
                   </p>
                 </div>
                 <div className={cn("px-2.5 py-1 rounded border text-[10px] font-bold w-fit uppercase", insight.statusColor)}>
@@ -349,8 +356,8 @@ export default function DashboardHero() {
                   {idx + 1}
                 </div>
                 <div className="space-y-0.5 min-w-0">
-                  <p className="text-xs font-semibold text-zinc-100 leading-normal truncate">
-                    {item.action}
+                  <p className="text-xs font-semibold text-zinc-100 leading-normal truncate font-mono">
+                    {replaceUSDInText(item.action, formatAmount)}
                   </p>
                   <div className="flex items-center gap-2 text-[10px] text-zinc-500">
                     <span className="truncate">{item.user}</span>

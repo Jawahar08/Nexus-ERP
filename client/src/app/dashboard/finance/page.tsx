@@ -5,8 +5,10 @@ import {
   Coins, Plus, ArrowUpRight, ArrowDownRight, 
   DollarSign, FileText, PieChart, RefreshCw
 } from 'lucide-react';
+import { useCurrencyStore } from '@/store/currencyStore';
 
 export default function FinancePage() {
+  const { formatAmount, currentCountry } = useCurrencyStore();
   const [loading, setLoading] = useState(true);
   const [transactions, setTransactions] = useState<any[]>([]);
 
@@ -124,7 +126,7 @@ export default function FinancePage() {
         <div className="glass p-5 rounded-xl border border-[var(--border)] flex justify-between items-center">
           <div>
             <span className="text-[10px] uppercase font-bold text-[var(--text-muted)] tracking-wider">Gross Inflow</span>
-            <div className="text-xl font-bold text-white mt-1">${totalIncome.toLocaleString()}</div>
+            <div className="text-xl font-bold text-white mt-1">{formatAmount(totalIncome)}</div>
           </div>
           <div className="w-10 h-10 rounded-full bg-emerald-950/45 text-emerald-400 flex items-center justify-center">
             <ArrowUpRight size={18} />
@@ -135,7 +137,7 @@ export default function FinancePage() {
         <div className="glass p-5 rounded-xl border border-[var(--border)] flex justify-between items-center">
           <div>
             <span className="text-[10px] uppercase font-bold text-[var(--text-muted)] tracking-wider">Gross Outflow</span>
-            <div className="text-xl font-bold text-white mt-1">${totalExpense.toLocaleString()}</div>
+            <div className="text-xl font-bold text-white mt-1">{formatAmount(totalExpense)}</div>
           </div>
           <div className="w-10 h-10 rounded-full bg-rose-950/45 text-rose-400 flex items-center justify-center">
             <ArrowDownRight size={18} />
@@ -147,7 +149,7 @@ export default function FinancePage() {
           <div>
             <span className="text-[10px] uppercase font-bold text-[var(--text-muted)] tracking-wider">Net Cash Flow Balance</span>
             <div className={`text-xl font-bold mt-1 ${netCashFlow >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
-              {netCashFlow < 0 ? '-' : ''}${Math.abs(netCashFlow).toLocaleString()}
+              {formatAmount(netCashFlow)}
             </div>
           </div>
           <div className="w-10 h-10 rounded-full bg-cyan-950/45 text-cyan-400 flex items-center justify-center">
@@ -189,7 +191,7 @@ export default function FinancePage() {
                       <td className="font-medium text-white">{tx.description}</td>
                       <td className="font-mono text-[var(--text-muted)]">{tx.reference}</td>
                       <td className={`text-right font-mono font-bold text-xs ${isIncome ? 'text-emerald-400' : 'text-rose-400'}`}>
-                        {isIncome ? '+' : '-'}${tx.amount.toLocaleString()}
+                        {isIncome ? '+' : '-'}{formatAmount(tx.amount)}
                       </td>
                     </tr>
                   );
@@ -216,7 +218,7 @@ export default function FinancePage() {
                     <div key={a.name} className="flex flex-col gap-1.5 text-xs">
                       <div className="flex justify-between font-semibold">
                         <span className="text-[var(--text-muted)]">{a.name}</span>
-                        <span className="text-white font-mono">{a.percent.toFixed(0)}% (${a.value.toLocaleString()})</span>
+                        <span className="text-white font-mono">{a.percent.toFixed(0)}% ({formatAmount(a.value)})</span>
                       </div>
                       
                       {/* Custom color bars based on categories */}
@@ -291,7 +293,7 @@ export default function FinancePage() {
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="input-label">Amount Value ($)</label>
+                <label className="input-label">Amount Value ({currentCountry.symbol})</label>
                 <input 
                   type="number" step="0.01" className="input-field font-mono" required
                   value={newTx.amount} onChange={e => setNewTx({...newTx, amount: Number(e.target.value)})}

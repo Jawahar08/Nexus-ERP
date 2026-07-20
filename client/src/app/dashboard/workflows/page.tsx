@@ -6,8 +6,10 @@ import {
   ShieldCheck, FileText, CheckCircle2, XCircle, 
   Clock, History, ShoppingBag, Calendar, AlertCircle
 } from 'lucide-react';
+import { useCurrencyStore } from '@/store/currencyStore';
 
 export default function WorkflowsPage() {
+  const { formatAmount } = useCurrencyStore();
   const { user } = useDashboard();
   const [loading, setLoading] = useState(true);
   const [approvals, setApprovals] = useState<any>({
@@ -104,7 +106,7 @@ export default function WorkflowsPage() {
                       <span className="font-bold text-white">PO Ref: PO-{po.id.substring(0, 5).toUpperCase()}</span>
                       <div className="text-[10px] text-[var(--text-muted)] mt-0.5">Supplier: {po.supplier.name}</div>
                     </div>
-                    <span className="font-mono font-bold text-yellow-400 text-sm">${po.total.toLocaleString()}</span>
+                    <span className="font-mono font-bold text-yellow-400 text-sm">{formatAmount(po.total)}</span>
                   </div>
 
                   <div className="bg-slate-950 p-2.5 rounded border border-[var(--border)] text-[10px] text-[var(--text-muted)]">
@@ -208,7 +210,7 @@ export default function WorkflowsPage() {
                   <td className="font-mono text-white">PO-{po.id.substring(0, 5).toUpperCase()}</td>
                   <td>{po.supplier.name}</td>
                   <td className="text-[var(--text-muted)] font-mono">{new Date(po.date).toLocaleDateString()}</td>
-                  <td className="text-right font-mono font-bold text-white">${po.total.toLocaleString()}</td>
+                  <td className="text-right font-mono font-bold text-white">{formatAmount(po.total)}</td>
                   <td className="text-right">
                     <span className="bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded text-[10px] font-bold">
                       approved
