@@ -28,6 +28,7 @@ async function main() {
   // 1. Create Corporate Tenants (Multi-tenancy isolation)
   const tenantA = await prisma.tenant.create({
     data: {
+      id: '41a7f4d5-62b7-45d8-8108-9597ff3852cc',
       name: 'Nexus Global Corp',
       domain: 'nexus.erp'
     }
@@ -45,7 +46,8 @@ async function main() {
   // 2. Create Users for Tenant A (Nexus)
   const userA1 = await prisma.user.create({
     data: {
-      name: 'Nithesh Kumar',
+      id: 'dc67a2ec-b9e2-4e59-87b0-26d04da798cc',
+      name: 'Admin User',
       email: 'admin@nexus.erp',
       passwordHash: pwdHash,
       role: 'Admin',
@@ -55,7 +57,8 @@ async function main() {
 
   const userA2 = await prisma.user.create({
     data: {
-      name: 'Alan Turing',
+      id: '18be4a1c-cfe0-4cbd-8719-18ec2e224724',
+      name: 'HR Manager',
       email: 'hr@nexus.erp',
       passwordHash: pwdHash,
       role: 'HR',
@@ -65,7 +68,8 @@ async function main() {
 
   const userA3 = await prisma.user.create({
     data: {
-      name: 'Ada Lovelace',
+      id: '38c5a563-cee7-4060-bc80-4667070c7ece',
+      name: 'Finance Officer',
       email: 'finance@nexus.erp',
       passwordHash: pwdHash,
       role: 'Finance',
@@ -75,7 +79,8 @@ async function main() {
 
   const userA4 = await prisma.user.create({
     data: {
-      name: 'Elena Rostova',
+      id: 'c13a57e7-326a-4d3a-8b81-5d18bfe663ef',
+      name: 'Sales Representative',
       email: 'sales@nexus.erp',
       passwordHash: pwdHash,
       role: 'Sales',

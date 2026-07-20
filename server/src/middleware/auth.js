@@ -33,12 +33,13 @@ export function authMiddleware(req, res, next) {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    req.userId = decoded.userId;
+    const userId = decoded.userId || decoded.sub;
+    req.userId = userId;
     req.tenantId = decoded.tenantId;
     req.userRole = decoded.role;
 
     // Inject headers to keep compatibility with Next.js header fetches
-    req.headers['x-user-id'] = decoded.userId;
+    req.headers['x-user-id'] = userId;
     req.headers['x-tenant-id'] = decoded.tenantId;
     req.headers['x-user-role'] = decoded.role;
 

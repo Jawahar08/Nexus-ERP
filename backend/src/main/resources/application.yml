@@ -17,9 +17,9 @@ spring:
         format_sql: true
 
   flyway:
-  enabled: true
-  baseline-on-migrate: true
-  baseline-version: 0
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
 
 server:
   port: ${SERVER_PORT:8080}
