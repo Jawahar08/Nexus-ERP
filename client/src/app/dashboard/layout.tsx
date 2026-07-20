@@ -127,12 +127,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   if (!user) return null;
 
   const navigationItems = [
-    { label: "Overview", icon: LayoutDashboard, path: "/dashboard" },
-    { label: "Inventory Intelligence", icon: Package, path: "/dashboard/inventory" },
-    { label: "CRM Pipeline", icon: Users, path: "/dashboard/crm" },
-    { label: "HR Experience", icon: Briefcase, path: "/dashboard/hr" },
-    { label: "Executive Finance", icon: Coins, path: "/dashboard/finance" },
-    { label: "Visual Workflows", icon: ShieldCheck, path: "/dashboard/workflows" },
+    { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
+    { label: "Inventory", icon: Package, path: "/dashboard/inventory" },
+    { label: "CRM", icon: Users, path: "/dashboard/crm" },
+    { label: "HR", icon: Briefcase, path: "/dashboard/hr" },
+    { label: "Finance", icon: Coins, path: "/dashboard/finance" },
+    { label: "Workflows", icon: ShieldCheck, path: "/dashboard/workflows" },
   ];
 
   const filteredNavigation = navigationItems; // Full access for showcase
