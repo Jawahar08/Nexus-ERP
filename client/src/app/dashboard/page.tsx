@@ -64,24 +64,42 @@ export default function DashboardHero() {
   ]);
 
   // Handle AI Chat Input submission
-  const handleChatSubmit = (e: React.FormEvent) => {
+  const handleChatSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
 
     const userMsg = { role: "user", content: chatInput };
     setChatMessages((prev) => [...prev, userMsg]);
+    const promptToSend = chatInput;
     setChatInput("");
 
-    // Simulate elite AI response
-    setTimeout(() => {
-      let reply = "I've checked the current metrics. Everything looks stable, but I recommend replenishing Copper Wire soon.";
-      if (chatInput.toLowerCase().includes("finance") || chatInput.toLowerCase().includes("revenue")) {
-        reply = "Our Gross Revenue sits at $142,500 with a monthly growth trend of 12.4%. Finance forecast is optimal.";
-      } else if (chatInput.toLowerCase().includes("inventory") || chatInput.toLowerCase().includes("stock")) {
-        reply = "Current risk: 2 products (Industrial Copper Wire, Steel Rods) are approaching safety margins. I suggest initiating RESTOCK-901.";
-      }
-      setChatMessages((prev) => [...prev, { role: "assistant", content: reply }]);
-    }, 800);
+    // Add a temporary loading state
+    setChatMessages((prev) => [...prev, { role: "assistant", content: "Thinking..." }]);
+
+    try {
+      const res = await fetch("/api/ai/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: promptToSend }),
+      });
+
+      const data = await res.json();
+      setChatMessages((prev) => {
+        const messages = [...prev];
+        if (messages.length > 0 && messages[messages.length - 1].content === "Thinking...") {
+          messages.pop();
+        }
+        return [...messages, { role: "assistant", content: data.reply || "Failed to generate response." }];
+      });
+    } catch (err) {
+      setChatMessages((prev) => {
+        const messages = [...prev];
+        if (messages.length > 0 && messages[messages.length - 1].content === "Thinking...") {
+          messages.pop();
+        }
+        return [...messages, { role: "assistant", content: "Network error calling Gemini AI." }];
+      });
+    }
   };
 
   // Mock Data
