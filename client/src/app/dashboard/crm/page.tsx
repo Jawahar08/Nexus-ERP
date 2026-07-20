@@ -311,11 +311,11 @@ export default function CRMPage() {
             </div>
 
             {/* Cart intake row */}
-            <div className="grid grid-cols-3 gap-2 items-end border-t border-[var(--border)] pt-3">
-              <div className="flex flex-col gap-1 col-span-2">
+            <div className="flex gap-2 items-end border-t border-[var(--border)] pt-3 w-full">
+              <div className="flex-1 flex flex-col gap-1 min-w-0">
                 <label className="input-label">Product SKU</label>
                 <select
-                  className="input-field bg-slate-900 border border-[var(--border)] rounded text-xs"
+                  className="input-field bg-slate-900 border border-[var(--border)] rounded text-xs w-full truncate h-10"
                   value={cartProductId} onChange={e => setCartProductId(e.target.value)}
                 >
                   {products.map((p: any) => (
@@ -323,20 +323,20 @@ export default function CRMPage() {
                   ))}
                 </select>
               </div>
-              <div className="flex flex-col gap-1">
-                <label className="input-label">Qty</label>
-                <div className="flex gap-1.5">
-                  <input
-                    type="number" className="input-field text-center font-bold px-1" min="1"
-                    value={cartQty} onChange={e => setCartQty(Math.max(1, Number(e.target.value)))}
-                  />
-                  <button
-                    type="button" onClick={handleAddToCart}
-                    className="h-10 bg-[var(--primary)] hover:bg-[var(--primary-hover)] active:scale-95 text-white px-3 rounded-lg cursor-pointer transition flex items-center justify-center font-bold"
-                  >
-                    +
-                  </button>
-                </div>
+              <div className="flex flex-col gap-1 shrink-0 w-16">
+                <label className="input-label text-center">Qty</label>
+                <input
+                  type="number" className="input-field text-center font-bold px-1 w-full h-10 animate-none" min="1"
+                  value={cartQty} onChange={e => setCartQty(Math.max(1, Number(e.target.value)))}
+                />
+              </div>
+              <div className="shrink-0">
+                <button
+                  type="button" onClick={handleAddToCart}
+                  className="h-10 w-10 bg-[var(--primary)] hover:bg-[var(--primary-hover)] active:scale-95 text-white rounded-lg cursor-pointer transition flex items-center justify-center font-bold"
+                >
+                  +
+                </button>
               </div>
             </div>
 

@@ -321,9 +321,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <div className="relative">
                 <button
                   onClick={() => setCurrencyDropdownOpen(!currencyDropdownOpen)}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-white/5 bg-white/[0.02] text-zinc-400 hover:text-white hover:bg-white/5 transition cursor-pointer text-xs"
+                  className="flex items-center gap-2 px-2 py-1.5 rounded-lg border border-white/5 bg-white/[0.02] text-zinc-400 hover:text-white hover:bg-white/5 transition cursor-pointer text-xs"
                 >
-                  <span className="text-sm leading-none">{currentCountry.flag}</span>
+                  <span className="text-[9px] uppercase font-extrabold px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-zinc-300 font-mono tracking-wider">
+                    {currentCountry.code}
+                  </span>
                   <span className="font-semibold text-white">{currentCountry.currencyCode}</span>
                   <span className="text-[10px] text-zinc-500">({currentCountry.symbol})</span>
                 </button>
@@ -337,7 +339,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="glass-panel absolute right-0 mt-2 w-56 p-2 rounded-xl z-40 shadow-xl space-y-1"
+                        className="glass-panel absolute right-0 mt-2 w-60 p-2 rounded-xl z-40 shadow-xl space-y-1"
                       >
                         <div className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider px-2 py-1 border-b border-white/5 mb-1">
                           Workspace Currency
@@ -357,7 +359,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                             )}
                           >
                             <div className="flex items-center gap-2">
-                              <span className="text-sm leading-none">{c.flag}</span>
+                              <span className="text-[9px] uppercase font-extrabold px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-zinc-400 w-8 text-center shrink-0 font-mono">
+                                {c.code}
+                              </span>
                               <span>{c.name}</span>
                             </div>
                             <span className="font-mono text-[9px] opacity-80">{c.currencyCode} ({c.symbol})</span>
