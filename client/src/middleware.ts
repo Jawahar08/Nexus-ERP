@@ -5,10 +5,10 @@ import { verifyToken } from './lib/auth';
 export async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
 
-  // Exclude public assets and auth login routes
+  // Exclude public assets and auth routes
   if (
     path.startsWith('/login') ||
-    path.startsWith('/api/auth/login') ||
+    path.startsWith('/api/auth/') ||
     path === '/' ||
     path.includes('.')
   ) {
