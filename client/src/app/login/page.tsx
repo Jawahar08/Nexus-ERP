@@ -141,83 +141,9 @@ export default function LoginPage() {
     loadShops();
   }, []);
 
-  // Open Passkey Security Prompt when a store is selected
-  const handleSelectShop = (shop: TenantProfile) => {
-    setPendingShop(shop);
-    setPasskeyInput("");
-    setPasskeyError("");
-    setShowPasskeyModal(true);
-  };
 
-  // Verify store passkey with backend
-  const handleVerifyPasskey = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!pendingShop || !passkeyInput.trim()) return;
 
-    setPasskeyError("");
-    setVerifyingPasskey(true);
 
-    try {
-      const res = await fetch("/api/auth/verify-passkey", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          domain: pendingShop.domain,
-          passkey: passkeyInput.trim(),
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || "Invalid Store Security Passkey.");
-      }
-
-      // Passkey verified! Proceed to User Login step
-      setSelectedShop(pendingShop);
-      setShopDomain(pendingShop.domain);
-      setShowPasskeyModal(false);
-      setError("");
-
-      if (pendingShop.domain === "apex.erp") {
-        setEmail("admin@apex.erp");
-      } else {
-        setEmail("admin@nexus.erp");
-      }
-      setStep(2);
-    } catch (err: any) {
-      setPasskeyError(err.message || "Access denied. Invalid store passkey.");
-    } finally {
-      setVerifyingPasskey(false);
-    }
-  };
-
-  const handleVerifyCustomShop = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!shopDomain.trim()) return;
-
-    setError("");
-    setVerifyingShop(true);
-
-    try {
-      const res = await fetch("/api/auth/verify-tenant", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ domain: shopDomain.trim() }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || "Shop / Store profile not found.");
-      }
-
-      // Open passkey prompt for custom verified shop
-      handleSelectShop(data.tenant);
-    } catch (err: any) {
-      setError(err.message || "Failed to locate shop domain.");
-    } finally {
-      setVerifyingShop(false);
-    }
-  };
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
