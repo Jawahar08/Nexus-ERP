@@ -3,13 +3,15 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Users, Plus, Briefcase, ShoppingCart, 
-  DollarSign, Mail, Phone, Landmark, Sparkles, Trash2, CheckCircle2
+  DollarSign, Mail, Phone, Landmark, Sparkles, Trash2, CheckCircle2, MessageSquare
 } from 'lucide-react';
 import { useCurrencyStore } from '@/store/currencyStore';
+import WhatsAppAutomationHub from '@/components/crm/WhatsAppAutomationHub';
 
 export default function CRMPage() {
   const { formatAmount, currentCountry } = useCurrencyStore();
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'pipeline' | 'whatsapp'>('pipeline');
   const [data, setData] = useState<any>({
     customers: [],
     deals: []
@@ -218,10 +220,19 @@ export default function CRMPage() {
       {/* Controls row */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold">CRM & Sales Pipelines</h2>
-          <p className="text-xs text-[var(--text-muted)] mt-0.5">Control customer contacts, track deals, and checkout corporate purchases.</p>
+          <h2 className="text-xl font-bold">CRM & Customer Retention Hub</h2>
+          <p className="text-xs text-[var(--text-muted)] mt-0.5">Manage customer contacts, sales pipelines, and automated WhatsApp/SMS messaging.</p>
         </div>
         <div className="flex gap-2.5">
+          <button 
+            onClick={() => setActiveTab(activeTab === 'whatsapp' ? 'pipeline' : 'whatsapp')}
+            className={`btn flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold border transition cursor-pointer ${
+              activeTab === 'whatsapp' ? 'bg-emerald-600 text-white border-emerald-500' : 'bg-slate-900 border-[var(--border)] text-emerald-400 hover:bg-[var(--border)]'
+            }`}
+          >
+            <MessageSquare size={14} />
+            {activeTab === 'whatsapp' ? 'Back to Sales Pipeline' : 'WhatsApp Automation Hub'}
+          </button>
           <button 
             onClick={() => setShowAddCustomer(true)}
             className="btn flex items-center gap-2 bg-slate-900 border border-[var(--border)] px-4 py-2 rounded-lg text-xs font-semibold hover:bg-[var(--border)] transition cursor-pointer"
@@ -238,6 +249,10 @@ export default function CRMPage() {
           </button>
         </div>
       </div>
+
+      {activeTab === 'whatsapp' ? (
+        <WhatsAppAutomationHub customers={data.customers} />
+      ) : (
 
       {/* CRM Main Grid layout */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
@@ -390,6 +405,7 @@ export default function CRMPage() {
         </div>
 
       </div>
+      )}
 
       {/* ==========================================
           MODALS & ADD DIALOGS
