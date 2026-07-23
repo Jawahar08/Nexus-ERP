@@ -3,9 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Package, Plus, ArrowLeftRight, ShoppingBag, 
-  RotateCcw, Warehouse, AlertCircle, ShoppingCart, Trash2
+  RotateCcw, Warehouse, AlertCircle, ShoppingCart, Trash2, ScanBarcode, Sparkles
 } from 'lucide-react';
 import { useCurrencyStore } from '@/store/currencyStore';
+import AutoPilotBanner from '@/components/inventory/AutoPilotBanner';
+import SmartScannerPOS from '@/components/inventory/SmartScannerPOS';
 
 export default function InventoryPage() {
   const { formatAmount, currentCountry } = useCurrencyStore();
@@ -34,7 +36,7 @@ export default function InventoryPage() {
     totalCost: 0
   });
   const [showMovementModal, setShowMovementModal] = useState(false);
-  const [activeView, setActiveView] = useState<'catalogue' | 'matrix'>('catalogue');
+  const [activeView, setActiveView] = useState<'catalogue' | 'matrix' | 'pos'>('catalogue');
 
   const fetchInventory = async () => {
     try {
@@ -130,9 +132,18 @@ export default function InventoryPage() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-bold">Inventory & Warehouses</h2>
-          <p className="text-xs text-[var(--text-muted)] mt-0.5">Control stock levels, register restock POs, and transfer assets.</p>
+          <p className="text-xs text-[var(--text-muted)] mt-0.5">Control stock levels, AI predictive auto-restocking, and fast POS scanning.</p>
         </div>
         <div className="flex gap-2.5">
+          <button 
+            onClick={() => setActiveView('pos')}
+            className={`btn flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold border transition cursor-pointer ${
+              activeView === 'pos' ? 'bg-indigo-600 text-white border-indigo-500' : 'bg-slate-900 border-[var(--border)] text-indigo-300 hover:bg-[var(--border)]'
+            }`}
+          >
+            <ScanBarcode size={14} />
+            Smart POS Scanner
+          </button>
           <button 
             onClick={() => setShowMovementModal(true)}
             className="btn flex items-center gap-2 bg-slate-900 border border-[var(--border)] px-4 py-2 rounded-lg text-xs font-semibold hover:bg-[var(--border)] transition cursor-pointer"
@@ -150,31 +161,62 @@ export default function InventoryPage() {
         </div>
       </div>
 
-      {/* Catalogue & Sidebar panels */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        
-        {/* Products Table list */}
-        <div className="glass p-6 rounded-xl border border-[var(--border)] xl:col-span-2 flex flex-col gap-4">
-          
-          {/* Tab selectors */}
-          <div className="flex gap-4 border-b border-[var(--border)] pb-2 mb-2">
-            <button 
+      {/* AI AUTO-PILOT PREDICTIVE RESTOCKING BANNER */}
+      <AutoPilotBanner onRestockExecuted={fetchInventory} />
+
+      {/* View Switcher View Content */}
+      {activeView === 'pos' ? (
+        <div className="glass p-6 rounded-xl border border-indigo-500/30">
+          <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
+            <div>
+              <h3 className="font-bold text-base text-white flex items-center gap-2">
+                <ScanBarcode size={20} className="text-indigo-400" />
+                Live Store POS Terminal
+              </h3>
+              <p className="text-xs text-zinc-400 mt-0.5">Instant Checkout Terminal using Webcam Barcode Scanner or Voice Search Commands.</p>
+            </div>
+            <button
               onClick={() => setActiveView('catalogue')}
-              className={`text-xs font-semibold pb-2 border-b-2 transition cursor-pointer ${
-                activeView === 'catalogue' ? 'border-[var(--primary)] text-white' : 'border-transparent text-[var(--text-muted)] hover:text-white'
-              }`}
+              className="text-xs text-zinc-400 hover:text-white px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 cursor-pointer"
             >
-              Catalog List
-            </button>
-            <button 
-              onClick={() => setActiveView('matrix')}
-              className={`text-xs font-semibold pb-2 border-b-2 transition cursor-pointer ${
-                activeView === 'matrix' ? 'border-[var(--primary)] text-white' : 'border-transparent text-[var(--text-muted)] hover:text-white'
-              }`}
-            >
-              Warehouse Stock Matrix
+              Back to Catalog
             </button>
           </div>
+          <SmartScannerPOS products={data.products} onCheckoutComplete={fetchInventory} />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          
+          {/* Products Table list */}
+          <div className="glass p-6 rounded-xl border border-[var(--border)] xl:col-span-2 flex flex-col gap-4">
+            
+            {/* Tab selectors */}
+            <div className="flex gap-4 border-b border-[var(--border)] pb-2 mb-2">
+              <button 
+                onClick={() => setActiveView('catalogue')}
+                className={`text-xs font-semibold pb-2 border-b-2 transition cursor-pointer ${
+                  activeView === 'catalogue' ? 'border-[var(--primary)] text-white' : 'border-transparent text-[var(--text-muted)] hover:text-white'
+                }`}
+              >
+                Catalog List
+              </button>
+              <button 
+                onClick={() => setActiveView('matrix')}
+                className={`text-xs font-semibold pb-2 border-b-2 transition cursor-pointer ${
+                  activeView === 'matrix' ? 'border-[var(--primary)] text-white' : 'border-transparent text-[var(--text-muted)] hover:text-white'
+                }`}
+              >
+                Warehouse Stock Matrix
+              </button>
+              <button 
+                onClick={() => setActiveView('pos')}
+                className={`text-xs font-semibold pb-2 border-b-2 transition cursor-pointer flex items-center gap-1.5 ${
+                  activeView === 'pos' ? 'border-indigo-500 text-indigo-300' : 'border-transparent text-[var(--text-muted)] hover:text-white'
+                }`}
+              >
+                <ScanBarcode size={13} /> POS Terminal
+              </button>
+            </div>
 
           {activeView === 'catalogue' ? (
             <div className="overflow-x-auto">
@@ -356,6 +398,7 @@ export default function InventoryPage() {
         </div>
 
       </div>
+      )}
 
       {/* ==========================================
           MODALS & FORM DRAWERS

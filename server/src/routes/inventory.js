@@ -35,6 +35,143 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET /api/inventory/ai-autopilot (Predictive Restocking Analytics)
+router.get('/ai-autopilot', async (req, res) => {
+  try {
+    const tenantId = req.tenantId;
+
+    const products = await prisma.product.findMany({
+      where: { tenantId },
+      include: { supplier: true, warehouse: true }
+    });
+
+    const movements = await prisma.stockMovement.findMany({
+      where: { tenantId, type: 'sale' },
+      orderBy: { date: 'desc' }
+    });
+
+    // Compute sales velocity & days of stock remaining for each product
+    const autopilotItems = products.map((p) => {
+      const productSales = movements.filter((m) => m.productId === p.id);
+      const totalSalesQty = productSales.reduce((acc, m) => acc + m.qty, 0);
+
+      // Estimate daily burn rate (units/day)
+      const dailyBurnRate = Number((totalSalesQty / 30 || (p.minStock > 0 ? 0.6 : 0.2)).toFixed(2));
+      const daysRemaining = Math.max(0, Math.floor(p.stock / (dailyBurnRate || 1)));
+
+      const isLow = p.stock <= p.minStock;
+      const isUrgent = daysRemaining <= 7 || isLow;
+
+      const recommendedQty = Math.max(p.minStock * 2 - p.stock, 20);
+      const totalCost = Number((recommendedQty * p.cost).toFixed(2));
+
+      // Prefilled supplier order messages
+      const supplierName = p.supplier ? p.supplier.name : 'Primary Supplier';
+      const supplierPhone = p.supplier?.phone || '+15550192834';
+      const supplierEmail = p.supplier?.email || 'orders@supplier.com';
+
+      const poText = `*PURCHASE ORDER REPLENISHMENT*\nItem: ${p.name} (SKU: ${p.sku})\nQty Requested: ${recommendedQty} units\nTarget Delivery WH: ${p.warehouse?.name || 'Main Warehouse'}\nEst. Cost: $${totalCost}`;
+
+      const whatsappUrl = `https://wa.me/${supplierPhone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Hi ${supplierName},\n\nWe would like to place an automated restock order:\n${poText}\n\nPlease confirm availability!`)}`;
+      const mailtoUrl = `mailto:${supplierEmail}?subject=${encodeURIComponent(`RESTOCK ORDER: ${p.name}`)}&body=${encodeURIComponent(`Dear ${supplierName},\n\nPlease dispatch the following restocking order:\n\n${poText}\n\nThank you.`)}`;
+
+      return {
+        id: p.id,
+        name: p.name,
+        sku: p.sku,
+        stock: p.stock,
+        minStock: p.minStock,
+        dailyBurnRate,
+        daysRemaining,
+        isLow,
+        isUrgent,
+        recommendedQty,
+        estimatedCost: totalCost,
+        supplier: p.supplier,
+        warehouse: p.warehouse,
+        whatsappUrl,
+        mailtoUrl
+      };
+    });
+
+    const urgentRestocks = autopilotItems.filter((i) => i.isUrgent);
+
+    return res.json({
+      summary: {
+        totalTracked: autopilotItems.length,
+        criticalAlertsCount: urgentRestocks.length,
+        estimatedTotalRestockBudget: urgentRestocks.reduce((acc, i) => acc + i.estimatedCost, 0)
+      },
+      items: autopilotItems
+    });
+  } catch (error) {
+    console.error('AI AutoPilot GET error:', error);
+    return res.status(500).json({ error: 'Failed to generate AI restocking predictions' });
+  }
+});
+
+// POST /api/inventory/auto-restock-po (Generate & Auto-Dispatch PO)
+router.post('/auto-restock-po', async (req, res) => {
+  try {
+    const tenantId = req.tenantId;
+    const userId = req.userId;
+    const { productId, qty, supplierId, totalCost } = req.body;
+
+    if (!productId || !qty) {
+      return res.status(400).json({ error: 'Product ID and Quantity are required' });
+    }
+
+    const product = await prisma.product.findFirst({
+      where: { id: productId, tenantId },
+      include: { supplier: true, warehouse: true }
+    });
+
+    if (!product) {
+      return res.status(404).json({ error: 'Product SKU not found' });
+    }
+
+    const poSupplierId = supplierId || product.supplierId;
+    const poQty = Number(qty);
+    const poCost = Number(totalCost || poQty * product.cost);
+
+    const po = await prisma.purchaseOrder.create({
+      data: {
+        supplierId: poSupplierId,
+        total: poCost,
+        status: 'approved',
+        productId: product.id,
+        qty: poQty,
+        tenantId
+      }
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        message: `AI Auto-Pilot dispatched PO-${po.id.substring(0, 5).toUpperCase()} for "${product.name}" (+${poQty} units).`,
+        module: 'Inventory',
+        tenantId,
+        userId
+      }
+    });
+
+    const supplierPhone = product.supplier?.phone || '+15550192834';
+    const supplierEmail = product.supplier?.email || 'orders@supplier.com';
+    const supplierName = product.supplier?.name || 'Supplier';
+
+    const poMessage = `*AUTOPILOT PO DISPATCH (PO-${po.id.substring(0, 5).toUpperCase()})*\nProduct: ${product.name}\nQuantity: ${poQty} units\nTotal Value: $${poCost}\nWarehouse: ${product.warehouse?.name || 'Main Warehouse'}`;
+
+    return res.json({
+      success: true,
+      po,
+      whatsappUrl: `https://wa.me/${supplierPhone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Hi ${supplierName},\n\nOfficial Restock Order Placed:\n${poMessage}`)}`,
+      mailtoUrl: `mailto:${supplierEmail}?subject=${encodeURIComponent(`OFFICIAL PO: ${product.name}`)}&body=${encodeURIComponent(poMessage)}`
+    });
+  } catch (error) {
+    console.error('Auto Restock PO error:', error);
+    return res.status(500).json({ error: 'Failed to dispatch auto-restock PO' });
+  }
+});
+
 // POST /api/inventory (Add product)
 router.post('/', async (req, res) => {
   try {
