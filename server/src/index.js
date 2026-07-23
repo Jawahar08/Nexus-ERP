@@ -12,6 +12,7 @@ import adminRouter from './routes/admin.js';
 import notificationsRouter from './routes/notifications.js';
 import auditRouter from './routes/audit.js';
 import aiRouter from './routes/ai.js';
+import shopRouter from './routes/shop.js';
 import { authMiddleware } from './middleware/auth.js';
 import { logger } from './lib/logger.js';
 import { startBackgroundScheduler } from './services/scheduler.js';
@@ -49,6 +50,7 @@ app.use('/api/admin', authMiddleware, adminRouter);
 app.use('/api/notifications', authMiddleware, notificationsRouter);
 app.use('/api/audit', authMiddleware, auditRouter);
 app.use('/api/ai', authMiddleware, aiRouter);
+app.use('/api/shop', authMiddleware, shopRouter);
 
 // Standard error fallback handler
 app.use((err, req, res, next) => {
