@@ -18,7 +18,12 @@ router.get('/', async (req, res) => {
       orderBy: { value: 'desc' }
     });
 
-    return res.json({ customers, deals });
+    const onlineOrders = await prisma.transaction.findMany({
+      where: { tenantId, category: 'E-Commerce Direct Order' },
+      orderBy: { date: 'desc' }
+    });
+
+    return res.json({ customers, deals, onlineOrders });
   } catch (error) {
     console.error('CRM GET error:', error);
     return res.status(500).json({ error: 'Failed to fetch CRM records' });

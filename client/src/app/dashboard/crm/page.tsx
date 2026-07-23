@@ -11,7 +11,7 @@ import WhatsAppAutomationHub from '@/components/crm/WhatsAppAutomationHub';
 export default function CRMPage() {
   const { formatAmount, currentCountry } = useCurrencyStore();
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'pipeline' | 'whatsapp'>('pipeline');
+  const [activeTab, setActiveTab] = useState<'pipeline' | 'whatsapp' | 'online-orders'>('pipeline');
   const [data, setData] = useState<any>({
     customers: [],
     deals: []
@@ -225,6 +225,15 @@ export default function CRMPage() {
         </div>
         <div className="flex gap-2.5">
           <button 
+            onClick={() => setActiveTab(activeTab === 'online-orders' ? 'pipeline' : 'online-orders')}
+            className={`btn flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold border transition cursor-pointer ${
+              activeTab === 'online-orders' ? 'bg-indigo-600 text-white border-indigo-500' : 'bg-slate-900 border-[var(--border)] text-indigo-400 hover:bg-[var(--border)]'
+            }`}
+          >
+            <ShoppingCart size={14} />
+            {activeTab === 'online-orders' ? 'Back to Sales Pipeline' : 'Storefront Online Orders'}
+          </button>
+          <button 
             onClick={() => setActiveTab(activeTab === 'whatsapp' ? 'pipeline' : 'whatsapp')}
             className={`btn flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold border transition cursor-pointer ${
               activeTab === 'whatsapp' ? 'bg-emerald-600 text-white border-emerald-500' : 'bg-slate-900 border-[var(--border)] text-emerald-400 hover:bg-[var(--border)]'
@@ -250,7 +259,63 @@ export default function CRMPage() {
         </div>
       </div>
 
-      {activeTab === 'whatsapp' ? (
+      {activeTab === 'online-orders' ? (
+        <div className="glass p-6 rounded-2xl border border-indigo-500/30 bg-slate-900/80 space-y-4">
+          <div className="flex items-center justify-between border-b border-white/10 pb-4">
+            <div>
+              <h3 className="font-extrabold text-base text-white flex items-center gap-2">
+                <ShoppingCart size={18} className="text-indigo-400" />
+                Live Storefront Online Orders
+              </h3>
+              <p className="text-xs text-zinc-400 mt-0.5">
+                Paid online e-commerce orders placed directly by customers on your public storefront catalog.
+              </p>
+            </div>
+            <span className="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-[10px] font-bold px-3 py-1 rounded-full font-mono">
+              {data.onlineOrders?.length || 0} Total Orders
+            </span>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr className="border-b border-white/10 text-zinc-400 h-10 uppercase tracking-wider font-bold">
+                  <th className="pb-2">Order Reference</th>
+                  <th className="pb-2">Date & Time</th>
+                  <th className="pb-2">Customer & Details</th>
+                  <th className="pb-2 text-right">Payment Status</th>
+                  <th className="pb-2 text-right">Paid Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {!data.onlineOrders || data.onlineOrders.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="py-8 text-center text-zinc-500 text-xs font-mono">
+                      No online storefront orders recorded yet. Place an order at /shop/nexus.erp to test!
+                    </td>
+                  </tr>
+                ) : (
+                  data.onlineOrders.map((ord: any) => (
+                    <tr key={ord.id} className="border-b border-white/5 hover:bg-white/[0.02] h-14 transition-colors">
+                      <td className="font-bold font-mono text-indigo-400">{ord.reference}</td>
+                      <td className="text-zinc-400 font-mono">{new Date(ord.date).toLocaleString()}</td>
+                      <td className="text-white font-medium">{ord.description}</td>
+                      <td className="text-right">
+                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold font-mono bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 uppercase">
+                          PAID
+                        </span>
+                      </td>
+                      <td className="text-right font-mono font-bold text-emerald-400 text-sm">
+                        +{formatAmount(ord.amount, { decimals: 2 })}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ) : activeTab === 'whatsapp' ? (
         <WhatsAppAutomationHub customers={data.customers} />
       ) : (
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
