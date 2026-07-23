@@ -253,9 +253,7 @@ export default function CRMPage() {
       {activeTab === 'whatsapp' ? (
         <WhatsAppAutomationHub customers={data.customers} />
       ) : (
-
-      {/* CRM Main Grid layout */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         
         {/* Kanban Board pipeline */}
         <div className="glass p-6 rounded-xl border border-[var(--border)] xl:col-span-2 flex flex-col gap-4">
