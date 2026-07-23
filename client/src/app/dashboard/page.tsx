@@ -16,11 +16,14 @@ import {
   ArrowUpRight,
   HelpCircle,
   MessageSquare,
+  Store
 } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { AnimatedButton } from "@/components/ui/AnimatedButton";
 import { cn } from "@/lib/utils";
 import { useCurrencyStore, replaceUSDInText } from "@/store/currencyStore";
+import MorningBriefingBanner from "@/components/dashboard/MorningBriefingBanner";
+import BranchSwitcherModal from "@/components/dashboard/BranchSwitcherModal";
 
 // Helper for Animated Counters
 function Counter({ value, prefix = "", suffix = "" }: { value: number; prefix?: string; suffix?: string }) {
@@ -66,6 +69,22 @@ export default function DashboardHero() {
   const [activeTab, setActiveTab] = useState("overview");
   const [chatOpen, setChatOpen] = useState(false);
   const [chatInput, setChatInput] = useState("");
+  const [showBranchModal, setShowBranchModal] = useState(false);
+  const [branchesList, setBranchesList] = useState<any[]>([]);
+  const [activeBranchId, setActiveBranchId] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function loadBriefingBranches() {
+      try {
+        const res = await fetch('/api/ai/morning-briefing');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.branches) setBranchesList(data.branches);
+        }
+      } catch (err) {}
+    }
+    loadBriefingBranches();
+  }, []);
   const [chatMessages, setChatMessages] = useState([
     { role: "assistant", content: "Good day Jawahar! I can assist with low stock alerts, inventory risk warnings, or generating financial summaries. What can I calculate for you today?" }
   ]);
@@ -183,6 +202,9 @@ export default function DashboardHero() {
 
   return (
     <div className="space-y-8 relative pb-20">
+      {/* EXECUTIVE 30-SECOND MORNING BRIEFING HERO */}
+      <MorningBriefingBanner onOpenBranchSwitcher={() => setShowBranchModal(true)} />
+
       {/* Dynamic welcome hero */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <motion.div
@@ -496,6 +518,15 @@ export default function DashboardHero() {
           <MessageSquare size={20} />
         </button>
       </div>
+
+      {/* MULTI-BRANCH STORE SWITCHER MODAL */}
+      <BranchSwitcherModal
+        isOpen={showBranchModal}
+        onClose={() => setShowBranchModal(false)}
+        branches={branchesList}
+        activeBranchId={activeBranchId || undefined}
+        onSelectBranch={(id) => setActiveBranchId(id)}
+      />
     </div>
   );
 }
