@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { Store, ShoppingCart, CheckCircle2, Search, MapPin, Truck, Phone, User, Send, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Store, ShoppingCart, CheckCircle2, Search, MapPin, Truck, Phone, User, Send, ArrowRight, ShieldCheck, CreditCard, QrCode, Wallet, Check, ExternalLink } from 'lucide-react';
 import { useCurrencyStore } from '@/store/currencyStore';
 
 interface CartItem {
@@ -23,31 +23,42 @@ export default function PublicStorefrontPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
-  // Checkout State
+  // Checkout & Payment State
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showCartDrawer, setShowCartDrawer] = useState(false);
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
+  const [customerEmail, setCustomerEmail] = useState('');
   const [deliveryType, setDeliveryType] = useState<'pickup' | 'delivery'>('pickup');
   const [deliveryAddress, setDeliveryAddress] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'upi' | 'wallet' | 'cod'>('card');
+  
+  // Card inputs
+  const [cardNumber, setCardNumber] = useState('4532 •••• •••• 8892');
+  const [cardExpiry, setCardExpiry] = useState('12/28');
+  const [cardCvv, setCardCvv] = useState('921');
+  const [upiId, setUpiId] = useState('buyer@upi');
+
   const [placingOrder, setPlacingOrder] = useState(false);
+  const [confirmedOrder, setConfirmedOrder] = useState<any>(null);
+
+  const fetchPublicCatalog = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(`/api/shop/public/${storeDomain}`);
+      if (res.ok) {
+        const data = await res.json();
+        setStoreData(data);
+      }
+    } catch (err) {
+      console.error('Failed to load public store catalog:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function loadPublicCatalog() {
-      try {
-        setLoading(true);
-        const res = await fetch(`/api/shop/public/${storeDomain}`);
-        if (res.ok) {
-          const data = await res.json();
-          setStoreData(data);
-        }
-      } catch (err) {
-        console.error('Failed to load public store catalog:', err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadPublicCatalog();
+    fetchPublicCatalog();
   }, [storeDomain]);
 
   const addToCart = (product: any) => {
@@ -82,38 +93,49 @@ export default function PublicStorefrontPage() {
 
   const cartTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
-  const handlePlaceOrder = async (e: React.FormEvent) => {
+  // Submit Direct Online Payment & ERP Shopkeeper Order Dispatch
+  const handleDirectOnlinePayment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (cart.length === 0 || !customerPhone.trim()) return;
 
     setPlacingOrder(true);
+    const payMethodName =
+      paymentMethod === 'card'
+        ? 'Credit / Debit Card'
+        : paymentMethod === 'upi'
+        ? `UPI (${upiId})`
+        : paymentMethod === 'wallet'
+        ? 'Digital Wallet'
+        : 'Cash on Pickup/Delivery';
+
     try {
-      const res = await fetch('/api/shop/order', {
+      const res = await fetch('/api/shop/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           domain: storeDomain,
-          customerName,
+          customerName: customerName || 'E-Commerce Buyer',
+          customerEmail,
           customerPhone,
           items: cart,
           deliveryType,
           address: deliveryAddress,
+          paymentMethod: payMethodName,
         }),
       });
 
       if (res.ok) {
-        const result = await res.json();
-        if (result.whatsappUrl) {
-          window.open(result.whatsappUrl, '_blank');
-        }
-        alert(`Order Placed! Reference: ${result.orderId}. Order details submitted to WhatsApp.`);
+        const orderResult = await res.json();
+        setConfirmedOrder(orderResult);
         setCart([]);
         setShowCartDrawer(false);
+        fetchPublicCatalog();
       } else {
-        alert('Failed to place order.');
+        const errData = await res.json();
+        alert(errData.error || 'Failed to complete order payment.');
       }
     } catch (err) {
-      alert('Error connecting to store order system.');
+      alert('Error connecting to store payment gateway.');
     } finally {
       setPlacingOrder(false);
     }
@@ -143,7 +165,6 @@ export default function PublicStorefrontPage() {
   }
 
   const { tenant, products } = storeData;
-
   const categories = ['all', ...Array.from(new Set(products.map((p: any) => p.category))) as string[]];
 
   const filteredProducts = products.filter((p: any) => {
@@ -167,7 +188,7 @@ export default function PublicStorefrontPage() {
             <div className="flex items-center gap-2">
               <h1 className="font-extrabold text-base text-white">{tenant.name}</h1>
               <span className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                <ShieldCheck size={10} /> Verified Store
+                <ShieldCheck size={10} /> Verified Store Gateway
               </span>
             </div>
             <span className="text-[11px] text-zinc-400 font-mono">domain: {tenant.domain}</span>
@@ -194,8 +215,8 @@ export default function PublicStorefrontPage() {
         {/* E-Commerce Hero Search Bar */}
         <div className="glass p-6 rounded-2xl border border-white/10 bg-gradient-to-r from-indigo-950/30 via-slate-900/60 to-purple-950/20 flex flex-col md:flex-row items-center justify-between gap-4 shadow-xl">
           <div>
-            <h2 className="text-2xl font-extrabold tracking-tight">Official Digital Catalog</h2>
-            <p className="text-xs text-zinc-400 mt-1">Browse live store inventory. Order direct for Store Pickup or Local Express Delivery.</p>
+            <h2 className="text-2xl font-extrabold tracking-tight">Official Digital Catalog & Storefront</h2>
+            <p className="text-xs text-zinc-400 mt-1">Direct online checkout. Paid orders dispatch instantly to the shopkeeper's ERP terminal.</p>
           </div>
 
           <div className="relative w-full md:w-80">
@@ -268,7 +289,7 @@ export default function PublicStorefrontPage() {
                     disabled={isOut}
                     className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white font-semibold text-xs rounded-xl shadow-md transition flex items-center gap-1.5 cursor-pointer"
                   >
-                    + Add to Order
+                    + Add to Cart
                   </button>
                 </div>
               </div>
@@ -279,10 +300,10 @@ export default function PublicStorefrontPage() {
 
       {/* FOOTER */}
       <footer className="border-t border-white/10 py-6 px-4 text-center text-xs text-zinc-500 font-mono">
-        Powered by <strong className="text-indigo-400">Nexus ERP Digital Storefront</strong> &bull; {tenant.name}
+        Powered by <strong className="text-indigo-400">Nexus ERP Direct Payment Gateway</strong> &bull; {tenant.name}
       </footer>
 
-      {/* SHOPPING CART & CHECKOUT DRAWER */}
+      {/* SHOPPING CART & PAYMENT GATEWAY DRAWER */}
       {showCartDrawer && (
         <div className="fixed inset-0 z-50 flex justify-end bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
           <div className="w-full max-w-md bg-slate-900 border-l border-white/10 p-6 flex flex-col justify-between gap-6 shadow-2xl overflow-y-auto">
@@ -302,7 +323,7 @@ export default function PublicStorefrontPage() {
               </div>
 
               {/* Items List */}
-              <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1">
+              <div className="space-y-2 max-h-[180px] overflow-y-auto pr-1">
                 {cart.length === 0 ? (
                   <p className="text-xs text-zinc-500 text-center py-8">Your cart is empty.</p>
                 ) : (
@@ -338,9 +359,11 @@ export default function PublicStorefrontPage() {
                 )}
               </div>
 
-              {/* Delivery Options */}
+              {/* Fulfillment & Payment Gateway Options */}
               {cart.length > 0 && (
-                <form onSubmit={handlePlaceOrder} className="space-y-3.5 pt-2 border-t border-white/10">
+                <form onSubmit={handleDirectOnlinePayment} className="space-y-3.5 pt-2 border-t border-white/10">
+                  
+                  {/* Fulfillment Choice */}
                   <div className="space-y-1">
                     <label className="text-[11px] font-semibold text-zinc-400 uppercase">Fulfillment Type</label>
                     <div className="grid grid-cols-2 gap-2">
@@ -383,34 +406,125 @@ export default function PublicStorefrontPage() {
                     </div>
                   )}
 
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-zinc-400 uppercase">Customer Name</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Your Name"
-                      value={customerName}
-                      onChange={(e) => setCustomerName(e.target.value)}
-                      className="w-full h-9 bg-slate-900 border border-white/10 rounded-lg px-3 text-xs text-white placeholder-zinc-500 focus:outline-none"
-                    />
+                  {/* Customer Information */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-semibold text-zinc-400 uppercase">Full Name</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Your Name"
+                        value={customerName}
+                        onChange={(e) => setCustomerName(e.target.value)}
+                        className="w-full h-9 bg-slate-900 border border-white/10 rounded-lg px-3 text-xs text-white placeholder-zinc-500 focus:outline-none"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-semibold text-zinc-400 uppercase">Phone Number</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="+1 555 019 2834"
+                        value={customerPhone}
+                        onChange={(e) => setCustomerPhone(e.target.value)}
+                        className="w-full h-9 bg-slate-900 border border-white/10 rounded-lg px-3 text-xs text-white font-mono placeholder-zinc-500 focus:outline-none"
+                      />
+                    </div>
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-zinc-400 uppercase">WhatsApp Phone Number</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="+1 555 019 2834"
-                      value={customerPhone}
-                      onChange={(e) => setCustomerPhone(e.target.value)}
-                      className="w-full h-9 bg-slate-900 border border-white/10 rounded-lg px-3 text-xs text-white font-mono placeholder-zinc-500 focus:outline-none"
-                    />
+                  {/* Payment Gateway Options */}
+                  <div className="space-y-1.5 pt-1">
+                    <label className="text-[11px] font-semibold text-zinc-400 uppercase">Payment Method</label>
+                    <div className="grid grid-cols-4 gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => setPaymentMethod('card')}
+                        className={`p-2 rounded-lg text-[10px] font-bold border flex flex-col items-center gap-1 transition ${
+                          paymentMethod === 'card'
+                            ? 'bg-indigo-600 text-white border-indigo-500'
+                            : 'bg-white/5 text-zinc-400 border-white/10'
+                        }`}
+                      >
+                        <CreditCard size={14} /> Card
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPaymentMethod('upi')}
+                        className={`p-2 rounded-lg text-[10px] font-bold border flex flex-col items-center gap-1 transition ${
+                          paymentMethod === 'upi'
+                            ? 'bg-indigo-600 text-white border-indigo-500'
+                            : 'bg-white/5 text-zinc-400 border-white/10'
+                        }`}
+                      >
+                        <QrCode size={14} /> UPI QR
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPaymentMethod('wallet')}
+                        className={`p-2 rounded-lg text-[10px] font-bold border flex flex-col items-center gap-1 transition ${
+                          paymentMethod === 'wallet'
+                            ? 'bg-indigo-600 text-white border-indigo-500'
+                            : 'bg-white/5 text-zinc-400 border-white/10'
+                        }`}
+                      >
+                        <Wallet size={14} /> Wallet
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPaymentMethod('cod')}
+                        className={`p-2 rounded-lg text-[10px] font-bold border flex flex-col items-center gap-1 transition ${
+                          paymentMethod === 'cod'
+                            ? 'bg-indigo-600 text-white border-indigo-500'
+                            : 'bg-white/5 text-zinc-400 border-white/10'
+                        }`}
+                      >
+                        <Store size={14} /> Pay at Store
+                      </button>
+                    </div>
+
+                    {paymentMethod === 'card' && (
+                      <div className="p-3 rounded-xl bg-white/[0.02] border border-white/10 space-y-2 mt-2">
+                        <input
+                          type="text"
+                          value={cardNumber}
+                          onChange={(e) => setCardNumber(e.target.value)}
+                          className="w-full h-8 bg-slate-900 border border-white/10 rounded px-2.5 text-xs font-mono text-white"
+                        />
+                        <div className="grid grid-cols-2 gap-2">
+                          <input
+                            type="text"
+                            value={cardExpiry}
+                            onChange={(e) => setCardExpiry(e.target.value)}
+                            className="h-8 bg-slate-900 border border-white/10 rounded px-2.5 text-xs font-mono text-white"
+                          />
+                          <input
+                            type="text"
+                            value={cardCvv}
+                            onChange={(e) => setCardCvv(e.target.value)}
+                            className="h-8 bg-slate-900 border border-white/10 rounded px-2.5 text-xs font-mono text-white"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {paymentMethod === 'upi' && (
+                      <div className="p-3 rounded-xl bg-white/[0.02] border border-white/10 space-y-2 mt-2 text-center">
+                        <span className="text-[10px] text-zinc-400 block font-mono">Scan or enter UPI ID</span>
+                        <input
+                          type="text"
+                          value={upiId}
+                          onChange={(e) => setUpiId(e.target.value)}
+                          className="w-full h-8 bg-slate-900 border border-white/10 rounded px-2.5 text-xs font-mono text-white text-center"
+                        />
+                      </div>
+                    )}
                   </div>
 
+                  {/* Total & Instant Payment Trigger */}
                   <div className="border-t border-white/10 pt-3 space-y-2">
                     <div className="flex justify-between items-center text-sm font-bold">
-                      <span className="text-zinc-400">Total Payable:</span>
-                      <span className="font-mono text-indigo-400 text-base">{formatAmount(cartTotal, { decimals: 2 })}</span>
+                      <span className="text-zinc-400">Total Amount:</span>
+                      <span className="font-mono text-emerald-400 text-base">{formatAmount(cartTotal, { decimals: 2 })}</span>
                     </div>
 
                     <button
@@ -418,14 +532,74 @@ export default function PublicStorefrontPage() {
                       disabled={placingOrder}
                       className="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
                     >
-                      <Send size={15} />
-                      {placingOrder ? 'Submitting Order...' : 'Place Order via WhatsApp'}
+                      <CheckCircle2 size={16} />
+                      {placingOrder ? 'Processing Payment...' : `Pay ${formatAmount(cartTotal)} & Complete Order`}
                     </button>
                   </div>
+
                 </form>
               )}
             </div>
 
+          </div>
+        </div>
+      )}
+
+      {/* CONFIRMED PAID ORDER MODAL OVERLAY */}
+      {confirmedOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="glass max-w-md w-full p-6 rounded-2xl border border-emerald-500/40 bg-slate-900/95 space-y-5 text-center shadow-2xl relative">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/20">
+              <CheckCircle2 size={28} />
+            </div>
+
+            <div>
+              <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                Payment Confirmed & Order Dispatched
+              </span>
+              <h3 className="text-xl font-extrabold text-white mt-2">Thank you for your order!</h3>
+              <p className="text-xs text-zinc-400 mt-1">
+                Your order has been paid and received live by <strong className="text-white">{tenant.name}</strong> ERP terminal.
+              </p>
+            </div>
+
+            <div className="bg-white/[0.02] border border-white/10 p-4 rounded-xl space-y-2 text-xs font-mono text-left">
+              <div className="flex justify-between border-b border-white/10 pb-1.5">
+                <span className="text-zinc-500">Order Reference:</span>
+                <strong className="text-indigo-300">{confirmedOrder.orderId}</strong>
+              </div>
+              <div className="flex justify-between border-b border-white/10 pb-1.5">
+                <span className="text-zinc-500">Payment Status:</span>
+                <strong className="text-emerald-400">PAID ({confirmedOrder.paymentMethod})</strong>
+              </div>
+              <div className="flex justify-between border-b border-white/10 pb-1.5">
+                <span className="text-zinc-500">Total Paid:</span>
+                <strong className="text-white">{formatAmount(confirmedOrder.totalAmount, { decimals: 2 })}</strong>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-500">Fulfillment:</span>
+                <strong className="text-white capitalize">{confirmedOrder.deliveryType}</strong>
+              </div>
+            </div>
+
+            <div className="flex gap-2 pt-2">
+              {confirmedOrder.whatsappUrl && (
+                <button
+                  onClick={() => window.open(confirmedOrder.whatsappUrl, '_blank')}
+                  className="w-1/2 py-2.5 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5"
+                >
+                  <ExternalLink size={14} /> Open WA Receipt
+                </button>
+              )}
+              <button
+                onClick={() => setConfirmedOrder(null)}
+                className={`py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-md transition ${
+                  confirmedOrder.whatsappUrl ? 'w-1/2' : 'w-full'
+                }`}
+              >
+                Back to Storefront
+              </button>
+            </div>
           </div>
         </div>
       )}

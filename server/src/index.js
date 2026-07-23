@@ -50,7 +50,7 @@ app.use('/api/admin', authMiddleware, adminRouter);
 app.use('/api/notifications', authMiddleware, notificationsRouter);
 app.use('/api/audit', authMiddleware, auditRouter);
 app.use('/api/ai', authMiddleware, aiRouter);
-app.use('/api/shop', authMiddleware, shopRouter);
+app.use('/api/shop', shopRouter);
 
 // Standard error fallback handler
 app.use((err, req, res, next) => {

@@ -5,13 +5,19 @@ const JWT_SECRET = process.env.JWT_SECRET || 'NEXUS_SUPER_SECRET_KEY_2026_ENTERP
 export function authMiddleware(req, res, next) {
   // Allow login / tenants / verify-tenant / verify-passkey / public shop without tokens
   const publicPaths = ['/login', '/tenants', '/verify-tenant', '/verify-passkey'];
-  if (publicPaths.includes(req.path) || (req.originalUrl && (
-    req.originalUrl.startsWith('/api/auth/login') ||
-    req.originalUrl.startsWith('/api/auth/tenants') ||
-    req.originalUrl.startsWith('/api/auth/verify-tenant') ||
-    req.originalUrl.startsWith('/api/auth/verify-passkey') ||
-    req.originalUrl.startsWith('/api/shop')
-  ))) {
+  if (
+    publicPaths.includes(req.path) ||
+    req.path.startsWith('/public') ||
+    req.path.startsWith('/checkout') ||
+    req.path.startsWith('/order') ||
+    (req.originalUrl && (
+      req.originalUrl.startsWith('/api/auth/login') ||
+      req.originalUrl.startsWith('/api/auth/tenants') ||
+      req.originalUrl.startsWith('/api/auth/verify-tenant') ||
+      req.originalUrl.startsWith('/api/auth/verify-passkey') ||
+      req.originalUrl.includes('/api/shop')
+    ))
+  ) {
     return next();
   }
 
