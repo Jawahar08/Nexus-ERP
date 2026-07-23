@@ -3,13 +3,18 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Users, Plus, Calendar, ShieldCheck, Mail, DollarSign, 
-  Printer, UserCheck, X, FileText, CheckCircle2, XCircle
+  Printer, UserCheck, X, FileText, CheckCircle2, XCircle, Trophy, QrCode
 } from 'lucide-react';
 import { useCurrencyStore } from '@/store/currencyStore';
+import StaffCommissionsHub from '@/components/hr/StaffCommissionsHub';
+import QRAttendanceTerminal from '@/components/hr/QRAttendanceTerminal';
+
+type HRTab = 'directory' | 'commissions' | 'qr-attendance';
 
 export default function HRPage() {
   const { formatAmount, currentCountry } = useCurrencyStore();
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<HRTab>('directory');
   const [data, setData] = useState<any>({
     employees: [],
     leaves: []
@@ -146,10 +151,28 @@ export default function HRPage() {
       {/* Controls Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 no-print">
         <div>
-          <h2 className="text-xl font-bold">HR & Personnel Directory</h2>
-          <p className="text-xs text-[var(--text-muted)] mt-0.5">Manage personnel, track leave approvals, and print salary payslips.</p>
+          <h2 className="text-xl font-bold">HR, Commissions & Attendance Command</h2>
+          <p className="text-xs text-[var(--text-muted)] mt-0.5">Personnel directory, sales commission bonuses, and Mobile QR attendance clock-in.</p>
         </div>
         <div className="flex gap-2.5">
+          <button 
+            onClick={() => setActiveTab('commissions')}
+            className={`btn flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold border transition cursor-pointer ${
+              activeTab === 'commissions' ? 'bg-indigo-600 text-white border-indigo-500' : 'bg-slate-900 border-[var(--border)] text-indigo-300 hover:bg-[var(--border)]'
+            }`}
+          >
+            <Trophy size={14} />
+            Commissions
+          </button>
+          <button 
+            onClick={() => setActiveTab('qr-attendance')}
+            className={`btn flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold border transition cursor-pointer ${
+              activeTab === 'qr-attendance' ? 'bg-purple-600 text-white border-purple-500' : 'bg-slate-900 border-[var(--border)] text-purple-300 hover:bg-[var(--border)]'
+            }`}
+          >
+            <QrCode size={14} />
+            Mobile QR Terminal
+          </button>
           <button 
             onClick={() => setShowLeaveForm(true)}
             className="btn flex items-center gap-2 bg-slate-900 border border-[var(--border)] px-4 py-2 rounded-lg text-xs font-semibold hover:bg-[var(--border)] transition cursor-pointer"
@@ -167,8 +190,12 @@ export default function HRPage() {
         </div>
       </div>
 
-      {/* Main grids */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 no-print">
+      {activeTab === 'commissions' ? (
+        <StaffCommissionsHub />
+      ) : activeTab === 'qr-attendance' ? (
+        <QRAttendanceTerminal employees={data.employees} onClockInSuccess={fetchHR} />
+      ) : (
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 no-print">
         
         {/* Personnel table list */}
         <div className="glass p-6 rounded-xl border border-[var(--border)] xl:col-span-2 flex flex-col gap-4">
@@ -295,6 +322,7 @@ export default function HRPage() {
         </div>
 
       </div>
+      )}
 
       {/* ==========================================
           PRINTABLE SALARY PAYSLIP COMPONENT
