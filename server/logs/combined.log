@@ -481,3 +481,11 @@
 {"level":"info","message":"GET /api/ai/morning-briefing","timestamp":"2026-07-24 12:27:13"}
 {"level":"info","message":"GET /api/ai/morning-briefing","timestamp":"2026-07-24 12:27:13"}
 {"level":"info","message":"GET /api/ai/morning-briefing","timestamp":"2026-07-24 12:27:13"}
+{"level":"info","message":"Initializing Node-cron Background Task Scheduler...","timestamp":"2026-07-24 12:32:39"}
+{"level":"info","message":"[Scheduler] Commencing daily low-stock inventory audit scan...","timestamp":"2026-07-24 12:32:39"}
+{"level":"info","message":"[Scheduler] Inventory scan complete. Dispatched 0 low-stock alerts.","timestamp":"2026-07-24 12:32:39"}
+{"level":"info","message":"GET /api/shop/public/nexus.erp","timestamp":"2026-07-24 12:32:53"}
+{"level":"info","message":"POST /api/shop/create-razorpay-order","timestamp":"2026-07-24 12:33:27"}
+{"level":"info","message":"GET /api/shop/public/nexus.erp","timestamp":"2026-07-24 12:33:50"}
+{"level":"info","message":"POST /api/shop/checkout","timestamp":"2026-07-24 12:34:44"}
+{"level":"info","message":"GET /api/shop/public/nexus.erp","timestamp":"2026-07-24 12:34:45"}

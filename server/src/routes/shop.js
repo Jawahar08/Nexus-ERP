@@ -146,13 +146,16 @@ router.post('/checkout', async (req, res) => {
         }
       }
 
-      // 3. Record Financial Income Transaction
+      const isUnpaid = payMethod.toLowerCase().includes('cash') || payMethod.toLowerCase().includes('pickup') || payMethod.toLowerCase().includes('store') || payMethod.toLowerCase().includes('cod');
+      const paymentStatus = isUnpaid ? 'NOT YET PAID (PAY ON PICKUP/DELIVERY)' : 'PAID';
+
+      // 3. Record Financial Transaction Ledger
       await tx.transaction.create({
         data: {
           type: 'income',
-          category: 'E-Commerce Direct Order',
+          category: isUnpaid ? 'E-Commerce Pending Payment' : 'E-Commerce Direct Order',
           amount: totalAmount,
-          description: `Paid Online Order ${orderId} (${custName}) [${deliveryType.toUpperCase()}]`,
+          description: `${isUnpaid ? 'Unpaid' : 'Paid'} Online Order ${orderId} (${custName}) [${deliveryType.toUpperCase()}] - ${paymentStatus}`,
           reference: orderId,
           tenantId: tenant.id
         }
@@ -167,25 +170,31 @@ router.post('/checkout', async (req, res) => {
       for (const u of shopUsers) {
         await tx.notification.create({
           data: {
-            message: `🛒 NEW PAID ORDER: ${orderId} ($${totalAmount}) received from ${custName} via E-Commerce Storefront!`,
-            type: 'success',
+            message: isUnpaid 
+              ? `⏳ NEW UNPAID ORDER: ${orderId} ($${totalAmount}) received from ${custName} - NOT YET PAID (Pay on ${deliveryType === 'delivery' ? 'Delivery' : 'Pickup'})`
+              : `🛒 NEW PAID ORDER: ${orderId} ($${totalAmount}) received from ${custName} via E-Commerce Storefront!`,
+            type: isUnpaid ? 'warning' : 'success',
             userId: u.id
           }
         });
       }
 
-      return { customer, totalAmount };
+      return { customer, totalAmount, paymentStatus, isUnpaid };
     });
 
+    const isUnpaid = payMethod.toLowerCase().includes('cash') || payMethod.toLowerCase().includes('pickup') || payMethod.toLowerCase().includes('store') || payMethod.toLowerCase().includes('cod');
+    const paymentStatusText = isUnpaid ? 'NOT YET PAID (Pay on Pickup/Delivery)' : 'PAID';
+
     const itemListText = items.map(i => `• ${i.name} (x${i.qty}) - $${(i.price * i.qty).toFixed(2)}`).join('\n');
-    const whatsappMessage = `🧾 *PAID E-COMMERCE RECEIPT (${orderId})*\nStore: ${tenant.name}\nCustomer: ${custName}\nPhone: ${customerPhone}\nPayment Method: ${payMethod} [PAID]\nType: ${deliveryType === 'delivery' ? '📦 Local Delivery' : '🏪 Store Pickup'}\n${deliveryType === 'delivery' ? `Address: ${address}\n` : ''}\n*ITEMS:*\n${itemListText}\n\n*TOTAL PAID: $${totalAmount.toFixed(2)}*\n\nThank you for your order!`;
+    const whatsappMessage = `🧾 *E-COMMERCE ORDER RECEIPT (${orderId})*\nStore: ${tenant.name}\nCustomer: ${custName}\nPhone: ${customerPhone}\nPayment Status: ⏳ ${paymentStatusText}\nPayment Method: ${payMethod}\nType: ${deliveryType === 'delivery' ? '📦 Local Delivery' : '🏪 Store Pickup'}\n${deliveryType === 'delivery' ? `Address: ${address}\n` : ''}\n*ITEMS:*\n${itemListText}\n\n*TOTAL AMOUNT: $${totalAmount.toFixed(2)}*\n\nThank you for your order!`;
 
     const whatsappUrl = `https://wa.me/${customerPhone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(whatsappMessage)}`;
 
     return res.json({
       success: true,
       orderId,
-      status: 'PAID',
+      status: paymentStatusText,
+      isUnpaid,
       timestamp: new Date().toLocaleTimeString(),
       totalAmount,
       customerName: custName,

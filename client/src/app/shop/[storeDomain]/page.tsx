@@ -233,7 +233,7 @@ export default function PublicStorefrontPage() {
   // Submit Direct Payment Flow
   const handleDirectOnlinePayment = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (paymentMethod === 'razorpay') {
+    if (paymentMethod !== 'cod') {
       await handleRazorpayPayment();
       return;
     }
@@ -241,14 +241,7 @@ export default function PublicStorefrontPage() {
     if (cart.length === 0 || !customerPhone.trim()) return;
 
     setPlacingOrder(true);
-    const payMethodName =
-      paymentMethod === 'card'
-        ? 'Credit / Debit Card'
-        : paymentMethod === 'upi'
-        ? `UPI (${upiId})`
-        : paymentMethod === 'wallet'
-        ? 'Digital Wallet'
-        : 'Cash on Pickup/Delivery';
+    const payMethodName = 'Cash on Pickup / Store Delivery';
 
     try {
       const res = await fetch('/api/shop/checkout', {
@@ -948,64 +941,79 @@ export default function PublicStorefrontPage() {
         </div>
       )}
 
-      {/* CONFIRMED PAID ORDER MODAL OVERLAY */}
-      {confirmedOrder && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="glass max-w-md w-full p-6 rounded-2xl border border-emerald-500/40 bg-slate-900/95 space-y-5 text-center shadow-2xl relative">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/20">
-              <CheckCircle2 size={28} />
-            </div>
+      {/* CONFIRMED ORDER RECEIPT MODAL OVERLAY */}
+      {confirmedOrder && (() => {
+        const isUnpaidOrder = confirmedOrder.isUnpaid || confirmedOrder.status?.includes('NOT YET PAID');
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+            <div className={`glass max-w-md w-full p-6 rounded-2xl border bg-slate-900/95 space-y-5 text-center shadow-2xl relative ${
+              isUnpaidOrder ? 'border-amber-500/40' : 'border-emerald-500/40'
+            }`}>
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mx-auto shadow-lg ${
+                isUnpaidOrder ? 'bg-amber-500/20 border border-amber-500/40 text-amber-400 shadow-amber-500/20' : 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 shadow-emerald-500/20'
+              }`}>
+                {isUnpaidOrder ? <Clock size={28} /> : <CheckCircle2 size={28} />}
+              </div>
 
-            <div>
-              <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
-                Razorpay Verified & Order Dispatched
-              </span>
-              <h3 className="text-xl font-extrabold text-white mt-2">Thank you for your order!</h3>
-              <p className="text-xs text-zinc-400 mt-1">
-                Your payment has been verified by Razorpay and received live by <strong className="text-white">{tenant.name}</strong> ERP terminal.
-              </p>
-            </div>
+              <div>
+                <span className={`text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
+                  isUnpaidOrder ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                }`}>
+                  {isUnpaidOrder ? 'Order Registered • Pay on Pickup / Delivery' : 'Razorpay Verified & Order Dispatched'}
+                </span>
+                <h3 className="text-xl font-extrabold text-white mt-2">
+                  {isUnpaidOrder ? 'Order Reserved Successfully!' : 'Thank you for your order!'}
+                </h3>
+                <p className="text-xs text-zinc-400 mt-1">
+                  {isUnpaidOrder 
+                    ? `Your order ${confirmedOrder.orderId} is reserved! Payment is pending and due upon store pickup / local delivery.`
+                    : `Your payment has been verified by Razorpay and received live by ${tenant.name} ERP terminal.`}
+                </p>
+              </div>
 
-            <div className="bg-white/[0.02] border border-white/10 p-4 rounded-xl space-y-2 text-xs font-mono text-left">
-              <div className="flex justify-between border-b border-white/10 pb-1.5">
-                <span className="text-zinc-500">Order Reference:</span>
-                <strong className="text-indigo-300">{confirmedOrder.orderId}</strong>
+              <div className="bg-white/[0.02] border border-white/10 p-4 rounded-xl space-y-2 text-xs font-mono text-left">
+                <div className="flex justify-between border-b border-white/10 pb-1.5">
+                  <span className="text-zinc-500">Order Reference:</span>
+                  <strong className="text-indigo-300">{confirmedOrder.orderId}</strong>
+                </div>
+                <div className="flex justify-between border-b border-white/10 pb-1.5">
+                  <span className="text-zinc-500">Payment Status:</span>
+                  <strong className={isUnpaidOrder ? 'text-amber-400 font-bold' : 'text-emerald-400 font-bold'}>
+                    {confirmedOrder.status || (isUnpaidOrder ? 'NOT YET PAID (Pay on Pickup)' : 'PAID')}
+                  </strong>
+                </div>
+                <div className="flex justify-between border-b border-white/10 pb-1.5">
+                  <span className="text-zinc-500">{isUnpaidOrder ? 'Total Payable:' : 'Total Paid:'}</span>
+                  <strong className="text-white">{formatAmount(confirmedOrder.totalAmount, { decimals: 2 })}</strong>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-500">Fulfillment:</span>
+                  <strong className="text-white capitalize">{confirmedOrder.deliveryType}</strong>
+                </div>
               </div>
-              <div className="flex justify-between border-b border-white/10 pb-1.5">
-                <span className="text-zinc-500">Payment Status:</span>
-                <strong className="text-emerald-400">PAID ({confirmedOrder.paymentMethod})</strong>
-              </div>
-              <div className="flex justify-between border-b border-white/10 pb-1.5">
-                <span className="text-zinc-500">Total Paid:</span>
-                <strong className="text-white">{formatAmount(confirmedOrder.totalAmount, { decimals: 2 })}</strong>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-zinc-500">Fulfillment:</span>
-                <strong className="text-white capitalize">{confirmedOrder.deliveryType}</strong>
-              </div>
-            </div>
 
-            <div className="flex gap-2 pt-2">
-              {confirmedOrder.whatsappUrl && (
+              <div className="flex gap-2 pt-2">
+                {confirmedOrder.whatsappUrl && (
+                  <button
+                    onClick={() => window.open(confirmedOrder.whatsappUrl, '_blank')}
+                    className="w-1/2 py-2.5 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5"
+                  >
+                    <ExternalLink size={14} /> Open WA Receipt
+                  </button>
+                )}
                 <button
-                  onClick={() => window.open(confirmedOrder.whatsappUrl, '_blank')}
-                  className="w-1/2 py-2.5 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5"
+                  onClick={() => setConfirmedOrder(null)}
+                  className={`py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-md transition ${
+                    confirmedOrder.whatsappUrl ? 'w-1/2' : 'w-full'
+                  }`}
                 >
-                  <ExternalLink size={14} /> Open WA Receipt
+                  Back to Storefront
                 </button>
-              )}
-              <button
-                onClick={() => setConfirmedOrder(null)}
-                className={`py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-md transition ${
-                  confirmedOrder.whatsappUrl ? 'w-1/2' : 'w-full'
-                }`}
-              >
-                Back to Storefront
-              </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
     </div>
   );
