@@ -388,4 +388,183 @@ router.post('/movement', async (req, res) => {
   }
 });
 
+// DELETE /api/inventory/:id (Delete single product SKU)
+router.delete('/:id', async (req, res) => {
+  try {
+    const tenantId = req.tenantId;
+    const userId = req.userId;
+    const { id } = req.params;
+
+    const existing = await prisma.product.findFirst({
+      where: { id, tenantId }
+    });
+
+    if (!existing) {
+      return res.status(404).json({ error: 'Product SKU not found' });
+    }
+
+    await prisma.product.delete({ where: { id } });
+
+    await prisma.auditLog.create({
+      data: {
+        message: `Deleted product SKU ${existing.sku}: "${existing.name}" from catalog.`,
+        module: 'Inventory',
+        tenantId,
+        userId
+      }
+    });
+
+    return res.json({ success: true, message: `Product ${existing.name} deleted successfully.` });
+  } catch (error) {
+    console.error('Inventory DELETE error:', error);
+    return res.status(500).json({ error: 'Failed to delete product SKU' });
+  }
+});
+
+// POST /api/inventory/bulk-import (Bulk CSV/JSON Import Engine for 500-1000+ Items)
+router.post('/bulk-import', async (req, res) => {
+  try {
+    const tenantId = req.tenantId;
+    const userId = req.userId;
+    const { items } = req.body;
+
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ error: 'Valid array of product items is required for bulk import.' });
+    }
+
+    // Get default warehouse and supplier for tenant fallback
+    let defaultWh = await prisma.warehouse.findFirst({ where: { tenantId } });
+    if (!defaultWh) {
+      defaultWh = await prisma.warehouse.create({
+        data: { name: 'Main Distribution Center', location: 'HQ', tenantId }
+      });
+    }
+
+    let defaultSup = await prisma.supplier.findFirst({ where: { tenantId } });
+    if (!defaultSup) {
+      defaultSup = await prisma.supplier.create({
+        data: { name: 'Primary Wholesale Supplier', contact: 'Sales Manager', email: 'wholesale@supplier.com', tenantId }
+      });
+    }
+
+    const existingProducts = await prisma.product.findMany({
+      where: { tenantId },
+      select: { id: true, sku: true }
+    });
+
+    const existingSkuMap = new Map(existingProducts.map(p => [p.sku, p.id]));
+
+    let importedCount = 0;
+    let updatedCount = 0;
+
+    const toCreate = [];
+
+    for (const item of items) {
+      if (!item.name || !item.sku) continue;
+
+      const sku = String(item.sku).trim();
+      const name = String(item.name).trim();
+      const category = item.category ? String(item.category).trim() : 'General';
+      const price = Math.max(0, Number(item.price) || 0);
+      const cost = Math.max(0, Number(item.cost) || 0);
+      const stock = Math.max(0, Number(item.stock) || 0);
+      const minStock = Math.max(0, Number(item.minStock) || 10);
+
+      const existingId = existingSkuMap.get(sku);
+
+      if (existingId) {
+        await prisma.product.update({
+          where: { id: existingId },
+          data: { name, category, price, cost, stock, minStock }
+        });
+        updatedCount++;
+      } else {
+        toCreate.push({
+          name, sku, category, price, cost, stock, minStock,
+          warehouseId: defaultWh.id,
+          supplierId: defaultSup.id,
+          tenantId
+        });
+        importedCount++;
+      }
+    }
+
+    if (toCreate.length > 0) {
+      await prisma.product.createMany({
+        data: toCreate,
+        skipDuplicates: true
+      });
+    }
+
+    await prisma.auditLog.create({
+      data: {
+        message: `Bulk Inventory Import: Processed ${items.length} SKUs (${importedCount} created, ${updatedCount} updated).`,
+        module: 'Inventory',
+        tenantId,
+        userId
+      }
+    });
+
+    return res.json({
+      success: true,
+      totalProcessed: items.length,
+      importedCount,
+      updatedCount,
+      message: `Successfully processed bulk inventory import of ${items.length} items.`
+    });
+  } catch (error) {
+    console.error('Bulk Import error:', error);
+    return res.status(500).json({ error: 'Bulk inventory import failed' });
+  }
+});
+
+// POST /api/inventory/daily-stock-sync (Daily Physical Stock Count Batch Adjuster)
+router.post('/daily-stock-sync', async (req, res) => {
+  try {
+    const tenantId = req.tenantId;
+    const userId = req.userId;
+    const { updates } = req.body;
+
+    if (!updates || !Array.isArray(updates) || updates.length === 0) {
+      return res.status(400).json({ error: 'Array of stock updates is required.' });
+    }
+
+    await prisma.$transaction(async (tx) => {
+      for (const update of updates) {
+        if (!update.id) continue;
+        const newStock = Math.max(0, Number(update.stock) || 0);
+
+        const prod = await tx.product.findFirst({
+          where: { id: update.id, tenantId }
+        });
+
+        if (prod) {
+          await tx.product.update({
+            where: { id: prod.id },
+            data: { stock: newStock }
+          });
+        }
+      }
+
+      await tx.auditLog.create({
+        data: {
+          message: `Daily Stock Sync: Updated inventory stock levels for ${updates.length} items.`,
+          module: 'Inventory',
+          tenantId,
+          userId
+        }
+      });
+    });
+
+    return res.json({
+      success: true,
+      updatedCount: updates.length,
+      message: `Daily stock count updated for ${updates.length} products.`
+    });
+  } catch (error) {
+    console.error('Daily Stock Sync error:', error);
+    return res.status(500).json({ error: 'Failed to record daily stock count' });
+  }
+});
+
 export default router;
