@@ -202,6 +202,193 @@ router.post('/checkout', async (req, res) => {
   }
 });
 
+import Razorpay from 'razorpay';
+import crypto from 'crypto';
+
+const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || 'rzp_test_Sg9h9VKe7yrwX7';
+const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || 'ze4YD28IrJQahL3GkS94s3iW';
+
+const razorpayInstance = new Razorpay({
+  key_id: RAZORPAY_KEY_ID,
+  key_secret: RAZORPAY_KEY_SECRET
+});
+
+// POST /api/shop/create-razorpay-order (Initialize Razorpay Payment Session)
+router.post('/create-razorpay-order', async (req, res) => {
+  try {
+    const { amount, currency, orderId } = req.body;
+
+    if (!amount || amount <= 0) {
+      return res.status(400).json({ error: 'Valid order amount is required' });
+    }
+
+    const amountInSubunits = Math.round(Number(amount) * 100); // Subunits (Paise / Cents)
+    const options = {
+      amount: amountInSubunits,
+      currency: currency || 'INR',
+      receipt: orderId || `NEX-ORD-${Math.floor(100000 + Math.random() * 900000)}`,
+      payment_capture: 1
+    };
+
+    const razorpayOrder = await razorpayInstance.orders.create(options);
+
+    return res.json({
+      success: true,
+      keyId: RAZORPAY_KEY_ID,
+      razorpayOrderId: razorpayOrder.id,
+      amount: razorpayOrder.amount,
+      currency: razorpayOrder.currency,
+      receipt: razorpayOrder.receipt
+    });
+  } catch (error) {
+    console.error('Razorpay order creation error:', error);
+    return res.status(500).json({ error: 'Failed to create Razorpay payment order' });
+  }
+});
+
+// POST /api/shop/verify-razorpay-payment (HMAC Signature Verification & ERP Dispatch)
+router.post('/verify-razorpay-payment', async (req, res) => {
+  try {
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      domain,
+      customerName,
+      customerEmail,
+      customerPhone,
+      items,
+      deliveryType,
+      address
+    } = req.body;
+
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      return res.status(400).json({ error: 'Razorpay payment verification parameters missing' });
+    }
+
+    // Verify HMAC SHA256 Signature
+    const bodyData = razorpay_order_id + '|' + razorpay_payment_id;
+    const expectedSignature = crypto
+      .createHmac('sha256', RAZORPAY_KEY_SECRET)
+      .update(bodyData)
+      .digest('hex');
+
+    if (expectedSignature !== razorpay_signature) {
+      return res.status(400).json({ error: 'Razorpay payment signature verification failed' });
+    }
+
+    const tenant = await prisma.tenant.findFirst({
+      where: { domain: domain ? domain.trim() : 'nexus.erp' },
+      select: { id: true, name: true, domain: true }
+    });
+
+    if (!tenant) {
+      return res.status(404).json({ error: 'Store profile not found' });
+    }
+
+    const orderId = `NEX-ORD-${Math.floor(100000 + Math.random() * 900000)}`;
+    const totalAmount = Number(items.reduce((acc, i) => acc + (i.price * i.qty), 0).toFixed(2));
+    const payMethod = `Razorpay Live Gateway (ID: ${razorpay_payment_id})`;
+    const custName = customerName || 'E-Commerce Buyer';
+    const custEmail = customerEmail || `${customerPhone.replace(/[^0-9]/g, '')}@customer.com`;
+
+    await prisma.$transaction(async (tx) => {
+      // 1. Customer registration
+      let customer = await tx.customer.findFirst({
+        where: { tenantId: tenant.id, phone: customerPhone }
+      });
+
+      if (!customer) {
+        customer = await tx.customer.create({
+          data: {
+            name: custName,
+            email: custEmail,
+            phone: customerPhone,
+            company: 'Razorpay Online Buyer',
+            tenantId: tenant.id
+          }
+        });
+      }
+
+      // 2. Stock deduction & StockMovements
+      for (const item of items) {
+        const prod = await tx.product.findFirst({
+          where: { id: item.id, tenantId: tenant.id }
+        });
+
+        if (prod) {
+          await tx.product.update({
+            where: { id: prod.id },
+            data: { stock: { decrement: item.qty } }
+          });
+
+          await tx.stockMovement.create({
+            data: {
+              type: 'sale',
+              qty: item.qty,
+              toWarehouse: 'Razorpay E-Commerce Buyer',
+              productId: prod.id,
+              tenantId: tenant.id
+            }
+          });
+        }
+      }
+
+      // 3. Record Financial Income Transaction
+      await tx.transaction.create({
+        data: {
+          type: 'income',
+          category: 'E-Commerce Razorpay Order',
+          amount: totalAmount,
+          description: `Paid Online Order ${orderId} (${custName}) via Razorpay Gateway [${deliveryType.toUpperCase()}]`,
+          reference: orderId,
+          tenantId: tenant.id
+        }
+      });
+
+      // 4. Shopkeeper Alerts
+      const shopUsers = await tx.user.findMany({
+        where: { tenantId: tenant.id },
+        select: { id: true }
+      });
+
+      for (const u of shopUsers) {
+        await tx.notification.create({
+          data: {
+            message: `💳 RAZORPAY PAID ORDER: ${orderId} ($${totalAmount}) received from ${custName}! (Pay ID: ${razorpay_payment_id})`,
+            type: 'success',
+            userId: u.id
+          }
+        });
+      }
+    });
+
+    const itemListText = items.map(i => `• ${i.name} (x${i.qty}) - $${(i.price * i.qty).toFixed(2)}`).join('\n');
+    const whatsappMessage = `🧾 *RAZORPAY PAID RECEIPT (${orderId})*\nStore: ${tenant.name}\nCustomer: ${custName}\nPhone: ${customerPhone}\nPayment ID: ${razorpay_payment_id} [VERIFIED PAID]\nType: ${deliveryType === 'delivery' ? '📦 Local Delivery' : '🏪 Store Pickup'}\n${deliveryType === 'delivery' ? `Address: ${address}\n` : ''}\n*ITEMS:*\n${itemListText}\n\n*TOTAL PAID: $${totalAmount.toFixed(2)}*\n\nThank you for your payment via Razorpay!`;
+
+    const whatsappUrl = `https://wa.me/${customerPhone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(whatsappMessage)}`;
+
+    return res.json({
+      success: true,
+      orderId,
+      status: 'PAID',
+      razorpayPaymentId: razorpay_payment_id,
+      timestamp: new Date().toLocaleTimeString(),
+      totalAmount,
+      customerName: custName,
+      customerPhone,
+      deliveryType,
+      address,
+      paymentMethod: payMethod,
+      items,
+      whatsappUrl
+    });
+  } catch (error) {
+    console.error('Razorpay verification error:', error);
+    return res.status(500).json({ error: 'Razorpay payment verification failed' });
+  }
+});
+
 // GET /api/shop/track/:orderId (Live E-Commerce Order Tracking API)
 router.get('/track/:orderId', async (req, res) => {
   try {

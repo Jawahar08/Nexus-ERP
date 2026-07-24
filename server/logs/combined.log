@@ -461,3 +461,23 @@
 {"level":"info","message":"Initializing Node-cron Background Task Scheduler...","timestamp":"2026-07-24 12:23:06"}
 {"level":"info","message":"[Scheduler] Commencing daily low-stock inventory audit scan...","timestamp":"2026-07-24 12:23:06"}
 {"level":"info","message":"[Scheduler] Inventory scan complete. Dispatched 0 low-stock alerts.","timestamp":"2026-07-24 12:23:06"}
+{"level":"info","message":"GET /api/inventory","timestamp":"2026-07-24 12:25:11"}
+{"level":"info","message":"GET /api/inventory","timestamp":"2026-07-24 12:25:11"}
+{"level":"info","message":"GET /api/inventory/ai-autopilot","timestamp":"2026-07-24 12:25:11"}
+{"level":"info","message":"GET /api/inventory/ai-autopilot","timestamp":"2026-07-24 12:25:11"}
+{"level":"info","message":"GET /api/shop/public/nexus.erp","timestamp":"2026-07-24 12:25:18"}
+{"level":"info","message":"POST /api/shop/checkout","timestamp":"2026-07-24 12:26:37"}
+{"level":"info","message":"GET /api/shop/public/nexus.erp","timestamp":"2026-07-24 12:26:37"}
+{"level":"info","message":"GET /api/inventory/ai-autopilot","timestamp":"2026-07-24 12:26:53"}
+{"level":"info","message":"GET /api/crm","timestamp":"2026-07-24 12:26:55"}
+{"level":"info","message":"GET /api/crm","timestamp":"2026-07-24 12:26:56"}
+{"level":"info","message":"GET /api/inventory","timestamp":"2026-07-24 12:26:56"}
+{"level":"info","message":"GET /api/inventory","timestamp":"2026-07-24 12:26:56"}
+{"level":"info","message":"GET /api/inventory","timestamp":"2026-07-24 12:27:10"}
+{"level":"info","message":"GET /api/inventory","timestamp":"2026-07-24 12:27:10"}
+{"level":"info","message":"GET /api/inventory/ai-autopilot","timestamp":"2026-07-24 12:27:10"}
+{"level":"info","message":"GET /api/inventory/ai-autopilot","timestamp":"2026-07-24 12:27:10"}
+{"level":"info","message":"GET /api/ai/morning-briefing","timestamp":"2026-07-24 12:27:13"}
+{"level":"info","message":"GET /api/ai/morning-briefing","timestamp":"2026-07-24 12:27:13"}
+{"level":"info","message":"GET /api/ai/morning-briefing","timestamp":"2026-07-24 12:27:13"}
+{"level":"info","message":"GET /api/ai/morning-briefing","timestamp":"2026-07-24 12:27:13"}

@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import {
   Store, ShoppingCart, CheckCircle2, Search, MapPin, Truck, Phone, User,
   Send, ArrowRight, ShieldCheck, CreditCard, QrCode, Wallet, Check, ExternalLink,
-  Tag, Clock, Star, Zap, Eye, X, MessageSquare, Info, Percent, Sparkles
+  Tag, Clock, Star, Zap, Eye, X, MessageSquare, Info, Percent, Sparkles, ShieldAlert
 } from 'lucide-react';
 import { useCurrencyStore } from '@/store/currencyStore';
 
@@ -44,7 +44,7 @@ export default function PublicStorefrontPage() {
   const [customerEmail, setCustomerEmail] = useState('');
   const [deliveryType, setDeliveryType] = useState<'pickup' | 'delivery'>('pickup');
   const [deliveryAddress, setDeliveryAddress] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'upi' | 'wallet' | 'cod'>('card');
+  const [paymentMethod, setPaymentMethod] = useState<'razorpay' | 'card' | 'upi' | 'wallet' | 'cod'>('razorpay');
 
   // Dummy inputs
   const [cardNumber, setCardNumber] = useState('4532 •••• •••• 8892');
@@ -60,6 +60,19 @@ export default function PublicStorefrontPage() {
   const [trackOrderId, setTrackOrderId] = useState('');
   const [trackingResult, setTrackingResult] = useState<any>(null);
   const [trackingLoading, setTrackingLoading] = useState(false);
+
+  // Load Razorpay Checkout SDK Script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+    };
+  }, []);
 
   const fetchPublicCatalog = async () => {
     try {
@@ -126,8 +139,105 @@ export default function PublicStorefrontPage() {
   const cartTotal = Math.max(0, subtotal - discountAmount);
   const loyaltyPointsEarned = Math.floor(cartTotal * 0.05);
 
+  // Official Razorpay Gateway Trigger
+  const handleRazorpayPayment = async () => {
+    if (cart.length === 0 || !customerPhone.trim()) {
+      alert('Please provide customer phone number.');
+      return;
+    }
+
+    setPlacingOrder(true);
+    try {
+      // 1. Create Razorpay order session on server
+      const res = await fetch('/api/shop/create-razorpay-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: cartTotal,
+          currency: 'INR',
+          orderId: `NEX-ORD-${Math.floor(100000 + Math.random() * 900000)}`
+        })
+      });
+
+      if (!res.ok) {
+        alert('Failed to initialize Razorpay checkout session.');
+        setPlacingOrder(false);
+        return;
+      }
+
+      const rzpData = await res.json();
+
+      // 2. Configure Razorpay modal options
+      const options = {
+        key: rzpData.keyId,
+        amount: rzpData.amount,
+        currency: rzpData.currency,
+        name: storeData?.tenant?.name || 'Nexus Storefront',
+        description: `Order Payment (${rzpData.receipt})`,
+        image: 'https://cdn-icons-png.flaticon.com/512/888/888870.png',
+        order_id: rzpData.razorpayOrderId,
+        handler: async function (response: any) {
+          // 3. Verify HMAC signature & dispatch order to shopkeeper ERP
+          const verifyRes = await fetch('/api/shop/verify-razorpay-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              domain: storeDomain,
+              customerName: customerName || 'Valued Buyer',
+              customerEmail,
+              customerPhone,
+              items: cart,
+              deliveryType,
+              address: deliveryAddress
+            })
+          });
+
+          if (verifyRes.ok) {
+            const verifiedPayload = await verifyRes.json();
+            setConfirmedOrder(verifiedPayload);
+            setCart([]);
+            setPromoApplied(false);
+            setPromoCode('');
+            setDiscountPercent(0);
+            setShowCartDrawer(false);
+            fetchPublicCatalog();
+          } else {
+            alert('Razorpay payment signature verification failed.');
+          }
+        },
+        prefill: {
+          name: customerName || 'Valued Buyer',
+          email: customerEmail || 'customer@nexus.erp',
+          contact: customerPhone
+        },
+        theme: {
+          color: '#4f46e5'
+        }
+      };
+
+      const razorpayInstance = new (window as any).Razorpay(options);
+      razorpayInstance.on('payment.failed', function (response: any) {
+        alert(`Payment Failed: ${response.error.description || 'Transaction declined.'}`);
+      });
+      razorpayInstance.open();
+    } catch (err) {
+      alert('Error launching Razorpay gateway.');
+    } finally {
+      setPlacingOrder(false);
+    }
+  };
+
+  // Submit Direct Payment Flow
   const handleDirectOnlinePayment = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (paymentMethod === 'razorpay') {
+      await handleRazorpayPayment();
+      return;
+    }
+
     if (cart.length === 0 || !customerPhone.trim()) return;
 
     setPlacingOrder(true);
@@ -270,8 +380,8 @@ export default function PublicStorefrontPage() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="font-extrabold text-base text-white">{tenant.name}</h1>
-              <span className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                <ShieldCheck size={10} /> Verified Direct Store
+              <span className="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                <ShieldCheck size={10} /> Razorpay Verified Store
               </span>
             </div>
             <span className="text-[11px] text-zinc-400 font-mono">domain: {tenant.domain}</span>
@@ -299,19 +409,18 @@ export default function PublicStorefrontPage() {
         <div className="p-3.5 rounded-xl bg-gradient-to-r from-purple-950/60 via-indigo-950/80 to-slate-900 border border-purple-500/30 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2">
             <Zap size={16} className="text-amber-400 animate-bounce" />
-            <span className="font-bold text-white uppercase tracking-wider">⚡ Store Special Promo:</span>
-            <span className="text-purple-300">Use code <strong className="bg-purple-900/80 px-2 py-0.5 rounded text-white font-mono">NEXUS10</strong> at checkout for 10% OFF!</span>
+            <span className="font-bold text-white uppercase tracking-wider">💳 Live Razorpay Payment Gateway Integration Active</span>
           </div>
-          <span className="text-zinc-400 font-mono text-[11px] flex items-center gap-1">
-            <Clock size={12} /> Deals reset in 04h 12m
+          <span className="text-purple-300 font-mono text-[11px]">
+            Key: <strong className="bg-purple-900/80 px-2 py-0.5 rounded text-white font-mono">rzp_test_Sg9h9VKe7yrwX7</strong>
           </span>
         </div>
 
         {/* E-Commerce Hero Search Bar */}
         <div className="glass p-6 rounded-2xl border border-white/10 bg-gradient-to-r from-indigo-950/30 via-slate-900/60 to-purple-950/20 flex flex-col md:flex-row items-center justify-between gap-4 shadow-xl">
           <div>
-            <h2 className="text-2xl font-extrabold tracking-tight">Official Storefront & Live Digital Catalog</h2>
-            <p className="text-xs text-zinc-400 mt-1">Order direct for Store Pickup or Express Delivery. Instant automated dispatch to the ERP terminal.</p>
+            <h2 className="text-2xl font-extrabold tracking-tight">Official Digital Catalog & Storefront</h2>
+            <p className="text-xs text-zinc-400 mt-1">Direct online checkout via Razorpay Gateway. Paid orders dispatch instantly to the ERP terminal.</p>
           </div>
 
           <div className="relative w-full md:w-80">
@@ -418,7 +527,7 @@ export default function PublicStorefrontPage() {
 
       {/* FOOTER */}
       <footer className="border-t border-white/10 py-6 px-4 text-center text-xs text-zinc-500 font-mono">
-        Powered by <strong className="text-indigo-400">Nexus ERP Digital Storefront</strong> &bull; {tenant.name}
+        Powered by <strong className="text-indigo-400">Nexus ERP Razorpay Live Gateway</strong> &bull; {tenant.name}
       </footer>
 
       {/* PRODUCT QUICK-VIEW PREVIEW MODAL */}
@@ -657,7 +766,27 @@ export default function PublicStorefrontPage() {
                   {/* Payment Gateway Options */}
                   <div className="space-y-1.5 pt-1">
                     <label className="text-[11px] font-semibold text-zinc-400 uppercase">Payment Method</label>
-                    <div className="grid grid-cols-4 gap-1.5">
+                    
+                    {/* Primary Official Razorpay Option */}
+                    <button
+                      type="button"
+                      onClick={() => setPaymentMethod('razorpay')}
+                      className={`w-full p-2.5 rounded-xl text-xs font-bold border flex items-center justify-between transition cursor-pointer ${
+                        paymentMethod === 'razorpay'
+                          ? 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white border-indigo-400 shadow-lg shadow-indigo-500/20'
+                          : 'bg-white/5 text-zinc-300 border-white/10 hover:bg-white/10'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <CreditCard size={16} className="text-blue-300" />
+                        <span>Razorpay Gateway (UPI, Cards, NetBanking)</span>
+                      </div>
+                      <span className="bg-blue-400/20 text-blue-300 border border-blue-400/30 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full">
+                        RECOMMENDED
+                      </span>
+                    </button>
+
+                    <div className="grid grid-cols-3 gap-1.5 mt-2">
                       <button
                         type="button"
                         onClick={() => setPaymentMethod('card')}
@@ -667,7 +796,7 @@ export default function PublicStorefrontPage() {
                             : 'bg-white/5 text-zinc-400 border-white/10'
                         }`}
                       >
-                        <CreditCard size={14} /> Card
+                        <CreditCard size={14} /> Direct Card
                       </button>
                       <button
                         type="button"
@@ -678,18 +807,7 @@ export default function PublicStorefrontPage() {
                             : 'bg-white/5 text-zinc-400 border-white/10'
                         }`}
                       >
-                        <QrCode size={14} /> UPI QR
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setPaymentMethod('wallet')}
-                        className={`p-2 rounded-lg text-[10px] font-bold border flex flex-col items-center gap-1 transition ${
-                          paymentMethod === 'wallet'
-                            ? 'bg-indigo-600 text-white border-indigo-500'
-                            : 'bg-white/5 text-zinc-400 border-white/10'
-                        }`}
-                      >
-                        <Wallet size={14} /> Wallet
+                        <QrCode size={14} /> Direct UPI
                       </button>
                       <button
                         type="button"
@@ -728,21 +846,9 @@ export default function PublicStorefrontPage() {
                         </div>
                       </div>
                     )}
-
-                    {paymentMethod === 'upi' && (
-                      <div className="p-3 rounded-xl bg-white/[0.02] border border-white/10 space-y-2 mt-2 text-center">
-                        <span className="text-[10px] text-zinc-400 block font-mono">Scan or enter UPI ID</span>
-                        <input
-                          type="text"
-                          value={upiId}
-                          onChange={(e) => setUpiId(e.target.value)}
-                          className="w-full h-8 bg-slate-900 border border-white/10 rounded px-2.5 text-xs font-mono text-white text-center"
-                        />
-                      </div>
-                    )}
                   </div>
 
-                  {/* Total & Loyalty Points Earned */}
+                  {/* Total & Instant Payment Trigger */}
                   <div className="border-t border-white/10 pt-3 space-y-2">
                     <div className="flex justify-between items-center text-xs text-amber-400 font-mono">
                       <span className="flex items-center gap-1"><Sparkles size={13} /> Loyalty Cashback Points:</span>
@@ -757,10 +863,10 @@ export default function PublicStorefrontPage() {
                     <button
                       type="submit"
                       disabled={placingOrder}
-                      className="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full py-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
                     >
                       <CheckCircle2 size={16} />
-                      {placingOrder ? 'Processing Payment...' : `Pay ${formatAmount(cartTotal)} & Complete Order`}
+                      {placingOrder ? 'Connecting to Razorpay...' : paymentMethod === 'razorpay' ? `Pay with Razorpay (${formatAmount(cartTotal)})` : `Pay ${formatAmount(cartTotal)} & Complete Order`}
                     </button>
                   </div>
 
@@ -852,11 +958,11 @@ export default function PublicStorefrontPage() {
 
             <div>
               <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
-                Payment Confirmed & Order Dispatched
+                Razorpay Verified & Order Dispatched
               </span>
               <h3 className="text-xl font-extrabold text-white mt-2">Thank you for your order!</h3>
               <p className="text-xs text-zinc-400 mt-1">
-                Your order has been paid and received live by <strong className="text-white">{tenant.name}</strong> ERP terminal.
+                Your payment has been verified by Razorpay and received live by <strong className="text-white">{tenant.name}</strong> ERP terminal.
               </p>
             </div>
 
