@@ -460,15 +460,18 @@ router.post('/bulk-import', async (req, res) => {
     const toCreate = [];
 
     for (const item of items) {
-      if (!item.name || !item.sku) continue;
+      // Support Bhagwati Store Excel headers ('BU', 'SKU', 'Brand', 'Model', 'Avg Price') as well as standard headers
+      const rawSku = item.sku || item.SKU;
+      const rawName = item.name || (item.Brand && item.Model ? `${item.Brand} - ${item.Model}` : item.Model || item.Brand || item.name);
+      if (!rawSku || !rawName) continue;
 
-      const sku = String(item.sku).trim();
-      const name = String(item.name).trim();
-      const category = item.category ? String(item.category).trim() : 'General';
-      const price = Math.max(0, Number(item.price) || 0);
-      const cost = Math.max(0, Number(item.cost) || 0);
-      const stock = Math.max(0, Number(item.stock) || 0);
-      const minStock = Math.max(0, Number(item.minStock) || 10);
+      const sku = String(rawSku).trim();
+      const name = String(rawName).trim();
+      const category = item.category || item.bu || item.BU ? String(item.category || item.bu || item.BU).trim() : 'General';
+      const price = Math.max(0, Number(item.price || item['Avg Price'] || item.avg_price) || 0);
+      const cost = Math.max(0, Number(item.cost || Math.round(price * 0.7)) || 0);
+      const stock = Math.max(0, Number(item.stock || 50) || 0);
+      const minStock = Math.max(0, Number(item.minStock || 10) || 10);
 
       const existingId = existingSkuMap.get(sku);
 

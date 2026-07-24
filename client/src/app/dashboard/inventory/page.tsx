@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import * as XLSX from 'xlsx';
 import { 
   Package, Plus, ArrowLeftRight, ShoppingBag, 
   RotateCcw, Warehouse, AlertCircle, ShoppingCart, Trash2, ScanBarcode, Sparkles, FileSpreadsheet, Upload, Download, RefreshCw, CheckCircle2, X
@@ -171,67 +172,68 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
     document.body.removeChild(link);
   };
 
-  // Process Bulk CSV/JSON File Upload
+  // Process Bulk CSV / Excel (.xlsx) / JSON File Upload
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     setImporting(true);
-    const reader = new FileReader();
+    try {
+      let items: any[] = [];
 
-    reader.onload = async (e) => {
-      try {
-        const content = e.target?.result as string;
-        let items: any[] = [];
-
-        if (file.name.endsWith('.json')) {
-          items = JSON.parse(content);
-        } else {
-          // Parse CSV
-          const lines = content.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-          if (lines.length > 1) {
-            const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-            for (let i = 1; i < lines.length; i++) {
-              const cols = lines[i].split(',').map(c => c.trim());
-              if (cols.length >= 2) {
-                const item: any = {};
-                headers.forEach((h, idx) => {
-                  item[h] = cols[idx] || '';
-                });
-                items.push(item);
-              }
+      if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+        const buffer = await file.arrayBuffer();
+        const workbook = XLSX.read(buffer, { type: 'array' });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        items = XLSX.utils.sheet_to_json(worksheet);
+      } else if (file.name.endsWith('.json')) {
+        const text = await file.text();
+        items = JSON.parse(text);
+      } else {
+        // Parse CSV
+        const text = await file.text();
+        const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        if (lines.length > 1) {
+          const headers = lines[0].split(',').map(h => h.trim());
+          for (let i = 1; i < lines.length; i++) {
+            const cols = lines[i].split(',').map(c => c.trim());
+            if (cols.length >= 2) {
+              const item: any = {};
+              headers.forEach((h, idx) => {
+                item[h] = cols[idx] || '';
+              });
+              items.push(item);
             }
           }
         }
-
-        if (items.length === 0) {
-          alert('No valid rows found in uploaded file.');
-          setImporting(false);
-          return;
-        }
-
-        const res = await fetch('/api/inventory/bulk-import', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ items })
-        });
-
-        if (res.ok) {
-          const result = await res.json();
-          alert(`Bulk Import Complete! ${result.message}`);
-          setShowBulkImportModal(false);
-          fetchInventory();
-        } else {
-          alert('Bulk import failed.');
-        }
-      } catch (err) {
-        alert('Failed to parse uploaded file. Make sure file format matches template.');
-      } finally {
-        setImporting(false);
       }
-    };
 
-    reader.readAsText(file);
+      if (items.length === 0) {
+        alert('No valid rows found in uploaded file.');
+        setImporting(false);
+        return;
+      }
+
+      const res = await fetch('/api/inventory/bulk-import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items })
+      });
+
+      if (res.ok) {
+        const result = await res.json();
+        alert(`Bulk Import Complete! ${result.message}`);
+        setShowBulkImportModal(false);
+        fetchInventory();
+      } else {
+        alert('Bulk import failed.');
+      }
+    } catch (err) {
+      alert('Failed to parse uploaded file.');
+    } finally {
+      setImporting(false);
+    }
   };
 
   // Generate & Bulk Import 500 Test Items Demonstration
