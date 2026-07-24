@@ -2,7 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { Store, ShoppingCart, CheckCircle2, Search, MapPin, Truck, Phone, User, Send, ArrowRight, ShieldCheck, CreditCard, QrCode, Wallet, Check, ExternalLink } from 'lucide-react';
+import {
+  Store, ShoppingCart, CheckCircle2, Search, MapPin, Truck, Phone, User,
+  Send, ArrowRight, ShieldCheck, CreditCard, QrCode, Wallet, Check, ExternalLink,
+  Tag, Clock, Star, Zap, Eye, X, MessageSquare, Info, Percent, Sparkles
+} from 'lucide-react';
 import { useCurrencyStore } from '@/store/currencyStore';
 
 interface CartItem {
@@ -23,17 +27,26 @@ export default function PublicStorefrontPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
-  // Checkout & Payment State
+  // Product Quick-View Modal state
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [previewQty, setPreviewQty] = useState(1);
+
+  // Cart & Discount State
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showCartDrawer, setShowCartDrawer] = useState(false);
+  const [promoCode, setPromoCode] = useState('');
+  const [discountPercent, setDiscountPercent] = useState(0);
+  const [promoApplied, setPromoApplied] = useState(false);
+
+  // Checkout State
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
   const [deliveryType, setDeliveryType] = useState<'pickup' | 'delivery'>('pickup');
   const [deliveryAddress, setDeliveryAddress] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'upi' | 'wallet' | 'cod'>('card');
-  
-  // Card inputs
+
+  // Dummy inputs
   const [cardNumber, setCardNumber] = useState('4532 •••• •••• 8892');
   const [cardExpiry, setCardExpiry] = useState('12/28');
   const [cardCvv, setCardCvv] = useState('921');
@@ -41,6 +54,12 @@ export default function PublicStorefrontPage() {
 
   const [placingOrder, setPlacingOrder] = useState(false);
   const [confirmedOrder, setConfirmedOrder] = useState<any>(null);
+
+  // Order Tracking Lookup State
+  const [showTrackModal, setShowTrackModal] = useState(false);
+  const [trackOrderId, setTrackOrderId] = useState('');
+  const [trackingResult, setTrackingResult] = useState<any>(null);
+  const [trackingLoading, setTrackingLoading] = useState(false);
 
   const fetchPublicCatalog = async () => {
     try {
@@ -61,12 +80,12 @@ export default function PublicStorefrontPage() {
     fetchPublicCatalog();
   }, [storeDomain]);
 
-  const addToCart = (product: any) => {
+  const addToCart = (product: any, qty: number = 1) => {
     setCart((prev) => {
       const existing = prev.find((item) => item.id === product.id);
       if (existing) {
         return prev.map((item) =>
-          item.id === product.id ? { ...item, qty: item.qty + 1 } : item
+          item.id === product.id ? { ...item, qty: item.qty + qty } : item
         );
       }
       return [
@@ -76,10 +95,11 @@ export default function PublicStorefrontPage() {
           name: product.name,
           sku: product.sku,
           price: product.price,
-          qty: 1,
+          qty,
         },
       ];
     });
+    if (selectedProduct) setSelectedProduct(null);
     setShowCartDrawer(true);
   };
 
@@ -91,9 +111,21 @@ export default function PublicStorefrontPage() {
     }
   };
 
-  const cartTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const applyPromoCode = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (promoCode.trim().toUpperCase() === 'NEXUS10' || promoCode.trim().toUpperCase() === 'SAVE10') {
+      setDiscountPercent(10);
+      setPromoApplied(true);
+    } else {
+      alert('Invalid promo code. Try "NEXUS10" for 10% OFF!');
+    }
+  };
 
-  // Submit Direct Online Payment & ERP Shopkeeper Order Dispatch
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const discountAmount = (subtotal * discountPercent) / 100;
+  const cartTotal = Math.max(0, subtotal - discountAmount);
+  const loyaltyPointsEarned = Math.floor(cartTotal * 0.05);
+
   const handleDirectOnlinePayment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (cart.length === 0 || !customerPhone.trim()) return;
@@ -128,6 +160,9 @@ export default function PublicStorefrontPage() {
         const orderResult = await res.json();
         setConfirmedOrder(orderResult);
         setCart([]);
+        setPromoApplied(false);
+        setPromoCode('');
+        setDiscountPercent(0);
         setShowCartDrawer(false);
         fetchPublicCatalog();
       } else {
@@ -138,6 +173,27 @@ export default function PublicStorefrontPage() {
       alert('Error connecting to store payment gateway.');
     } finally {
       setPlacingOrder(false);
+    }
+  };
+
+  const handleTrackOrderSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!trackOrderId.trim()) return;
+
+    setTrackingLoading(true);
+    setTrackingResult(null);
+    try {
+      const res = await fetch(`/api/shop/track/${trackOrderId.trim()}`);
+      if (res.ok) {
+        const data = await res.json();
+        setTrackingResult(data);
+      } else {
+        setTrackingResult({ found: false });
+      }
+    } catch (err) {
+      setTrackingResult({ found: false });
+    } finally {
+      setTrackingLoading(false);
     }
   };
 
@@ -178,8 +234,35 @@ export default function PublicStorefrontPage() {
   return (
     <div className="min-h-screen bg-slate-950 text-white flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
       
+      {/* STORE HOURS & OPERATING ALERT TICKER HEADER */}
+      <div className="bg-gradient-to-r from-indigo-950 via-slate-900 to-purple-950 border-b border-white/10 px-4 lg:px-8 py-2 text-xs flex flex-col sm:flex-row items-center justify-between gap-2 text-zinc-300">
+        <div className="flex items-center gap-3">
+          <span className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+            OPEN NOW • Express Local Delivery Active
+          </span>
+          <span className="hidden md:inline text-zinc-400 font-mono">Store Helpline: +1 (555) 019-2834</span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowTrackModal(true)}
+            className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 cursor-pointer"
+          >
+            <Truck size={13} /> Track Order Status
+          </button>
+          <span className="text-zinc-600">|</span>
+          <button
+            onClick={() => window.open(`https://wa.me/15550192834?text=Hi%20${tenant.name},%20I%20have%20an%20inquiry`, '_blank')}
+            className="text-xs font-semibold text-emerald-400 hover:text-emerald-300 flex items-center gap-1 cursor-pointer"
+          >
+            <MessageSquare size={13} /> WhatsApp Store Inquiry
+          </button>
+        </div>
+      </div>
+
       {/* STORE DIGITAL NAVBAR */}
-      <header className="sticky top-0 z-40 bg-slate-950/80 backdrop-blur-md border-b border-white/10 px-4 lg:px-8 py-3.5 flex items-center justify-between">
+      <header className="sticky top-0 z-40 bg-slate-950/85 backdrop-blur-md border-b border-white/10 px-4 lg:px-8 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-lg shadow-indigo-500/20">
             <Store size={20} />
@@ -188,7 +271,7 @@ export default function PublicStorefrontPage() {
             <div className="flex items-center gap-2">
               <h1 className="font-extrabold text-base text-white">{tenant.name}</h1>
               <span className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                <ShieldCheck size={10} /> Verified Store Gateway
+                <ShieldCheck size={10} /> Verified Direct Store
               </span>
             </div>
             <span className="text-[11px] text-zinc-400 font-mono">domain: {tenant.domain}</span>
@@ -212,11 +295,23 @@ export default function PublicStorefrontPage() {
       {/* MAIN CATALOG BODY */}
       <main className="max-w-7xl mx-auto w-full px-4 lg:px-8 py-8 flex-1 space-y-6">
         
+        {/* FLASH DEALS URGENCY TICKER BANNER */}
+        <div className="p-3.5 rounded-xl bg-gradient-to-r from-purple-950/60 via-indigo-950/80 to-slate-900 border border-purple-500/30 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2">
+            <Zap size={16} className="text-amber-400 animate-bounce" />
+            <span className="font-bold text-white uppercase tracking-wider">⚡ Store Special Promo:</span>
+            <span className="text-purple-300">Use code <strong className="bg-purple-900/80 px-2 py-0.5 rounded text-white font-mono">NEXUS10</strong> at checkout for 10% OFF!</span>
+          </div>
+          <span className="text-zinc-400 font-mono text-[11px] flex items-center gap-1">
+            <Clock size={12} /> Deals reset in 04h 12m
+          </span>
+        </div>
+
         {/* E-Commerce Hero Search Bar */}
         <div className="glass p-6 rounded-2xl border border-white/10 bg-gradient-to-r from-indigo-950/30 via-slate-900/60 to-purple-950/20 flex flex-col md:flex-row items-center justify-between gap-4 shadow-xl">
           <div>
-            <h2 className="text-2xl font-extrabold tracking-tight">Official Digital Catalog & Storefront</h2>
-            <p className="text-xs text-zinc-400 mt-1">Direct online checkout. Paid orders dispatch instantly to the shopkeeper's ERP terminal.</p>
+            <h2 className="text-2xl font-extrabold tracking-tight">Official Storefront & Live Digital Catalog</h2>
+            <p className="text-xs text-zinc-400 mt-1">Order direct for Store Pickup or Express Delivery. Instant automated dispatch to the ERP terminal.</p>
           </div>
 
           <div className="relative w-full md:w-80">
@@ -255,7 +350,7 @@ export default function PublicStorefrontPage() {
             return (
               <div
                 key={product.id}
-                className="glass p-5 rounded-2xl border border-white/10 bg-slate-900/60 hover:border-indigo-500/40 transition flex flex-col justify-between gap-4 group"
+                className="glass p-5 rounded-2xl border border-white/10 bg-slate-900/60 hover:border-indigo-500/40 transition flex flex-col justify-between gap-4 group relative"
               >
                 <div>
                   <div className="flex items-start justify-between">
@@ -273,9 +368,23 @@ export default function PublicStorefrontPage() {
                     </span>
                   </div>
 
-                  <h3 className="font-bold text-sm text-white mt-3 leading-snug group-hover:text-indigo-300 transition">
-                    {product.name}
+                  <h3 
+                    onClick={() => setSelectedProduct(product)}
+                    className="font-bold text-sm text-white mt-3 leading-snug group-hover:text-indigo-300 transition cursor-pointer flex items-center justify-between"
+                  >
+                    <span>{product.name}</span>
+                    <Eye size={14} className="text-zinc-500 group-hover:text-indigo-400 opacity-0 group-hover:opacity-100 transition" />
                   </h3>
+                  
+                  <div className="flex items-center gap-1 text-amber-400 text-[10px] mt-1.5">
+                    <Star size={11} fill="currentColor" />
+                    <Star size={11} fill="currentColor" />
+                    <Star size={11} fill="currentColor" />
+                    <Star size={11} fill="currentColor" />
+                    <Star size={11} fill="currentColor" />
+                    <span className="text-zinc-500 ml-1 font-mono">(4.9/5)</span>
+                  </div>
+
                   <p className="text-[11px] text-zinc-500 font-mono mt-1">SKU: {product.sku}</p>
                 </div>
 
@@ -284,13 +393,22 @@ export default function PublicStorefrontPage() {
                     {formatAmount(product.price, { decimals: 2 })}
                   </span>
 
-                  <button
-                    onClick={() => !isOut && addToCart(product)}
-                    disabled={isOut}
-                    className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white font-semibold text-xs rounded-xl shadow-md transition flex items-center gap-1.5 cursor-pointer"
-                  >
-                    + Add to Cart
-                  </button>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={() => setSelectedProduct(product)}
+                      className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-zinc-300 border border-white/10 cursor-pointer"
+                      title="Quick View Details"
+                    >
+                      <Info size={14} />
+                    </button>
+                    <button
+                      onClick={() => !isOut && addToCart(product)}
+                      disabled={isOut}
+                      className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white font-semibold text-xs rounded-xl shadow-md transition cursor-pointer"
+                    >
+                      + Add
+                    </button>
+                  </div>
                 </div>
               </div>
             );
@@ -300,8 +418,86 @@ export default function PublicStorefrontPage() {
 
       {/* FOOTER */}
       <footer className="border-t border-white/10 py-6 px-4 text-center text-xs text-zinc-500 font-mono">
-        Powered by <strong className="text-indigo-400">Nexus ERP Direct Payment Gateway</strong> &bull; {tenant.name}
+        Powered by <strong className="text-indigo-400">Nexus ERP Digital Storefront</strong> &bull; {tenant.name}
       </footer>
+
+      {/* PRODUCT QUICK-VIEW PREVIEW MODAL */}
+      {selectedProduct && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-150">
+          <div className="glass max-w-lg w-full p-6 rounded-2xl border border-indigo-500/30 bg-slate-900/95 space-y-5 shadow-2xl relative">
+            <button
+              onClick={() => setSelectedProduct(null)}
+              className="absolute right-4 top-4 text-zinc-400 hover:text-white p-1 rounded-lg bg-white/5 border border-white/10"
+            >
+              <X size={18} />
+            </button>
+
+            <div className="space-y-2">
+              <span className="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                {selectedProduct.category}
+              </span>
+              <h3 className="text-xl font-extrabold text-white">{selectedProduct.name}</h3>
+              <p className="text-xs text-zinc-400 font-mono">SKU: {selectedProduct.sku}</p>
+            </div>
+
+            <div className="flex items-center gap-2 text-amber-400 text-xs">
+              <div className="flex">
+                <Star size={14} fill="currentColor" />
+                <Star size={14} fill="currentColor" />
+                <Star size={14} fill="currentColor" />
+                <Star size={14} fill="currentColor" />
+                <Star size={14} fill="currentColor" />
+              </div>
+              <span className="text-zinc-300 font-bold">4.9 / 5.0 Rating</span>
+              <span className="text-zinc-500 font-mono">&bull; 128 Verified Store Reviews</span>
+            </div>
+
+            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/10 space-y-2">
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-zinc-400">Unit Price:</span>
+                <span className="font-mono text-base font-bold text-indigo-400">
+                  {formatAmount(selectedProduct.price, { decimals: 2 })}
+                </span>
+              </div>
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-zinc-400">Live Inventory:</span>
+                <span className="font-mono font-bold text-emerald-400">{selectedProduct.stock} units available</span>
+              </div>
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-zinc-400">Warranty / Support:</span>
+                <span className="text-zinc-300 font-medium">1-Year Store Express Warranty</span>
+              </div>
+            </div>
+
+            {/* Quantity Selector */}
+            <div className="flex items-center justify-between pt-2">
+              <span className="text-xs font-semibold text-zinc-400 uppercase">Quantity</span>
+              <div className="flex items-center border border-white/10 rounded-xl overflow-hidden font-mono">
+                <button
+                  onClick={() => setPreviewQty(Math.max(1, previewQty - 1))}
+                  className="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-white font-bold"
+                >
+                  -
+                </button>
+                <span className="px-4 font-bold text-white text-sm">{previewQty}</span>
+                <button
+                  onClick={() => setPreviewQty(Math.min(selectedProduct.stock, previewQty + 1))}
+                  className="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-white font-bold"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            <button
+              onClick={() => addToCart(selectedProduct, previewQty)}
+              className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <ShoppingCart size={16} /> Add {previewQty} Unit(s) to Cart ({formatAmount(selectedProduct.price * previewQty)})
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* SHOPPING CART & PAYMENT GATEWAY DRAWER */}
       {showCartDrawer && (
@@ -323,7 +519,7 @@ export default function PublicStorefrontPage() {
               </div>
 
               {/* Items List */}
-              <div className="space-y-2 max-h-[180px] overflow-y-auto pr-1">
+              <div className="space-y-2 max-h-[160px] overflow-y-auto pr-1">
                 {cart.length === 0 ? (
                   <p className="text-xs text-zinc-500 text-center py-8">Your cart is empty.</p>
                 ) : (
@@ -358,6 +554,32 @@ export default function PublicStorefrontPage() {
                   ))
                 )}
               </div>
+
+              {/* Promo Discount Code Form */}
+              {cart.length > 0 && (
+                <div className="pt-1">
+                  <form onSubmit={applyPromoCode} className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Promo code (e.g. NEXUS10)"
+                      value={promoCode}
+                      onChange={(e) => setPromoCode(e.target.value)}
+                      className="flex-1 h-8 bg-slate-900 border border-white/10 rounded-lg px-2.5 text-xs text-white uppercase font-mono placeholder-zinc-500 focus:outline-none"
+                    />
+                    <button
+                      type="submit"
+                      className="px-3 h-8 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-lg transition"
+                    >
+                      Apply
+                    </button>
+                  </form>
+                  {promoApplied && (
+                    <span className="text-[10px] text-emerald-400 font-mono mt-1 block">
+                      ✓ Promo Applied: 10% Discount Saved (-{formatAmount(discountAmount)})
+                    </span>
+                  )}
+                </div>
+              )}
 
               {/* Fulfillment & Payment Gateway Options */}
               {cart.length > 0 && (
@@ -520,8 +742,13 @@ export default function PublicStorefrontPage() {
                     )}
                   </div>
 
-                  {/* Total & Instant Payment Trigger */}
+                  {/* Total & Loyalty Points Earned */}
                   <div className="border-t border-white/10 pt-3 space-y-2">
+                    <div className="flex justify-between items-center text-xs text-amber-400 font-mono">
+                      <span className="flex items-center gap-1"><Sparkles size={13} /> Loyalty Cashback Points:</span>
+                      <strong>+{loyaltyPointsEarned} pts</strong>
+                    </div>
+
                     <div className="flex justify-between items-center text-sm font-bold">
                       <span className="text-zinc-400">Total Amount:</span>
                       <span className="font-mono text-emerald-400 text-base">{formatAmount(cartTotal, { decimals: 2 })}</span>
@@ -541,6 +768,76 @@ export default function PublicStorefrontPage() {
               )}
             </div>
 
+          </div>
+        </div>
+      )}
+
+      {/* TRACK ORDER LOOKUP MODAL */}
+      {showTrackModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-150">
+          <div className="glass max-w-md w-full p-6 rounded-2xl border border-indigo-500/30 bg-slate-900/95 space-y-5 shadow-2xl relative">
+            <button
+              onClick={() => { setShowTrackModal(false); setTrackingResult(null); }}
+              className="absolute right-4 top-4 text-zinc-400 hover:text-white p-1 rounded-lg bg-white/5 border border-white/10"
+            >
+              <X size={18} />
+            </button>
+
+            <div>
+              <h3 className="text-xl font-extrabold text-white flex items-center gap-2">
+                <Truck size={20} className="text-indigo-400" /> Track Live Order Status
+              </h3>
+              <p className="text-xs text-zinc-400 mt-1">Enter your Order Reference ID (e.g. NEX-ORD-XXXXXX) to view live dispatch status.</p>
+            </div>
+
+            <form onSubmit={handleTrackOrderSubmit} className="flex gap-2">
+              <input
+                type="text"
+                required
+                placeholder="NEX-ORD-667821"
+                value={trackOrderId}
+                onChange={(e) => setTrackOrderId(e.target.value)}
+                className="flex-1 h-10 bg-slate-900 border border-white/10 rounded-xl px-3 text-xs font-mono text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 uppercase"
+              />
+              <button
+                type="submit"
+                disabled={trackingLoading}
+                className="px-4 h-10 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl transition cursor-pointer"
+              >
+                {trackingLoading ? 'Searching...' : 'Track'}
+              </button>
+            </form>
+
+            {trackingResult && (
+              <div className="p-4 rounded-xl bg-white/[0.02] border border-white/10 space-y-3 text-xs">
+                {trackingResult.found ? (
+                  <>
+                    <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                      <span className="text-zinc-400">Order ID:</span>
+                      <strong className="font-mono text-indigo-300">{trackingResult.orderId}</strong>
+                    </div>
+                    <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                      <span className="text-zinc-400">Status:</span>
+                      <span className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full font-mono uppercase">
+                        {trackingResult.status}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                      <span className="text-zinc-400">Paid Amount:</span>
+                      <strong className="font-mono text-white">{formatAmount(trackingResult.amount)}</strong>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-zinc-400">Estimated Delivery:</span>
+                      <strong className="text-indigo-400 font-mono">{trackingResult.estimatedDelivery}</strong>
+                    </div>
+                  </>
+                ) : (
+                  <p className="text-center text-red-400 font-mono py-2">
+                    No order record found for "{trackOrderId}". Double check your reference ID.
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}

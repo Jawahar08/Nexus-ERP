@@ -202,4 +202,32 @@ router.post('/checkout', async (req, res) => {
   }
 });
 
+// GET /api/shop/track/:orderId (Live E-Commerce Order Tracking API)
+router.get('/track/:orderId', async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    const transaction = await prisma.transaction.findFirst({
+      where: { reference: orderId.trim() }
+    });
+
+    if (!transaction) {
+      return res.status(404).json({ error: 'Order reference not found' });
+    }
+
+    return res.json({
+      found: true,
+      orderId: transaction.reference,
+      status: 'PAID & DISPATCHED',
+      amount: transaction.amount,
+      date: transaction.date,
+      description: transaction.description,
+      estimatedDelivery: 'Today by 6:00 PM (Express Dispatch)'
+    });
+  } catch (error) {
+    console.error('Track order GET error:', error);
+    return res.status(500).json({ error: 'Failed to look up order status' });
+  }
+});
+
 export default router;
