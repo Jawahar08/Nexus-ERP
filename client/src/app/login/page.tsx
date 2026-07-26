@@ -405,7 +405,10 @@ export default function LoginPage() {
 
                     <button
                       type="button"
-                      onClick={() => setPortalRole("customer")}
+                      onClick={() => {
+                        setPortalRole("customer");
+                        router.push("/shop/nexus.erp");
+                      }}
                       className={cn(
                         "p-2.5 rounded-lg border text-left transition-all cursor-pointer flex flex-col gap-1",
                         portalRole === "customer"
@@ -420,7 +423,21 @@ export default function LoginPage() {
                   </div>
                 </div>
 
-                <form onSubmit={handleDirectShopPasskeySubmit} className="space-y-4">
+                {portalRole === "customer" ? (
+                  <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center space-y-3">
+                    <div className="text-xs text-emerald-300 font-medium">
+                      🛍️ No login credentials needed for shoppers!
+                    </div>
+                    <AnimatedButton
+                      type="button"
+                      onClick={() => router.push("/shop/nexus.erp")}
+                      className="w-full h-11 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-medium text-sm rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20"
+                    >
+                      Open Customer Storefront <ArrowRight size={14} />
+                    </AnimatedButton>
+                  </div>
+                ) : (
+                  <form onSubmit={handleDirectShopPasskeySubmit} className="space-y-4">
                   {/* Shop ID / Domain Input */}
                   <div className="space-y-1.5">
                     <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 block">
@@ -473,6 +490,7 @@ export default function LoginPage() {
                     Authenticate Store <ArrowRight size={14} />
                   </AnimatedButton>
                 </form>
+                )}
 
                 {/* Developer Demo Test Helper (Discreet Toggle) */}
                 <div className="pt-4 border-t border-white/5 space-y-2">
