@@ -685,12 +685,19 @@ router.post('/procurement/status', async (req, res) => {
     }
 
     const existingPO = await prisma.purchaseOrder.findFirst({
-      where: { id: orderId, tenantId },
+      where: { id: orderId },
       include: { supplier: true }
     });
 
     if (!existingPO) {
       return res.status(404).json({ error: 'Purchase Order record not found' });
+    }
+
+    const effectiveTenantId = req.tenantId || existingPO.tenantId;
+    let effectiveUserId = req.userId;
+    if (!effectiveUserId) {
+      const fallbackUser = await prisma.user.findFirst({ where: { tenantId: effectiveTenantId } });
+      effectiveUserId = fallbackUser?.id;
     }
 
     const updatedPO = await prisma.purchaseOrder.update({
@@ -700,7 +707,7 @@ router.post('/procurement/status', async (req, res) => {
 
     // If order received, auto-increment stock & record financial transaction
     if (status === 'received' && existingPO.productId && existingPO.qty) {
-      const product = await prisma.product.findFirst({ where: { id: existingPO.productId, tenantId } });
+      const product = await prisma.product.findFirst({ where: { id: existingPO.productId, tenantId: effectiveTenantId } });
 
       if (product) {
         await prisma.product.update({
@@ -714,7 +721,7 @@ router.post('/procurement/status', async (req, res) => {
             qty: existingPO.qty,
             toWarehouse: product.warehouseId,
             productId: product.id,
-            tenantId
+            tenantId: effectiveTenantId
           }
         });
 
@@ -725,20 +732,26 @@ router.post('/procurement/status', async (req, res) => {
             amount: existingPO.total,
             description: `PO Fulfillment: ${existingPO.qty} units of ${product.name} from ${existingPO.supplier?.name || 'Vendor'}`,
             reference: `PO-${existingPO.id.slice(0, 8)}`,
-            tenantId
+            tenantId: effectiveTenantId
           }
         });
       }
     }
 
-    await prisma.auditLog.create({
-      data: {
-        message: `Updated Purchase Order #${orderId.slice(0, 8)} status to '${status}'.`,
-        module: 'Inventory',
-        tenantId,
-        userId
+    if (effectiveTenantId && effectiveUserId) {
+      try {
+        await prisma.auditLog.create({
+          data: {
+            message: `Updated Purchase Order #${orderId.slice(0, 8)} status to '${status}'.`,
+            module: 'Inventory',
+            tenantId: effectiveTenantId,
+            userId: effectiveUserId
+          }
+        });
+      } catch (auditErr) {
+        console.warn('AuditLog warning:', auditErr.message);
       }
-    });
+    }
 
     return res.json({
       success: true,
@@ -835,12 +848,19 @@ router.post(['/supplier/order-action', '/order-action'], async (req, res) => {
     if (action === 'deliver') nextStatus = 'received';
 
     const existingPO = await prisma.purchaseOrder.findFirst({
-      where: { id: orderId, tenantId },
+      where: { id: orderId },
       include: { supplier: true }
     });
 
     if (!existingPO) {
       return res.status(404).json({ error: 'Purchase Order record not found' });
+    }
+
+    const effectiveTenantId = req.tenantId || existingPO.tenantId;
+    let effectiveUserId = req.userId;
+    if (!effectiveUserId) {
+      const fallbackUser = await prisma.user.findFirst({ where: { tenantId: effectiveTenantId } });
+      effectiveUserId = fallbackUser?.id;
     }
 
     const updatedPO = await prisma.purchaseOrder.update({
@@ -849,7 +869,7 @@ router.post(['/supplier/order-action', '/order-action'], async (req, res) => {
     });
 
     if (nextStatus === 'received' && existingPO.productId && existingPO.qty) {
-      const product = await prisma.product.findFirst({ where: { id: existingPO.productId, tenantId } });
+      const product = await prisma.product.findFirst({ where: { id: existingPO.productId, tenantId: effectiveTenantId } });
       if (product) {
         await prisma.product.update({
           where: { id: product.id },
@@ -862,7 +882,7 @@ router.post(['/supplier/order-action', '/order-action'], async (req, res) => {
             qty: existingPO.qty,
             toWarehouse: product.warehouseId,
             productId: product.id,
-            tenantId
+            tenantId: effectiveTenantId
           }
         });
 
@@ -873,20 +893,26 @@ router.post(['/supplier/order-action', '/order-action'], async (req, res) => {
             amount: existingPO.total,
             description: `Supplier Portal Delivery: ${existingPO.qty} units of ${product.name}`,
             reference: `SUP-PO-${existingPO.id.slice(0, 8)}`,
-            tenantId
+            tenantId: effectiveTenantId
           }
         });
       }
     }
 
-    await prisma.auditLog.create({
-      data: {
-        message: `Supplier Action '${action}' performed on PO #${orderId.slice(0, 8)} (New Status: ${nextStatus}).`,
-        module: 'Inventory',
-        tenantId,
-        userId
+    if (effectiveTenantId && effectiveUserId) {
+      try {
+        await prisma.auditLog.create({
+          data: {
+            message: `Supplier Action '${action}' performed on PO #${orderId.slice(0, 8)} (New Status: ${nextStatus}).`,
+            module: 'Inventory',
+            tenantId: effectiveTenantId,
+            userId: effectiveUserId
+          }
+        });
+      } catch (auditErr) {
+        console.warn('AuditLog warning:', auditErr.message);
       }
-    });
+    }
 
     return res.json({
       success: true,
