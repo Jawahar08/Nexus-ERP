@@ -53,9 +53,9 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
   };
 
   const navItems = [
-    { label: "Overview & VMI Stock", icon: Truck, path: "/supplier/dashboard" },
-    { label: "B2B Purchase Orders", icon: FileText, path: "/supplier/dashboard" },
-    { label: "B2B Invoices & Ledger", icon: DollarSign, path: "/supplier/dashboard" }
+    { id: "vmi", label: "Overview & VMI Stock", icon: Truck, path: "/supplier/dashboard" },
+    { id: "orders", label: "B2B Purchase Orders", icon: FileText, path: "/supplier/dashboard" },
+    { id: "ledger", label: "B2B Invoices & Ledger", icon: DollarSign, path: "/supplier/dashboard" }
   ];
 
   if (!user) return null;
@@ -118,7 +118,7 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
             const active = pathname === item.path;
             return (
               <button
-                key={item.path}
+                key={item.id}
                 onClick={() => router.push(item.path)}
                 className={cn(
                   "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer relative",
