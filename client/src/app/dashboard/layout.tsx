@@ -277,7 +277,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </motion.aside>
 
         {/* WORKSPACE & TOP BAR */}
-        <div className="flex-1 flex flex-col min-w-0 relative">
+        <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden relative">
           {/* Top Bar Navigation */}
           <header className="h-16 border-b border-white/5 flex items-center justify-between px-6 bg-[#09090b]/40 backdrop-blur-xl z-20 shrink-0">
             <div className="flex items-center gap-4">
