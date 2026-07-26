@@ -335,7 +335,7 @@ export default function PublicStorefrontPage() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+    <div className="h-full w-full bg-slate-950 text-white flex flex-col justify-between selection:bg-indigo-500 selection:text-white overflow-y-auto">
       
       {/* STORE HOURS & OPERATING ALERT TICKER HEADER */}
       <div className="bg-gradient-to-r from-indigo-950 via-slate-900 to-purple-950 border-b border-white/10 px-4 lg:px-8 py-2 text-xs flex flex-col sm:flex-row items-center justify-between gap-2 text-zinc-300">

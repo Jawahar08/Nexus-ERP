@@ -197,7 +197,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative min-h-screen w-full flex bg-[#030303] overflow-hidden text-zinc-100">
+    <div className="relative h-full w-full flex bg-[#030303] overflow-y-auto text-zinc-100">
       {/* Dynamic Grid Overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
 
