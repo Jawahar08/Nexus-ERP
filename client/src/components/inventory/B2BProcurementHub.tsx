@@ -69,7 +69,7 @@ export default function B2BProcurementHub({
       }
     } catch (err) {
       console.error("Failed to fetch supplier health:", err);
-    } fontally {
+    } finally {
       setLoadingHealth(false);
     }
   };
