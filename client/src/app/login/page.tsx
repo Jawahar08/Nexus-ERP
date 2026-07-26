@@ -26,9 +26,12 @@ import {
   KeyRound,
   X,
   ShieldAlert,
+  Truck,
+  ShoppingBag
 } from "lucide-react";
 import { AnimatedButton } from "@/components/ui/AnimatedButton";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { cn } from "@/lib/utils";
 
 interface TenantProfile {
   id: string;
@@ -43,6 +46,9 @@ interface TenantProfile {
 
 export default function LoginPage() {
   const router = useRouter();
+
+  // Portal Identity Role: shopkeeper | vendor | customer
+  const [portalRole, setPortalRole] = useState<"shopkeeper" | "vendor" | "customer">("shopkeeper");
 
   // Step 1: Shop Selection, Step 2: User Login
   const [step, setStep] = useState<1 | 2>(1);
@@ -176,7 +182,13 @@ export default function LoginPage() {
       const isSecure = window.location.protocol === "https:";
       document.cookie = `nexus_token=${data.data.accessToken}; path=/; max-age=86400; SameSite=Lax${isSecure ? "; Secure" : ""}`;
 
-      router.push("/dashboard");
+      if (portalRole === "vendor") {
+        router.push("/supplier/dashboard");
+      } else if (portalRole === "customer") {
+        router.push("/shop");
+      } else {
+        router.push("/dashboard");
+      }
     } catch (err: any) {
       setError(err.message || "System failed to contact shop authentication service.");
     } finally {
@@ -348,11 +360,64 @@ export default function LoginPage() {
                     <ShieldCheck size={12} /> Secure SaaS Terminal
                   </span>
                   <h2 className="text-2xl font-bold tracking-tight text-white">
-                    Connect Store Terminal
+                    Connect Portal Terminal
                   </h2>
                   <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
-                    Enter your registered <strong>Shop ID / Store Domain</strong> and <strong>Store Passkey</strong> to proceed.
+                    Select your <strong>Portal Identity</strong> and enter credentials to enter your dedicated portal.
                   </p>
+                </div>
+
+                {/* 3-Way Portal Identity Role Selector */}
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 block">
+                    Portal Identity / Role Access
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setPortalRole("shopkeeper")}
+                      className={cn(
+                        "p-2.5 rounded-lg border text-left transition-all cursor-pointer flex flex-col gap-1",
+                        portalRole === "shopkeeper"
+                          ? "bg-indigo-600/20 border-indigo-500 text-white shadow-[0_0_15px_rgba(99,102,241,0.2)]"
+                          : "bg-white/[0.02] border-white/10 text-zinc-400 hover:text-white"
+                      )}
+                    >
+                      <Store size={15} className={portalRole === "shopkeeper" ? "text-indigo-400" : "text-zinc-500"} />
+                      <span className="text-[11px] font-bold block leading-tight">Shopkeeper</span>
+                      <span className="text-[9px] opacity-70 block">ERP Terminal</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setPortalRole("vendor")}
+                      className={cn(
+                        "p-2.5 rounded-lg border text-left transition-all cursor-pointer flex flex-col gap-1",
+                        portalRole === "vendor"
+                          ? "bg-purple-600/20 border-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.2)]"
+                          : "bg-white/[0.02] border-white/10 text-zinc-400 hover:text-white"
+                      )}
+                    >
+                      <Truck size={15} className={portalRole === "vendor" ? "text-purple-400" : "text-zinc-500"} />
+                      <span className="text-[11px] font-bold block leading-tight">B2B Vendor</span>
+                      <span className="text-[9px] opacity-70 block">Supplier Node</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setPortalRole("customer")}
+                      className={cn(
+                        "p-2.5 rounded-lg border text-left transition-all cursor-pointer flex flex-col gap-1",
+                        portalRole === "customer"
+                          ? "bg-emerald-600/20 border-emerald-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.2)]"
+                          : "bg-white/[0.02] border-white/10 text-zinc-400 hover:text-white"
+                      )}
+                    >
+                      <ShoppingBag size={15} className={portalRole === "customer" ? "text-emerald-400" : "text-zinc-500"} />
+                      <span className="text-[11px] font-bold block leading-tight">Customer</span>
+                      <span className="text-[9px] opacity-70 block">Storefront</span>
+                    </button>
+                  </div>
                 </div>
 
                 <form onSubmit={handleDirectShopPasskeySubmit} className="space-y-4">

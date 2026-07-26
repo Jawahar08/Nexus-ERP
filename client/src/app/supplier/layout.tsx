@@ -54,7 +54,8 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
 
   const navItems = [
     { label: "Overview & VMI Stock", icon: Truck, path: "/supplier/dashboard" },
-    { label: "Shopkeeper ERP Center", icon: Store, path: "/dashboard" }
+    { label: "B2B Purchase Orders", icon: FileText, path: "/supplier/dashboard" },
+    { label: "B2B Invoices & Ledger", icon: DollarSign, path: "/supplier/dashboard" }
   ];
 
   if (!user) return null;
@@ -170,13 +171,8 @@ export default function SupplierLayout({ children }: { children: React.ReactNode
         {/* Top Header */}
         <header className="h-16 border-b border-white/5 flex items-center justify-between px-6 bg-[#0a0b10]/50 backdrop-blur-xl z-20 shrink-0">
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => router.push("/dashboard")}
-              className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-white px-2.5 py-1.5 rounded-lg border border-white/5 bg-white/[0.02] hover:bg-white/5 transition cursor-pointer"
-            >
-              <ArrowLeft size={13} /> Switch to Shop ERP
-            </button>
-            <span className="hidden sm:inline-flex px-2.5 py-0.5 text-[10px] font-bold tracking-widest text-purple-300 bg-purple-500/10 rounded-full border border-purple-500/20 uppercase">
+            <span className="px-2.5 py-0.5 text-[10px] font-bold tracking-widest text-purple-300 bg-purple-500/10 rounded-full border border-purple-500/20 uppercase flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
               B2B Vendor Node Active
             </span>
           </div>
