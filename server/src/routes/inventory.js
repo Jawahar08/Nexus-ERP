@@ -751,4 +751,152 @@ router.post('/procurement/status', async (req, res) => {
   }
 });
 
+// GET /api/supplier/dashboard or /api/inventory/supplier/dashboard
+router.get(['/supplier/dashboard', '/dashboard'], async (req, res) => {
+  try {
+    const tenantId = req.tenantId;
+
+    // Get primary supplier profile or all suppliers for tenant
+    const suppliers = await prisma.supplier.findMany({
+      where: { tenantId },
+      include: {
+        products: { include: { warehouse: true } },
+        purchaseOrders: { include: { supplier: true }, orderBy: { date: 'desc' } }
+      }
+    });
+
+    if (suppliers.length === 0) {
+      return res.json({
+        supplier: { name: 'Demo Vendor Corp', contact: 'Vendor Admin', email: 'vendor@b2b.com' },
+        products: [],
+        purchaseOrders: [],
+        vmiStock: [],
+        metrics: { activeOrdersCount: 0, vmiSkusCount: 0, totalReceivables: 0, avgDispatchDays: 2 }
+      });
+    }
+
+    const activeSupplier = suppliers[0];
+
+    const vmiStock = activeSupplier.products.map((p) => ({
+      id: p.id,
+      name: p.name,
+      sku: p.sku,
+      stock: p.stock,
+      minStock: p.minStock,
+      cost: p.cost,
+      price: p.price,
+      isLowStock: p.stock <= p.minStock,
+      warehouseName: p.warehouse?.name || 'Central Warehouse',
+      status: p.stock <= p.minStock ? 'Restock Needed' : 'Healthy Stock'
+    }));
+
+    const allOrders = suppliers.flatMap((s) => s.purchaseOrders);
+    const activeOrders = allOrders.filter((po) => po.status === 'pending' || po.status === 'confirmed' || po.status === 'in_transit');
+    const totalReceivables = allOrders.reduce((acc, po) => acc + (po.total || 0), 0);
+
+    return res.json({
+      supplier: {
+        id: activeSupplier.id,
+        name: activeSupplier.name,
+        contact: activeSupplier.contact,
+        email: activeSupplier.email,
+        phone: activeSupplier.phone
+      },
+      suppliers: suppliers.map((s) => ({ id: s.id, name: s.name, contact: s.contact, email: s.email })),
+      vmiStock,
+      purchaseOrders: allOrders,
+      metrics: {
+        activeOrdersCount: activeOrders.length,
+        vmiSkusCount: vmiStock.length,
+        totalReceivables,
+        avgDispatchDays: 2
+      }
+    });
+  } catch (error) {
+    console.error('Supplier Dashboard GET Error:', error);
+    return res.status(500).json({ error: 'Failed to load supplier dashboard dataset' });
+  }
+});
+
+// POST /api/supplier/order-action or /api/inventory/supplier/order-action
+router.post(['/supplier/order-action', '/order-action'], async (req, res) => {
+  try {
+    const tenantId = req.tenantId;
+    const userId = req.userId;
+    const { orderId, action, notes } = req.body;
+
+    if (!orderId || !action) {
+      return res.status(400).json({ error: 'Order ID and action are required' });
+    }
+
+    let nextStatus = 'pending';
+    if (action === 'accept') nextStatus = 'confirmed';
+    if (action === 'dispatch') nextStatus = 'in_transit';
+    if (action === 'deliver') nextStatus = 'received';
+
+    const existingPO = await prisma.purchaseOrder.findFirst({
+      where: { id: orderId, tenantId },
+      include: { supplier: true }
+    });
+
+    if (!existingPO) {
+      return res.status(404).json({ error: 'Purchase Order record not found' });
+    }
+
+    const updatedPO = await prisma.purchaseOrder.update({
+      where: { id: orderId },
+      data: { status: nextStatus }
+    });
+
+    if (nextStatus === 'received' && existingPO.productId && existingPO.qty) {
+      const product = await prisma.product.findFirst({ where: { id: existingPO.productId, tenantId } });
+      if (product) {
+        await prisma.product.update({
+          where: { id: product.id },
+          data: { stock: product.stock + existingPO.qty }
+        });
+
+        await prisma.stockMovement.create({
+          data: {
+            type: 'replenish',
+            qty: existingPO.qty,
+            toWarehouse: product.warehouseId,
+            productId: product.id,
+            tenantId
+          }
+        });
+
+        await prisma.transaction.create({
+          data: {
+            type: 'expense',
+            category: 'Cost of Goods Sold (Supplier Portal Delivery)',
+            amount: existingPO.total,
+            description: `Supplier Portal Delivery: ${existingPO.qty} units of ${product.name}`,
+            reference: `SUP-PO-${existingPO.id.slice(0, 8)}`,
+            tenantId
+          }
+        });
+      }
+    }
+
+    await prisma.auditLog.create({
+      data: {
+        message: `Supplier Action '${action}' performed on PO #${orderId.slice(0, 8)} (New Status: ${nextStatus}).`,
+        module: 'Inventory',
+        tenantId,
+        userId
+      }
+    });
+
+    return res.json({
+      success: true,
+      purchaseOrder: updatedPO,
+      message: `Order #${orderId.slice(0, 8)} updated to '${nextStatus}'.`
+    });
+  } catch (error) {
+    console.error('Supplier Order Action Error:', error);
+    return res.status(500).json({ error: 'Failed to process supplier order action' });
+  }
+});
+
 export default router;

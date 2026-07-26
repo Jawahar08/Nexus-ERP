@@ -41,6 +41,7 @@ app.use((req, res, next) => {
 // Mount Routes (auth is applied universally, internal paths handle login exemptions)
 app.use('/api/auth', authMiddleware, authRouter);
 app.use('/api/inventory', authMiddleware, inventoryRouter);
+app.use('/api/supplier', authMiddleware, inventoryRouter);
 app.use('/api/crm', authMiddleware, crmRouter);
 app.use('/api/hr', authMiddleware, hrRouter);
 app.use('/api/finance', authMiddleware, financeRouter);
