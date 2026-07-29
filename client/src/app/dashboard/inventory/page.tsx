@@ -51,9 +51,9 @@ export default function InventoryPage() {
   const [dailyStockUpdates, setDailyStockUpdates] = useState<{ [id: string]: number }>({});
   const [savingDailyStock, setSavingDailyStock] = useState(false);
 
-  const fetchInventory = async () => {
+  const fetchInventory = async (showLoading = true) => {
     try {
-      setLoading(true);
+      if (showLoading) setLoading(true);
       const res = await fetch('/api/inventory');
       if (res.ok) {
         const payload = await res.json();
@@ -85,7 +85,7 @@ export default function InventoryPage() {
     } catch (err) {
       console.error('Failed to fetch inventory:', err);
     } finally {
-      setLoading(false);
+      if (showLoading) setLoading(false);
     }
   };
 
@@ -392,7 +392,7 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
               Back to Catalog
             </button>
           </div>
-          <SmartScannerPOS products={data.products} onCheckoutComplete={fetchInventory} />
+          <SmartScannerPOS products={data.products} onCheckoutComplete={() => fetchInventory(false)} />
         </div>
       ) : (
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
