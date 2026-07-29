@@ -93,7 +93,9 @@ export default function PublicStorefrontPage() {
     fetchPublicCatalog();
   }, [storeDomain]);
 
-  const addToCart = (product: any, qty: number = 1) => {
+  const [addedToast, setAddedToast] = useState<string | null>(null);
+
+  const addToCart = (product: any, qty: number = 1, openDrawer: boolean = false) => {
     setCart((prev) => {
       const existing = prev.find((item) => item.id === product.id);
       if (existing) {
@@ -113,7 +115,13 @@ export default function PublicStorefrontPage() {
       ];
     });
     if (selectedProduct) setSelectedProduct(null);
-    setShowCartDrawer(true);
+    
+    if (openDrawer) {
+      setShowCartDrawer(true);
+    } else {
+      setAddedToast(`Added "${product.name}" (+${qty}) to cart!`);
+      setTimeout(() => setAddedToast(null), 2500);
+    }
   };
 
   const updateCartQty = (id: string, newQty: number) => {
@@ -1014,6 +1022,14 @@ export default function PublicStorefrontPage() {
           </div>
         );
       })()}
+
+      {/* Sleek Item Added Toast Notification */}
+      {addedToast && (
+        <div className="fixed bottom-6 right-6 z-50 bg-indigo-600 text-white font-bold text-xs px-4 py-3 rounded-xl shadow-2xl border border-indigo-400 flex items-center gap-2 font-mono animate-bounce">
+          <CheckCircle2 size={16} className="text-emerald-400" />
+          <span>{addedToast}</span>
+        </div>
+      )}
 
     </div>
   );
