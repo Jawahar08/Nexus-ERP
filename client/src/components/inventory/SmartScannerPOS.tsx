@@ -284,16 +284,20 @@ export default function SmartScannerPOS({
     try {
       // Record stock movement for each cart item
       for (const item of cart) {
-        await fetch('/api/inventory/movement', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type: 'sale',
-            productId: item.id,
-            qty: item.qty,
-            fromWarehouseId: item.warehouseId,
-          }),
-        });
+        try {
+          await fetch('/api/inventory/movement', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              type: 'sale',
+              productId: item.id,
+              qty: item.qty,
+              fromWarehouseId: item.warehouseId,
+            }),
+          });
+        } catch (mErr) {
+          console.warn('Stock movement API note:', mErr);
+        }
       }
 
       // Generate Invoice & Receipt Payload

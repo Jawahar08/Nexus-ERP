@@ -378,6 +378,48 @@ router.post('/movement', async (req, res) => {
         return { success: true, product: updated };
       }
 
+      // ==========================================
+      // WORKFLOW 4: POS SALES
+      // ==========================================
+      if (type === 'sale') {
+        const updated = await tx.product.update({
+          where: { id: productId },
+          data: { stock: { decrement: parsedQty } }
+        });
+
+        await tx.stockMovement.create({
+          data: {
+            type: 'sale',
+            qty: parsedQty,
+            fromWarehouse: sourceProduct.warehouse ? sourceProduct.warehouse.name : 'Main Store',
+            productId: sourceProduct.id,
+            tenantId
+          }
+        });
+
+        await tx.transaction.create({
+          data: {
+            type: 'income',
+            category: 'POS Sale',
+            amount: sourceProduct.price * parsedQty,
+            description: `POS Sale: ${sourceProduct.name} (${parsedQty} units)`,
+            reference: 'POS-SALE',
+            tenantId
+          }
+        });
+
+        await tx.auditLog.create({
+          data: {
+            message: `POS Sale recorded for "${sourceProduct.name}" (-${parsedQty} units).`,
+            module: 'Inventory',
+            tenantId,
+            userId
+          }
+        });
+
+        return { success: true, product: updated };
+      }
+
       throw new Error('Invalid movement type specified.');
     });
 
