@@ -210,7 +210,7 @@ export default function SmartScannerPOS({
           sku: product.sku,
           price: product.price,
           qty: addQty,
-          warehouseId: product.warehouseId,
+          warehouseId: product.warehouseId || product.warehouse?.id || '',
         },
       ];
     });
@@ -524,7 +524,11 @@ export default function SmartScannerPOS({
                       <button
                         type="button"
                         disabled={isOut}
-                        className="mt-1 px-2.5 py-1 bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 text-[10px] font-bold rounded border border-indigo-500/30 transition"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (!isOut) addToCart(p);
+                        }}
+                        className="mt-1 px-2.5 py-1 bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 text-[10px] font-bold rounded border border-indigo-500/30 transition cursor-pointer"
                       >
                         + Add
                       </button>
