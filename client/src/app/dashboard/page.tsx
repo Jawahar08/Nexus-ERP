@@ -217,11 +217,11 @@ export default function DashboardHero() {
               <Sparkles size={11} className="text-[#5667F6]" /> NEXUSERP AUTOPILOT ACTIVE
             </span>
           </div>
-          <h1 className="text-3xl md:text-5xl font-serif text-white leading-tight">
+          <h1 className="text-3xl md:text-5xl font-serif text-[#14171F] leading-tight">
             Good Morning, Jawahar
           </h1>
-          <p className="text-sm text-zinc-400 mt-1">
-            Operational workspace view for <span className="text-[#F5C84B] font-semibold">Acme Corp</span> • {new Date().toLocaleDateString(undefined, { dateStyle: 'full' })}
+          <p className="text-sm text-[#4F5565] mt-1">
+            Operational workspace view for <span className="text-[#5C64ED] font-semibold">Acme Corp</span> • {new Date().toLocaleDateString(undefined, { dateStyle: 'full' })}
           </p>
         </motion.div>
 

@@ -49,27 +49,27 @@
 
 @layer base {
   :root {
-    --paper-bg: #F5F1E9;
-    --ink-text: #111522;
-    --background: #0B0E14;
-    --foreground: #F3F4F6;
-    --card: rgba(20, 24, 36, 0.85);
-    --card-foreground: #F3F4F6;
-    --popover: #0f1115;
-    --popover-foreground: #fafafa;
-    --primary: #5667F6;
+    --paper-bg: #FAF7F2;
+    --ink-text: #14171F;
+    --background: #FAF7F2;
+    --foreground: #14171F;
+    --card: #FFFFFF;
+    --card-foreground: #14171F;
+    --popover: #FFFFFF;
+    --popover-foreground: #14171F;
+    --primary: #5C64ED;
     --primary-foreground: #ffffff;
-    --secondary: #1E2333;
-    --secondary-foreground: #F3F4F6;
-    --muted: #161A26;
-    --muted-foreground: #94A3B8;
+    --secondary: #F2ECE4;
+    --secondary-foreground: #14171F;
+    --muted: #EFE8DD;
+    --muted-foreground: #4F5565;
     --accent: #F5C84B;
-    --accent-foreground: #111522;
+    --accent-foreground: #14171F;
     --destructive: #EF4444;
     --destructive-foreground: #ffffff;
-    --border: rgba(255, 255, 255, 0.08);
-    --input: rgba(255, 255, 255, 0.06);
-    --ring: #5667F6;
+    --border: rgba(20, 23, 31, 0.1);
+    --input: rgba(20, 23, 31, 0.06);
+    --ring: #5C64ED;
   }
 }
 

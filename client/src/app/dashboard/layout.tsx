@@ -149,44 +149,44 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <DashboardContext.Provider value={{ user, changeRole, notifications, dismissNotification, matrix, refreshMatrix }}>
-      <div className="flex h-screen bg-[#070709] overflow-hidden text-zinc-100 font-sans">
-        {/* Glow Spots */}
-        <div className="absolute top-[-300px] left-[-300px] w-[800px] h-[800px] rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.05)_0%,transparent_70%)] pointer-events-none" />
-        <div className="absolute bottom-[-300px] right-[-300px] w-[800px] h-[800px] rounded-full bg-[radial-gradient(circle,rgba(139,92,246,0.03)_0%,transparent_70%)] pointer-events-none" />
+      <div className="flex h-screen bg-[#FAF7F2] overflow-hidden text-[#14171F] font-sans selection:bg-[#5C64ED] selection:text-white">
+        {/* Soft Background Warm Glow Spots */}
+        <div className="absolute top-[-300px] left-[-300px] w-[800px] h-[800px] rounded-full bg-[radial-gradient(circle,rgba(210,214,250,0.35)_0%,transparent_70%)] pointer-events-none" />
+        <div className="absolute bottom-[-300px] right-[-300px] w-[800px] h-[800px] rounded-full bg-[radial-gradient(circle,rgba(244,232,219,0.5)_0%,transparent_70%)] pointer-events-none" />
 
         {/* SIDEBAR - Desktop */}
         <motion.aside
           animate={{ width: sidebarCollapsed ? 80 : 260 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           className={cn(
-            "hidden md:flex flex-col h-full bg-[#09090b]/80 border-r border-white/5 backdrop-blur-xl relative z-30 shrink-0",
+            "hidden md:flex flex-col h-full bg-[#F5F0E6] border-r border-[#14171F]/10 relative z-30 shrink-0",
             sidebarCollapsed ? "items-center" : ""
           )}
         >
           {/* Brand/Header */}
-          <div className="h-16 px-6 flex items-center justify-between border-b border-white/5 w-full">
+          <div className="h-16 px-6 flex items-center justify-between border-b border-[#14171F]/10 w-full">
             {!sidebarCollapsed ? (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="flex items-center gap-2.5"
               >
-                <div className="w-8 h-8 rounded-full bg-[#5667F6] flex items-center justify-center text-white font-serif font-black text-base shadow-[0_0_15px_rgba(86,103,246,0.4)]">
+                <div className="w-8 h-8 rounded-full bg-[#14171F] flex items-center justify-center text-white font-serif font-black text-base shadow-xs">
                   N
                 </div>
-                <span className="font-serif font-bold text-base tracking-tight text-white">
-                  Nexuserp
+                <span className="font-serif font-bold text-base tracking-tight text-[#14171F]">
+                  Nexuserp<span className="text-[#5C64ED]">.</span>
                 </span>
               </motion.div>
             ) : (
-              <div className="w-8 h-8 rounded-full bg-[#5667F6] flex items-center justify-center text-white font-serif font-black text-base mx-auto shadow-[0_0_15px_rgba(86,103,246,0.4)]">
+              <div className="w-8 h-8 rounded-full bg-[#14171F] flex items-center justify-center text-white font-serif font-black text-base mx-auto shadow-xs">
                 N
               </div>
             )}
             {!sidebarCollapsed && (
               <button
                 onClick={() => setSidebarCollapsed(true)}
-                className="p-1 rounded-md text-zinc-500 hover:text-white hover:bg-white/5 transition"
+                className="p-1 rounded-md text-[#4F5565] hover:text-[#14171F] hover:bg-white/60 transition"
               >
                 <ChevronLeft size={16} />
               </button>
@@ -197,7 +197,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {sidebarCollapsed && (
             <button
               onClick={() => setSidebarCollapsed(false)}
-              className="mt-4 p-1 rounded-md text-zinc-500 hover:text-white hover:bg-white/5 transition"
+              className="mt-4 p-1 rounded-md text-[#4F5565] hover:text-[#14171F] hover:bg-white/60 transition"
             >
               <ChevronRight size={16} />
             </button>
@@ -205,17 +205,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
           {/* Tenant Sandbox Selector */}
           {!sidebarCollapsed ? (
-            <div className="m-4 p-3 rounded-lg border border-white/5 bg-white/[0.02]">
-              <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-1.5">
+            <div className="m-4 p-3 rounded-xl border border-[#14171F]/10 bg-white/70">
+              <div className="text-[10px] font-bold text-[#4F5565] uppercase tracking-widest flex items-center gap-1.5 font-mono">
                 <Building size={10} /> Tenant Node
               </div>
-              <div className="text-xs font-bold text-zinc-200 mt-1 truncate">
+              <div className="text-xs font-bold text-[#14171F] mt-0.5 truncate">
                 {user.tenantSlug || "acme-corp"}
               </div>
             </div>
           ) : (
             <div className="my-4 text-center">
-              <Building size={16} className="text-zinc-600 mx-auto" />
+              <Building size={16} className="text-[#4F5565] mx-auto" />
             </div>
           )}
 
@@ -230,15 +230,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   className={cn(
                     "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-full text-xs font-semibold transition-all group relative cursor-pointer",
                     active
-                      ? "bg-[#5667F6] text-white shadow-md shadow-[#5667F6]/30 border border-[#5667F6]"
-                      : "text-zinc-400 hover:text-white hover:bg-white/[0.04] border border-transparent"
+                      ? "bg-[#14171F] text-white shadow-sm border border-[#14171F]"
+                      : "text-[#4F5565] hover:text-[#14171F] hover:bg-white/60 border border-transparent"
                   )}
                 >
                   <item.icon
                     size={17}
                     className={cn(
                       "shrink-0 transition-transform group-hover:scale-105",
-                      active ? "text-white" : "text-zinc-400 group-hover:text-zinc-200"
+                      active ? "text-[#5C64ED]" : "text-[#4F5565] group-hover:text-[#14171F]"
                     )}
                   />
                   {!sidebarCollapsed && <span>{item.label}</span>}
@@ -283,12 +283,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* WORKSPACE & TOP BAR */}
         <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden relative">
           {/* Top Bar Navigation */}
-          <header className="h-16 border-b border-white/5 flex items-center justify-between px-6 bg-[#09090b]/40 backdrop-blur-xl z-20 shrink-0">
+          <header className="h-16 border-b border-[#14171F]/10 flex items-center justify-between px-6 bg-[#FAF7F2]/90 backdrop-blur-xl z-20 shrink-0">
             <div className="flex items-center gap-4">
               {/* Mobile menu trigger */}
               <button
                 onClick={() => setMobileOpen(true)}
-                className="md:hidden p-1 rounded-md text-zinc-400 hover:text-white hover:bg-white/5 transition"
+                className="md:hidden p-1 rounded-md text-[#4F5565] hover:text-[#14171F] hover:bg-white/60 transition"
               >
                 <Menu size={20} />
               </button>
@@ -296,11 +296,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {/* Ctrl+K Search visual trigger */}
               <button
                 onClick={() => setSearchOpen(true)}
-                className="hidden sm:flex items-center gap-3 px-3 py-1.5 bg-white/[0.03] hover:bg-white/[0.06] border border-white/5 rounded-lg text-zinc-500 hover:text-zinc-300 text-xs transition cursor-pointer"
+                className="hidden sm:flex items-center gap-3 px-3.5 py-1.5 bg-white border border-[#14171F]/10 rounded-full text-[#4F5565] hover:text-[#14171F] text-xs transition cursor-pointer shadow-xs"
               >
-                <Search size={14} />
+                <Search size={14} className="text-[#5C64ED]" />
                 <span>Search system...</span>
-                <kbd className="px-1.5 py-0.5 bg-white/10 rounded text-[9px] font-mono text-zinc-400">
+                <kbd className="px-1.5 py-0.5 bg-[#F5F0E6] rounded-md text-[9px] font-mono text-[#14171F] border border-[#14171F]/10">
                   Ctrl+K
                 </kbd>
               </button>
@@ -310,15 +310,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {/* Command Palette button icon for mobile */}
               <button
                 onClick={() => setSearchOpen(true)}
-                className="sm:hidden p-2 rounded-lg border border-white/5 text-zinc-400 hover:text-white hover:bg-white/5 transition cursor-pointer"
+                className="sm:hidden p-2 rounded-lg border border-[#14171F]/10 text-[#4F5565] hover:text-[#14171F] hover:bg-white/60 transition cursor-pointer"
               >
                 <Command size={16} />
               </button>
 
               {/* Sandbox Switcher Info Badges */}
-              <div className="hidden md:flex items-center gap-1.5 border border-white/5 bg-white/[0.02] rounded-lg px-3 py-1.5 text-xs text-zinc-400">
-                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-                <span>Role: <strong className="text-white font-semibold">{user.role}</strong></span>
+              <div className="hidden md:flex items-center gap-1.5 border border-[#14171F]/10 bg-white rounded-full px-3 py-1.5 text-xs text-[#4F5565] shadow-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#5C64ED] animate-pulse" />
+                <span>Role: <strong className="text-[#14171F] font-semibold">{user.role}</strong></span>
               </div>
 
               {/* Country & Currency Switcher */}
