@@ -637,6 +637,11 @@ router.get('/track/:orderId', async (req, res) => {
       estimatedDelivery: 'Today by 6:00 PM (Express Dispatch)'
     });
   } catch (error) {
+    console.error('Track order GET error:', error);
+    return res.status(500).json({ error: 'Failed to look up order status' });
+  }
+});
+
 // GET /api/shop/promotions (Get Storefront & POS Promo Codes List & Active Banner)
 router.get('/promotions', async (req, res) => {
   try {
