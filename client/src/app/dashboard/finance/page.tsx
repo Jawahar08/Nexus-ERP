@@ -96,22 +96,22 @@ export default function FinancePage() {
     <div className="flex flex-col gap-6">
       
       {/* Controls Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-[#14171F]">
         <div>
-          <h2 className="text-xl font-bold">Financial Accounting & Ledgers</h2>
-          <p className="text-xs text-[var(--text-muted)] mt-0.5">Control transaction postings, analyze overhead costs, and log expenses.</p>
+          <h2 className="text-xl font-serif font-bold text-[#14171F]">Financial Accounting & Ledgers</h2>
+          <p className="text-xs text-[#4F5565] font-medium mt-0.5">Control transaction postings, analyze overhead costs, and log expenses.</p>
         </div>
         <div className="flex gap-2.5">
           <button 
             onClick={fetchFinance}
-            className="btn flex items-center gap-2 bg-slate-900 border border-[var(--border)] px-3.5 py-2 rounded-lg text-xs font-semibold hover:bg-[var(--border)] transition cursor-pointer"
+            className="flex items-center gap-2 bg-[#FAF7F2] hover:bg-white border border-[#14171F]/10 text-[#14171F] px-4 py-2 rounded-full text-xs font-bold transition cursor-pointer shadow-xs"
           >
-            <RefreshCw size={12} />
+            <RefreshCw size={12} className="text-[#5C64ED]" />
             Reconcile
           </button>
           <button 
             onClick={() => setShowAddTx(true)}
-            className="btn flex items-center gap-2 bg-[var(--primary)] text-white px-4 py-2 rounded-lg text-xs font-semibold hover:bg-[var(--primary-hover)] transition cursor-pointer"
+            className="flex items-center gap-2 bg-[#5C64ED] text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-[#4B52D9] transition cursor-pointer shadow-xs"
           >
             <Plus size={14} />
             Record Transaction
@@ -120,39 +120,39 @@ export default function FinancePage() {
       </div>
 
       {/* Cash Flow metrics strip */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-[#14171F]">
         
         {/* Income total */}
-        <div className="glass p-5 rounded-xl border border-[var(--border)] flex justify-between items-center">
+        <div className="bg-white p-5 rounded-[24px] border border-[#14171F]/10 shadow-xs flex justify-between items-center">
           <div>
-            <span className="text-[10px] uppercase font-bold text-[var(--text-muted)] tracking-wider">Gross Inflow</span>
-            <div className="text-xl font-bold text-white mt-1">{formatAmount(totalIncome)}</div>
+            <span className="text-[10px] uppercase font-mono font-bold text-[#4F5565] tracking-wider">Gross Inflow</span>
+            <div className="text-2xl font-serif font-bold text-emerald-700 mt-1">{formatAmount(totalIncome)}</div>
           </div>
-          <div className="w-10 h-10 rounded-full bg-emerald-950/45 text-emerald-400 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center border border-emerald-300">
             <ArrowUpRight size={18} />
           </div>
         </div>
 
         {/* Expenses total */}
-        <div className="glass p-5 rounded-xl border border-[var(--border)] flex justify-between items-center">
+        <div className="bg-white p-5 rounded-[24px] border border-[#14171F]/10 shadow-xs flex justify-between items-center">
           <div>
-            <span className="text-[10px] uppercase font-bold text-[var(--text-muted)] tracking-wider">Gross Outflow</span>
-            <div className="text-xl font-bold text-white mt-1">{formatAmount(totalExpense)}</div>
+            <span className="text-[10px] uppercase font-mono font-bold text-[#4F5565] tracking-wider">Gross Outflow</span>
+            <div className="text-2xl font-serif font-bold text-rose-700 mt-1">{formatAmount(totalExpense)}</div>
           </div>
-          <div className="w-10 h-10 rounded-full bg-rose-950/45 text-rose-400 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-2xl bg-rose-100 text-rose-800 flex items-center justify-center border border-rose-300">
             <ArrowDownRight size={18} />
           </div>
         </div>
 
         {/* Net cashflow */}
-        <div className="glass p-5 rounded-xl border border-[var(--border)] flex justify-between items-center">
+        <div className="bg-white p-5 rounded-[24px] border border-[#14171F]/10 shadow-xs flex justify-between items-center">
           <div>
-            <span className="text-[10px] uppercase font-bold text-[var(--text-muted)] tracking-wider">Net Cash Flow Balance</span>
-            <div className={`text-xl font-bold mt-1 ${netCashFlow >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+            <span className="text-[10px] uppercase font-mono font-bold text-[#4F5565] tracking-wider">Net Cash Flow Balance</span>
+            <div className={`text-2xl font-serif font-bold mt-1 ${netCashFlow >= 0 ? 'text-emerald-700' : 'text-rose-700'}`}>
               {formatAmount(netCashFlow)}
             </div>
           </div>
-          <div className="w-10 h-10 rounded-full bg-cyan-950/45 text-cyan-400 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-2xl bg-[#5C64ED]/10 text-[#5C64ED] flex items-center justify-center border border-[#5C64ED]/20">
             <Coins size={18} />
           </div>
         </div>
@@ -160,16 +160,16 @@ export default function FinancePage() {
       </div>
 
       {/* Main Ledger grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 text-[#14171F]">
         
         {/* Ledger transaction database */}
-        <div className="glass p-6 rounded-xl border border-[var(--border)] xl:col-span-2 flex flex-col gap-4">
-          <h3 className="font-bold text-sm">Corporate General Ledger Account Sheet</h3>
+        <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs xl:col-span-2 flex flex-col gap-4 text-[#14171F]">
+          <h3 className="font-serif font-bold text-base text-[#14171F]">Corporate General Ledger Account Sheet</h3>
           
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-[var(--border)] text-[var(--text-muted)] h-10 uppercase tracking-wider font-bold">
+                <tr className="border-b border-[#14171F]/10 text-[#4F5565] h-10 uppercase tracking-wider font-bold font-mono">
                   <th className="pb-2">Date</th>
                   <th className="pb-2">Category</th>
                   <th className="pb-2">Description</th>
@@ -177,20 +177,20 @@ export default function FinancePage() {
                   <th className="pb-2 text-right">Amount</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-[#14171F]/5 text-[#14171F]">
                 {transactions.map((tx: any) => {
                   const isIncome = tx.type === 'income';
                   return (
-                    <tr key={tx.id} className="border-b border-[var(--border)] hover:bg-[rgba(255,255,255,0.01)] h-12 transition-colors">
-                      <td className="font-mono text-[var(--text-muted)]">{new Date(tx.date).toLocaleDateString()}</td>
+                    <tr key={tx.id} className="hover:bg-[#FAF7F2]/60 h-14 transition-colors">
+                      <td className="font-mono text-[#4F5565]">{new Date(tx.date).toLocaleDateString()}</td>
                       <td>
-                        <span className="bg-slate-800 text-[var(--text-muted)] px-2 py-0.5 rounded text-[10px]">
+                        <span className="bg-[#FAF7F2] border border-[#14171F]/10 text-[#14171F] px-2.5 py-1 rounded-full text-[10px] font-bold font-mono">
                           {tx.category}
                         </span>
                       </td>
-                      <td className="font-medium text-white">{tx.description}</td>
-                      <td className="font-mono text-[var(--text-muted)]">{tx.reference}</td>
-                      <td className={`text-right font-mono font-bold text-xs ${isIncome ? 'text-emerald-400' : 'text-rose-400'}`}>
+                      <td className="font-bold text-[#14171F]">{tx.description}</td>
+                      <td className="font-mono text-[#4F5565]">{tx.reference}</td>
+                      <td className={`text-right font-mono font-bold text-xs ${isIncome ? 'text-emerald-700' : 'text-rose-700'}`}>
                         {isIncome ? '+' : '-'}{formatAmount(tx.amount)}
                       </td>
                     </tr>
@@ -202,9 +202,9 @@ export default function FinancePage() {
         </div>
 
         {/* Expenses Category pie breakdown */}
-        <div className="glass p-6 rounded-xl border border-[var(--border)] flex flex-col gap-4">
-          <h3 className="font-bold text-sm flex items-center gap-2">
-            <PieChart size={16} className="text-[var(--primary)]" />
+        <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs flex flex-col gap-4 text-[#14171F]">
+          <h3 className="font-serif font-bold text-base text-[#14171F] flex items-center gap-2">
+            <PieChart size={16} className="text-[#5C64ED]" />
             Overhead Expense Allocations
           </h3>
 
@@ -213,22 +213,22 @@ export default function FinancePage() {
               <div className="flex flex-col gap-4">
                 
                 {/* Visual horizontal CSS bars */}
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3.5">
                   {allocations.map((a: any) => (
                     <div key={a.name} className="flex flex-col gap-1.5 text-xs">
-                      <div className="flex justify-between font-semibold">
-                        <span className="text-[var(--text-muted)]">{a.name}</span>
-                        <span className="text-white font-mono">{a.percent.toFixed(0)}% ({formatAmount(a.value)})</span>
+                      <div className="flex justify-between font-bold">
+                        <span className="text-[#4F5565]">{a.name}</span>
+                        <span className="text-[#14171F] font-mono">{a.percent.toFixed(0)}% ({formatAmount(a.value)})</span>
                       </div>
                       
                       {/* Custom color bars based on categories */}
-                      <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+                      <div className="h-2.5 w-full bg-[#FAF7F2] rounded-full overflow-hidden border border-[#14171F]/10">
                         <div 
                           className={`h-full rounded-full ${
-                            a.name === 'Payroll' ? 'bg-indigo-500' :
-                            a.name === 'Rent' ? 'bg-amber-500' :
-                            a.name === 'Infrastructure' ? 'bg-cyan-500' :
-                            a.name === 'Purchasing' ? 'bg-emerald-500' : 'bg-slate-500'
+                            a.name === 'Payroll' ? 'bg-[#5C64ED]' :
+                            a.name === 'Rent' ? 'bg-[#F5C84B]' :
+                            a.name === 'Infrastructure' ? 'bg-cyan-600' :
+                            a.name === 'Purchasing' ? 'bg-emerald-600' : 'bg-[#14171F]'
                           }`}
                           style={{ width: `${a.percent}%` }}
                         />
@@ -238,7 +238,7 @@ export default function FinancePage() {
                 </div>
               </div>
             ) : (
-              <div className="text-center text-[var(--text-muted)] py-10 text-xs">
+              <div className="text-center text-[#4F5565] py-10 text-xs font-medium">
                 No expense allocations recorded.
               </div>
             )}

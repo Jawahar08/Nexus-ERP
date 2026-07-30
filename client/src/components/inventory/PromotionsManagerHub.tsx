@@ -5,16 +5,12 @@ import {
   Tag,
   Plus,
   Zap,
-  Percent,
   CheckCircle2,
   X,
   RefreshCw,
   Copy,
   Check,
-  Calendar,
-  AlertCircle,
   TrendingUp,
-  Clock,
   Sparkles,
   ToggleLeft,
   ToggleRight
@@ -112,17 +108,16 @@ export default function PromotionsManagerHub() {
       });
 
       if (res.ok) {
-        const payload = await res.json();
-        setPromotions((prev) => [payload.promotion, ...prev.filter((p) => p.code !== payload.promotion.code)]);
+        alert(`Coupon ${newCode.toUpperCase()} created successfully!`);
         setShowCreateModal(false);
         setNewCode('');
         setNewDesc('');
-        setNewBannerHeadline('');
+        fetchPromotions();
       } else {
-        alert('Failed to create promotion');
+        alert('Failed to create promotion code');
       }
     } catch (err) {
-      alert('Network error creating promo code');
+      alert('Network error creating promotion');
     } finally {
       setCreating(false);
     }
@@ -140,16 +135,14 @@ export default function PromotionsManagerHub() {
   return (
     <div className="flex flex-col gap-6">
       
-      {/* ════════════════════════════════════════════════════════════════ */}
-      {/* 1. TOP HEADER BAR & SUMMARY METRICS                              */}
-      {/* ════════════════════════════════════════════════════════════════ */}
-      <div className="glass p-5 rounded-2xl border border-indigo-500/20 bg-slate-900/90 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      {/* 1. TOP HEADER BAR & SUMMARY METRICS */}
+      <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-[#14171F]">
         <div>
-          <h2 className="text-lg font-extrabold text-white flex items-center gap-2">
-            <Tag className="text-indigo-400" size={20} />
+          <h2 className="text-lg font-serif font-bold text-[#14171F] flex items-center gap-2">
+            <Tag className="text-[#5C64ED]" size={20} />
             Promotions, Coupon Codes & Flash Sales Engine
           </h2>
-          <p className="text-xs text-zinc-400 mt-1">
+          <p className="text-xs text-[#4F5565] font-medium mt-1">
             Create discount coupons (percentage & flat off), set minimum cart value thresholds, and configure live store flash sale banners.
           </p>
         </div>
@@ -157,7 +150,7 @@ export default function PromotionsManagerHub() {
         <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={() => setShowCreateModal(true)}
-            className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center gap-2 cursor-pointer"
+            className="px-4 py-2.5 bg-[#14171F] hover:bg-[#202532] text-white font-bold text-xs rounded-full shadow-md transition flex items-center gap-2 cursor-pointer"
           >
             <Plus size={16} />
             Create Promo Coupon
@@ -165,53 +158,49 @@ export default function PromotionsManagerHub() {
 
           <button
             onClick={fetchPromotions}
-            className="px-3.5 py-2.5 bg-white/5 hover:bg-white/10 text-zinc-300 text-xs font-semibold rounded-xl border border-white/10 transition flex items-center gap-1.5 cursor-pointer"
+            className="px-3.5 py-2.5 bg-[#FAF7F2] hover:bg-white text-[#14171F] text-xs font-bold rounded-full border border-[#14171F]/10 transition flex items-center gap-1.5 cursor-pointer shadow-xs"
           >
             <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
           </button>
         </div>
       </div>
 
-      {/* ════════════════════════════════════════════════════════════════ */}
-      {/* 2. STATS OVERVIEW CARDS                                          */}
-      {/* ════════════════════════════════════════════════════════════════ */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="glass p-4 rounded-xl border border-white/10 bg-slate-900/60 flex items-center gap-3">
-          <div className="p-3 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
+      {/* 2. STATS OVERVIEW CARDS */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-[#14171F]">
+        <div className="bg-white p-5 rounded-[24px] border border-[#14171F]/10 shadow-xs flex items-center gap-3">
+          <div className="p-3 rounded-2xl bg-[#5C64ED]/10 border border-[#5C64ED]/20 text-[#5C64ED]">
             <Tag size={20} />
           </div>
           <div>
-            <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider block">Active Coupons</span>
-            <span className="font-mono font-bold text-lg text-white">{activePromosCount} Active</span>
+            <span className="text-[10px] text-[#4F5565] font-mono font-bold uppercase tracking-wider block">Active Coupons</span>
+            <span className="font-mono font-bold text-lg text-[#14171F]">{activePromosCount} Active</span>
           </div>
         </div>
 
-        <div className="glass p-4 rounded-xl border border-white/10 bg-slate-900/60 flex items-center gap-3">
-          <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+        <div className="bg-white p-5 rounded-[24px] border border-[#14171F]/10 shadow-xs flex items-center gap-3">
+          <div className="p-3 rounded-2xl bg-emerald-100 border border-emerald-300 text-emerald-700">
             <TrendingUp size={20} />
           </div>
           <div>
-            <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider block">Total Coupon Redeems</span>
-            <span className="font-mono font-bold text-lg text-emerald-400">{totalUsesCount} Uses</span>
+            <span className="text-[10px] text-[#4F5565] font-mono font-bold uppercase tracking-wider block">Total Coupon Redeems</span>
+            <span className="font-mono font-bold text-lg text-emerald-700">{totalUsesCount} Uses</span>
           </div>
         </div>
 
-        <div className="glass p-4 rounded-xl border border-white/10 bg-slate-900/60 flex items-center gap-3">
-          <div className="p-3 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-400">
+        <div className="bg-white p-5 rounded-[24px] border border-[#14171F]/10 shadow-xs flex items-center gap-3">
+          <div className="p-3 rounded-2xl bg-purple-100 border border-purple-300 text-purple-800">
             <Zap size={20} />
           </div>
           <div>
-            <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider block">Top Code</span>
-            <span className="font-mono font-bold text-lg text-purple-300">
+            <span className="text-[10px] text-[#4F5565] font-mono font-bold uppercase tracking-wider block">Top Code</span>
+            <span className="font-mono font-bold text-lg text-[#5C64ED]">
               {promotions[0]?.code || 'SAVE20'}
             </span>
           </div>
         </div>
       </div>
 
-      {/* ════════════════════════════════════════════════════════════════ */}
-      {/* 3. PROMO CODES GRID                                              */}
-      {/* ════════════════════════════════════════════════════════════════ */}
+      {/* 3. PROMO CODES GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
         {promotions.map((promo) => {
           const isFlat = promo.discountType === 'flat';
@@ -220,71 +209,71 @@ export default function PromotionsManagerHub() {
           return (
             <div
               key={promo.code}
-              className={`glass p-5 rounded-2xl border transition flex flex-col justify-between gap-4 relative ${
+              className={`bg-white p-6 rounded-[28px] border transition flex flex-col justify-between gap-4 relative shadow-xs text-[#14171F] ${
                 promo.isActive
-                  ? 'bg-slate-900/80 border-indigo-500/30 hover:border-indigo-500/60'
-                  : 'bg-slate-900/40 border-white/5 opacity-60'
+                  ? 'border-[#14171F]/10 hover:border-[#5C64ED]'
+                  : 'opacity-60 border-[#14171F]/5 bg-[#FAF7F2]'
               }`}
             >
               {/* Header: Code & Toggle */}
-              <div className="flex items-start justify-between border-b border-white/10 pb-3">
+              <div className="flex items-start justify-between border-b border-[#14171F]/10 pb-3">
                 <div className="flex items-center gap-2">
-                  <span className="font-mono font-black text-base text-indigo-300 tracking-wider bg-indigo-950/80 px-2.5 py-1 rounded-lg border border-indigo-500/30">
+                  <span className="font-mono font-black text-base text-[#5C64ED] tracking-wider bg-[#5C64ED]/10 px-3 py-1 rounded-full border border-[#5C64ED]/20">
                     {promo.code}
                   </span>
                   <button
                     onClick={() => handleCopyCode(promo.code)}
-                    className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white transition"
+                    className="p-2 rounded-full bg-[#FAF7F2] hover:bg-[#F2ECE4] text-[#4F5565] hover:text-[#14171F] transition"
                     title="Copy code"
                   >
-                    {isCopied ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
+                    {isCopied ? <Check size={14} className="text-emerald-700" /> : <Copy size={14} />}
                   </button>
                 </div>
 
                 <button
                   onClick={() => togglePromo(promo.code)}
                   className={`text-xs font-bold flex items-center gap-1 transition cursor-pointer ${
-                    promo.isActive ? 'text-emerald-400' : 'text-zinc-500'
+                    promo.isActive ? 'text-emerald-700' : 'text-[#4F5565]'
                   }`}
                 >
-                  {promo.isActive ? <ToggleRight size={22} /> : <ToggleLeft size={22} />}
+                  {promo.isActive ? <ToggleRight size={24} /> : <ToggleLeft size={24} />}
                   <span>{promo.isActive ? 'Active' : 'Disabled'}</span>
                 </button>
               </div>
 
               {/* Promo Details */}
               <div className="space-y-2 text-xs">
-                <p className="text-white font-bold leading-snug">{promo.description}</p>
+                <p className="text-[#14171F] font-bold leading-snug">{promo.description}</p>
                 
-                <div className="grid grid-cols-2 gap-2 text-[11px] font-mono text-zinc-400 bg-slate-950/60 p-3 rounded-xl border border-white/5">
+                <div className="grid grid-cols-2 gap-2 text-[11px] font-mono text-[#14171F] bg-[#FAF7F2] p-3.5 rounded-2xl border border-[#14171F]/10">
                   <div>
-                    <span className="text-zinc-500 block text-[10px]">DISCOUNT</span>
-                    <strong className="text-indigo-400">
+                    <span className="text-[#4F5565] block text-[10px] font-bold">DISCOUNT</span>
+                    <strong className="text-[#5C64ED]">
                       {isFlat ? formatAmount(promo.discountValue) : `${promo.discountValue}% OFF`}
                     </strong>
                   </div>
 
                   <div>
-                    <span className="text-zinc-500 block text-[10px]">MIN ORDER</span>
-                    <strong className="text-white">
+                    <span className="text-[#4F5565] block text-[10px] font-bold">MIN ORDER</span>
+                    <strong className="text-[#14171F]">
                       {promo.minOrderValue > 0 ? formatAmount(promo.minOrderValue) : 'No Min'}
                     </strong>
                   </div>
 
                   <div>
-                    <span className="text-zinc-500 block text-[10px]">USES</span>
-                    <strong className="text-emerald-400">{promo.usageCount} / {promo.maxUsage}</strong>
+                    <span className="text-[#4F5565] block text-[10px] font-bold">USES</span>
+                    <strong className="text-emerald-700">{promo.usageCount} / {promo.maxUsage}</strong>
                   </div>
 
                   <div>
-                    <span className="text-zinc-500 block text-[10px]">EXPIRY</span>
-                    <strong className="text-zinc-300">{promo.expiryDate}</strong>
+                    <span className="text-[#4F5565] block text-[10px] font-bold">EXPIRY</span>
+                    <strong className="text-[#14171F]">{promo.expiryDate}</strong>
                   </div>
                 </div>
 
                 {promo.bannerHeadline && (
-                  <div className="p-2 rounded-lg bg-purple-950/30 border border-purple-500/20 text-[10px] text-purple-300 flex items-center gap-1.5 font-mono">
-                    <Sparkles size={12} className="text-purple-400 shrink-0" />
+                  <div className="p-2.5 rounded-xl bg-purple-100 border border-purple-300 text-[10px] text-purple-900 flex items-center gap-1.5 font-mono font-bold">
+                    <Sparkles size={12} className="text-purple-700 shrink-0" />
                     <span className="truncate">{promo.bannerHeadline}</span>
                   </div>
                 )}
@@ -295,19 +284,17 @@ export default function PromotionsManagerHub() {
         })}
       </div>
 
-      {/* ════════════════════════════════════════════════════════════════ */}
-      {/* 4. CREATE NEW PROMO CODE MODAL                                   */}
-      {/* ════════════════════════════════════════════════════════════════ */}
+      {/* 4. CREATE NEW PROMO CODE MODAL */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-white/10 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 bg-[#14171F]/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-[#14171F]/10 rounded-[28px] max-w-md w-full p-6 space-y-4 shadow-2xl relative text-[#14171F]">
             
-            <div className="flex justify-between items-center border-b border-white/10 pb-3">
-              <h3 className="font-bold text-sm text-white flex items-center gap-2">
-                <Tag size={18} className="text-indigo-400" />
-                Create New Promo Code
+            <div className="flex justify-between items-center border-b border-[#14171F]/10 pb-3">
+              <h3 className="font-serif font-bold text-base text-[#14171F] flex items-center gap-2">
+                <Tag size={18} className="text-[#5C64ED]" />
+                Create New Coupon Code
               </h3>
-              <button onClick={() => setShowCreateModal(false)} className="text-zinc-400 hover:text-white p-1">
+              <button onClick={() => setShowCreateModal(false)} className="text-[#4F5565] hover:text-[#14171F] p-1 rounded-full bg-[#FAF7F2]">
                 <X size={16} />
               </button>
             </div>
@@ -315,108 +302,110 @@ export default function PromotionsManagerHub() {
             <form onSubmit={handleCreatePromoSubmit} className="space-y-3.5 text-xs">
               
               <div>
-                <label className="font-bold text-zinc-300 block mb-1 uppercase tracking-wider text-[10px]">
-                  Promo Code (Uppercase)
+                <label className="font-mono font-bold text-[#4F5565] block mb-1 uppercase tracking-wider text-[10px]">
+                  Promo Code Identifier
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. SUMMER25"
+                  required
+                  placeholder="e.g. FLASH30"
                   value={newCode}
                   onChange={(e) => setNewCode(e.target.value)}
-                  className="w-full h-10 bg-slate-950 border border-white/10 rounded-xl px-3 text-xs font-mono font-bold text-indigo-300 uppercase focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                  required
+                  className="w-full h-10 bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3 text-xs font-mono font-bold text-[#5C64ED] uppercase focus:outline-none focus:ring-1 focus:ring-[#5C64ED]"
                 />
               </div>
 
               <div>
-                <label className="font-bold text-zinc-300 block mb-1 uppercase tracking-wider text-[10px]">
+                <label className="font-mono font-bold text-[#4F5565] block mb-1 uppercase tracking-wider text-[10px]">
                   Description
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. 25% OFF Summer Sale Discount"
+                  required
+                  placeholder="e.g. Get 30% off on all organic dairy items"
                   value={newDesc}
                   onChange={(e) => setNewDesc(e.target.value)}
-                  className="w-full h-10 bg-slate-950 border border-white/10 rounded-xl px-3 text-xs text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full h-10 bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3 text-xs font-medium text-[#14171F] focus:outline-none focus:ring-1 focus:ring-[#5C64ED]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-bold text-zinc-300 block mb-1 uppercase tracking-wider text-[10px]">
+                  <label className="font-mono font-bold text-[#4F5565] block mb-1 uppercase tracking-wider text-[10px]">
                     Discount Type
                   </label>
                   <select
                     value={newDiscountType}
                     onChange={(e) => setNewDiscountType(e.target.value as any)}
-                    className="w-full h-10 bg-slate-950 border border-white/10 rounded-xl px-3 text-xs text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full h-10 bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3 text-xs font-semibold text-[#14171F] focus:outline-none focus:ring-1 focus:ring-[#5C64ED]"
                   >
                     <option value="percentage">Percentage (%)</option>
-                    <option value="flat">Flat Amount ($/₹)</option>
+                    <option value="flat">Flat Amount</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="font-bold text-zinc-300 block mb-1 uppercase tracking-wider text-[10px]">
+                  <label className="font-mono font-bold text-[#4F5565] block mb-1 uppercase tracking-wider text-[10px]">
                     Discount Value
                   </label>
                   <input
                     type="number"
+                    required
                     value={newDiscountVal}
                     onChange={(e) => setNewDiscountVal(e.target.value)}
-                    className="w-full h-10 bg-slate-950 border border-white/10 rounded-xl px-3 text-xs font-mono font-bold text-emerald-400 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                    required
+                    className="w-full h-10 bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3 text-xs font-mono font-bold text-[#5C64ED] focus:outline-none focus:ring-1 focus:ring-[#5C64ED]"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-bold text-zinc-300 block mb-1 uppercase tracking-wider text-[10px]">
-                    Min Cart Value ($)
+                  <label className="font-mono font-bold text-[#4F5565] block mb-1 uppercase tracking-wider text-[10px]">
+                    Min Order Value
                   </label>
                   <input
                     type="number"
                     value={newMinOrderVal}
                     onChange={(e) => setNewMinOrderVal(e.target.value)}
-                    className="w-full h-10 bg-slate-950 border border-white/10 rounded-xl px-3 text-xs font-mono text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full h-10 bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3 text-xs font-mono font-bold text-[#14171F] focus:outline-none focus:ring-1 focus:ring-[#5C64ED]"
                   />
                 </div>
 
                 <div>
-                  <label className="font-bold text-zinc-300 block mb-1 uppercase tracking-wider text-[10px]">
-                    Expiry Date
+                  <label className="font-mono font-bold text-[#4F5565] block mb-1 uppercase tracking-wider text-[10px]">
+                    Max Usage Limit
                   </label>
                   <input
-                    type="date"
-                    value={newExpiryDate}
-                    onChange={(e) => setNewExpiryDate(e.target.value)}
-                    className="w-full h-10 bg-slate-950 border border-white/10 rounded-xl px-3 text-xs text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    type="number"
+                    value={newMaxUsage}
+                    onChange={(e) => setNewMaxUsage(e.target.value)}
+                    className="w-full h-10 bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3 text-xs font-mono font-bold text-[#14171F] focus:outline-none focus:ring-1 focus:ring-[#5C64ED]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="font-bold text-zinc-300 block mb-1 uppercase tracking-wider text-[10px]">
-                  Store Banner Headline (Optional)
+                <label className="font-mono font-bold text-[#4F5565] block mb-1 uppercase tracking-wider text-[10px]">
+                  Expiration Date
                 </label>
                 <input
-                  type="text"
-                  placeholder="e.g. 🔥 SUMMER FLASH SALE: 25% OFF (Use Code: SUMMER25)"
-                  value={newBannerHeadline}
-                  onChange={(e) => setNewBannerHeadline(e.target.value)}
-                  className="w-full h-10 bg-slate-950 border border-white/10 rounded-xl px-3 text-xs text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  type="date"
+                  value={newExpiryDate}
+                  onChange={(e) => setNewExpiryDate(e.target.value)}
+                  className="w-full h-10 bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3 text-xs font-mono font-bold text-[#14171F] focus:outline-none focus:ring-1 focus:ring-[#5C64ED]"
                 />
               </div>
 
-              <button
-                type="submit"
-                disabled={creating}
-                className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer mt-2"
-              >
-                <CheckCircle2 size={16} />
-                {creating ? 'Creating Code...' : 'Create Promo Code & Activate'}
-              </button>
+              <div className="pt-2 flex gap-2">
+                <button
+                  type="submit"
+                  disabled={creating}
+                  className="flex-1 py-3.5 bg-[#14171F] hover:bg-[#202532] text-white font-bold text-xs rounded-full shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <CheckCircle2 size={16} />
+                  {creating ? 'Creating Coupon...' : 'Publish New Coupon Code'}
+                </button>
+              </div>
 
             </form>
 

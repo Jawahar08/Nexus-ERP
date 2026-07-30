@@ -5,21 +5,9 @@ import {
   Receipt,
   Search,
   Printer,
-  Download,
-  Send,
   Eye,
-  Filter,
   RefreshCw,
-  ShoppingBag,
-  ScanBarcode,
-  Building2,
-  Calendar,
-  CheckCircle2,
-  X,
-  CreditCard,
-  Phone,
-  User,
-  DollarSign
+  X
 } from 'lucide-react';
 import { useCurrencyStore } from '@/store/currencyStore';
 
@@ -183,38 +171,34 @@ export default function InvoicesAndBillsPage() {
   return (
     <div className="flex flex-col gap-6">
       
-      {/* ════════════════════════════════════════════════════════════════ */}
-      {/* 1. TOP BILLS REPOSITORY HEADER                                   */}
-      {/* ════════════════════════════════════════════════════════════════ */}
-      <div className="glass p-5 rounded-2xl border border-indigo-500/20 bg-slate-900/90 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      {/* 1. TOP BILLS REPOSITORY HEADER */}
+      <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-[#14171F]">
         <div>
-          <h2 className="text-lg font-extrabold text-white flex items-center gap-2">
-            <Receipt className="text-indigo-400" size={20} />
+          <h2 className="text-lg font-serif font-bold text-[#14171F] flex items-center gap-2">
+            <Receipt className="text-[#5C64ED]" size={20} />
             Bills, POS Receipts & Tax Invoices Central Vault
           </h2>
-          <p className="text-xs text-zinc-400 mt-1">
+          <p className="text-xs text-[#4F5565] font-medium mt-1">
             Centralized permanent storage for all sales bills generated across Smart POS, E-Commerce Storefront, and B2B Tax Invoices.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="text-right font-mono bg-slate-950 px-3.5 py-1.5 rounded-xl border border-white/10">
-            <span className="text-[10px] text-zinc-500 block">TOTAL STORE BILLS REVENUE</span>
-            <span className="font-bold text-sm text-emerald-400">{formatAmount(totalBillRevenue, { decimals: 2 })}</span>
+          <div className="text-right font-mono bg-[#FAF7F2] px-4 py-2 rounded-2xl border border-[#14171F]/10">
+            <span className="text-[10px] text-[#4F5565] block font-bold uppercase">TOTAL STORE BILLS REVENUE</span>
+            <span className="font-bold text-base text-emerald-700">{formatAmount(totalBillRevenue, { decimals: 2 })}</span>
           </div>
 
           <button
             onClick={fetchAllBills}
-            className="px-3.5 py-2.5 bg-white/5 hover:bg-white/10 text-zinc-300 text-xs font-semibold rounded-xl border border-white/10 transition flex items-center gap-1.5 cursor-pointer"
+            className="px-3.5 py-2.5 bg-[#14171F] hover:bg-[#202532] text-white text-xs font-bold rounded-full transition flex items-center gap-1.5 cursor-pointer shadow-xs"
           >
             <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
           </button>
         </div>
       </div>
 
-      {/* ════════════════════════════════════════════════════════════════ */}
-      {/* 2. FILTERS & SEARCH BAR                                          */}
-      {/* ════════════════════════════════════════════════════════════════ */}
+      {/* 2. FILTERS & SEARCH BAR */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         
         {/* Type Filter Buttons */}
@@ -231,14 +215,14 @@ export default function InvoicesAndBillsPage() {
               <button
                 key={f.id}
                 onClick={() => setFilterType(f.id)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer border ${
+                className={`px-4 py-2 rounded-full text-xs font-bold transition flex items-center gap-1.5 cursor-pointer border ${
                   isActive
-                    ? 'bg-indigo-600 text-white border-indigo-400 shadow-md'
-                    : 'bg-slate-900/80 text-zinc-400 border-white/10 hover:bg-white/5 hover:text-white'
+                    ? 'bg-[#14171F] text-white border-[#14171F] shadow-sm'
+                    : 'bg-white text-[#4F5565] border-[#14171F]/10 hover:bg-[#FAF7F2] hover:text-[#14171F]'
                 }`}
               >
                 <span>{f.label}</span>
-                <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono ${isActive ? 'bg-white/20 text-white' : 'bg-white/10 text-zinc-400'}`}>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${isActive ? 'bg-white/20 text-white' : 'bg-[#FAF7F2] text-[#14171F]'}`}>
                   {count}
                 </span>
               </button>
@@ -247,95 +231,93 @@ export default function InvoicesAndBillsPage() {
         </div>
 
         {/* Search Bar */}
-        <div className="relative w-full sm:w-72">
-          <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500" />
+        <div className="relative w-full sm:w-80">
+          <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#5C64ED]" />
           <input
             type="text"
             placeholder="Search Invoice # or Customer Phone..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-9 bg-slate-900 border border-white/10 rounded-xl pl-9 pr-3 text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="w-full h-10 bg-white border border-[#14171F]/10 rounded-full pl-10 pr-4 text-xs font-medium text-[#14171F] placeholder-[#4F5565] focus:outline-none focus:ring-1 focus:ring-[#5C64ED]"
           />
         </div>
 
       </div>
 
-      {/* ════════════════════════════════════════════════════════════════ */}
-      {/* 3. BILLS TABLE LIST                                              */}
-      {/* ════════════════════════════════════════════════════════════════ */}
-      <div className="glass rounded-2xl border border-white/10 bg-slate-900/80 overflow-hidden">
+      {/* 3. BILLS TABLE LIST */}
+      <div className="bg-white rounded-[28px] border border-[#14171F]/10 overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-950/80 border-b border-white/10 text-zinc-400 font-bold uppercase text-[10px] tracking-wider font-mono">
+            <thead className="bg-[#FAF7F2] border-b border-[#14171F]/10 text-[#4F5565] font-bold uppercase text-[10px] tracking-wider font-mono">
               <tr>
-                <th className="p-3.5">Invoice / Bill No</th>
-                <th className="p-3.5">Bill Channel</th>
-                <th className="p-3.5">Customer & Phone</th>
-                <th className="p-3.5">Date & Time</th>
-                <th className="p-3.5">Payment Method</th>
-                <th className="p-3.5 text-right">Total Amount</th>
-                <th className="p-3.5 text-center">Action</th>
+                <th className="p-4">Invoice / Bill No</th>
+                <th className="p-4">Bill Channel</th>
+                <th className="p-4">Customer & Phone</th>
+                <th className="p-4">Date & Time</th>
+                <th className="p-4">Payment Method</th>
+                <th className="p-4 text-right">Total Amount</th>
+                <th className="p-4 text-center">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5 text-zinc-300">
+            <tbody className="divide-y divide-[#14171F]/5 text-[#14171F]">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="text-center py-12 text-zinc-500">
-                    <RefreshCw className="animate-spin text-indigo-400 mx-auto mb-2" size={20} />
+                  <td colSpan={7} className="text-center py-12 text-[#4F5565]">
+                    <RefreshCw className="animate-spin text-[#5C64ED] mx-auto mb-2" size={20} />
                     Loading store bills...
                   </td>
                 </tr>
               ) : filteredBills.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="text-center py-12 text-zinc-500 space-y-1">
-                    <Receipt size={28} className="mx-auto text-zinc-600 mb-1" />
-                    <p className="font-bold text-sm text-zinc-400">No bills found</p>
+                  <td colSpan={7} className="text-center py-12 text-[#4F5565] space-y-1">
+                    <Receipt size={28} className="mx-auto text-[#4F5565] mb-1" />
+                    <p className="font-serif font-bold text-base text-[#14171F]">No bills found</p>
                     <p>Sales made via POS or storefront checkout will be permanently stored here.</p>
                   </td>
                 </tr>
               ) : (
                 filteredBills.map((bill) => (
-                  <tr key={bill.id} className="hover:bg-white/[0.02] transition">
+                  <tr key={bill.id} className="hover:bg-[#FAF7F2]/60 transition">
                     
-                    <td className="p-3.5 font-mono font-bold text-indigo-300">
+                    <td className="p-4 font-mono font-bold text-[#5C64ED]">
                       {bill.invoiceNo}
                     </td>
 
-                    <td className="p-3.5">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${
+                    <td className="p-4">
+                      <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold border ${
                         bill.type === 'POS Counter Sale'
-                          ? 'bg-indigo-500/10 text-indigo-300 border-indigo-500/30'
+                          ? 'bg-[#5C64ED]/10 text-[#5C64ED] border-[#5C64ED]/30'
                           : bill.type === 'E-Commerce Storefront'
-                          ? 'bg-purple-500/10 text-purple-300 border-purple-500/30'
-                          : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
+                          ? 'bg-purple-100 text-purple-800 border-purple-300'
+                          : 'bg-emerald-100 text-emerald-800 border-emerald-300'
                       }`}>
                         {bill.type}
                       </span>
                     </td>
 
-                    <td className="p-3.5">
-                      <span className="font-semibold text-white block">{bill.customerName}</span>
-                      <span className="text-[10px] text-zinc-500 font-mono">{bill.customerPhone}</span>
+                    <td className="p-4">
+                      <span className="font-bold text-[#14171F] block">{bill.customerName}</span>
+                      <span className="text-[10px] text-[#4F5565] font-mono">{bill.customerPhone}</span>
                     </td>
 
-                    <td className="p-3.5 font-mono text-[11px] text-zinc-400">
+                    <td className="p-4 font-mono text-[11px] text-[#4F5565]">
                       {bill.date}
                     </td>
 
-                    <td className="p-3.5">
-                      <span className="font-mono text-zinc-300 font-bold bg-slate-950 px-2 py-0.5 rounded border border-white/5 text-[10px]">
+                    <td className="p-4">
+                      <span className="font-mono text-[#14171F] font-bold bg-[#FAF7F2] px-2.5 py-1 rounded-full border border-[#14171F]/10 text-[10px]">
                         {bill.paymentMethod}
                       </span>
                     </td>
 
-                    <td className="p-3.5 text-right font-mono font-bold text-sm text-emerald-400">
+                    <td className="p-4 text-right font-mono font-bold text-sm text-emerald-700">
                       {formatAmount(bill.total, { decimals: 2 })}
                     </td>
 
-                    <td className="p-3.5 text-center">
+                    <td className="p-4 text-center">
                       <button
                         onClick={() => openBillModal(bill)}
-                        className="px-3 py-1.5 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white font-bold text-xs rounded-xl border border-indigo-500/30 transition flex items-center justify-center gap-1 mx-auto cursor-pointer"
+                        className="px-3.5 py-1.5 bg-[#14171F] hover:bg-[#202532] text-white font-bold text-xs rounded-full transition flex items-center justify-center gap-1 mx-auto cursor-pointer shadow-xs"
                       >
                         <Eye size={13} />
                         View Bill
@@ -350,22 +332,20 @@ export default function InvoicesAndBillsPage() {
         </div>
       </div>
 
-      {/* ════════════════════════════════════════════════════════════════ */}
-      {/* 4. PRINTABLE TAX INVOICE & RECEIPT MODAL                         */}
-      {/* ════════════════════════════════════════════════════════════════ */}
+      {/* 4. PRINTABLE TAX INVOICE & RECEIPT MODAL */}
       {isViewModalOpen && selectedBill && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-white/10 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 bg-[#14171F]/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-[#14171F]/10 rounded-[28px] max-w-md w-full p-6 space-y-4 shadow-2xl relative text-[#14171F]">
             
-            <div className="flex justify-between items-center border-b border-white/10 pb-3">
+            <div className="flex justify-between items-center border-b border-[#14171F]/10 pb-3">
               <div>
-                <h3 className="font-bold text-sm text-white flex items-center gap-2">
-                  <Receipt size={18} className="text-indigo-400" />
+                <h3 className="font-serif font-bold text-base text-[#14171F] flex items-center gap-2">
+                  <Receipt size={18} className="text-[#5C64ED]" />
                   Tax Invoice Bill Record
                 </h3>
-                <span className="text-xs font-mono text-indigo-300 font-bold">{selectedBill.invoiceNo}</span>
+                <span className="text-xs font-mono text-[#5C64ED] font-bold">{selectedBill.invoiceNo}</span>
               </div>
-              <button onClick={() => setIsViewModalOpen(false)} className="text-zinc-400 hover:text-white p-1">
+              <button onClick={() => setIsViewModalOpen(false)} className="text-[#4F5565] hover:text-[#14171F] p-1 rounded-full bg-[#FAF7F2]">
                 <X size={16} />
               </button>
             </div>
@@ -373,28 +353,24 @@ export default function InvoicesAndBillsPage() {
             {/* Printable Bill Thermal Element */}
             <div
               id="bill-receipt"
-              className="bg-white text-black p-5 rounded-lg border-2 border-black space-y-3 font-mono text-[11px] leading-tight select-none shadow-inner"
+              className="bg-[#FAF7F2] text-[#14171F] p-5 rounded-2xl border border-[#14171F]/15 space-y-3 font-mono text-[11px] leading-tight select-none shadow-inner"
             >
-              
-              {/* Header */}
-              <div className="text-center border-b border-black pb-2 space-y-0.5">
-                <h2 className="font-black text-base uppercase">NEXUS RETAIL STORE</h2>
-                <p className="text-[10px]">TAX INVOICE & CASH BILL</p>
+              <div className="text-center border-b border-[#14171F]/20 pb-2 space-y-0.5">
+                <h2 className="font-black text-base uppercase tracking-wider">NEXUS RETAIL STORE</h2>
+                <p className="text-[10px] text-[#4F5565]">TAX INVOICE & CASH BILL</p>
                 <p className="text-[9px] font-bold">INVOICE: {selectedBill.invoiceNo}</p>
-                <p className="text-[9px] text-zinc-600">{selectedBill.date}</p>
+                <p className="text-[9px] text-[#4F5565]">{selectedBill.date}</p>
               </div>
 
-              {/* Customer Info */}
-              <div className="border-b border-black pb-2 text-[10px] space-y-0.5">
+              <div className="border-b border-[#14171F]/20 pb-2 text-[10px] space-y-0.5">
                 <p><strong>Customer:</strong> {selectedBill.customerName}</p>
                 <p><strong>Phone:</strong> {selectedBill.customerPhone}</p>
                 <p><strong>Cashier/Channel:</strong> {selectedBill.cashier || selectedBill.type}</p>
               </div>
 
-              {/* Itemized Table */}
               <table className="w-full text-left text-[10px]">
                 <thead>
-                  <tr className="border-b border-black">
+                  <tr className="border-b border-[#14171F]/20">
                     <th>ITEM</th>
                     <th className="text-center">QTY</th>
                     <th className="text-right">PRICE</th>
@@ -402,7 +378,7 @@ export default function InvoicesAndBillsPage() {
                 </thead>
                 <tbody>
                   {selectedBill.items.map((item, idx) => (
-                    <tr key={idx} className="border-b border-zinc-200">
+                    <tr key={idx} className="border-b border-[#14171F]/5">
                       <td className="py-1 truncate max-w-[130px]">{item.name}</td>
                       <td className="py-1 text-center font-bold">{item.qty}</td>
                       <td className="py-1 text-right font-bold">{formatAmount(item.price * item.qty, { decimals: 2 })}</td>
@@ -411,14 +387,13 @@ export default function InvoicesAndBillsPage() {
                 </tbody>
               </table>
 
-              {/* Totals */}
-              <div className="border-t-2 border-black pt-2 space-y-1 text-[10px]">
+              <div className="border-t-2 border-[#14171F] pt-2 space-y-1 text-[10px]">
                 <div className="flex justify-between">
                   <span>Subtotal:</span>
                   <span>{formatAmount(selectedBill.subtotal, { decimals: 2 })}</span>
                 </div>
                 {selectedBill.discount > 0 && (
-                  <div className="flex justify-between text-zinc-700">
+                  <div className="flex justify-between text-emerald-700 font-bold">
                     <span>Discount:</span>
                     <span>-{formatAmount(selectedBill.discount, { decimals: 2 })}</span>
                   </div>
@@ -427,7 +402,7 @@ export default function InvoicesAndBillsPage() {
                   <span>Tax (GST 18%):</span>
                   <span>{formatAmount(selectedBill.tax, { decimals: 2 })}</span>
                 </div>
-                <div className="flex justify-between font-black text-xs border-t border-black pt-1">
+                <div className="flex justify-between font-black text-xs border-t border-[#14171F] pt-1 text-[#14171F]">
                   <span>TOTAL BILL:</span>
                   <span>{formatAmount(selectedBill.total, { decimals: 2 })}</span>
                 </div>
@@ -437,26 +412,24 @@ export default function InvoicesAndBillsPage() {
                 </div>
               </div>
 
-              {/* Footer */}
-              <div className="text-center pt-2 border-t border-black">
+              <div className="text-center pt-2 border-t border-[#14171F]/20">
                 <p className="text-[9px] font-bold">THANK YOU FOR SHOPPING WITH US!</p>
-                <p className="text-[8px] text-zinc-500">Visit online: nexus-erp.com/shop</p>
+                <p className="text-[8px] text-[#4F5565]">Visit online: nexus-erp.com/shop</p>
               </div>
 
             </div>
 
-            {/* Action Buttons */}
             <div className="flex gap-2 pt-2">
               <button
                 onClick={() => window.print()}
-                className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 py-3.5 bg-[#14171F] hover:bg-[#202532] text-white font-bold text-xs rounded-full shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Printer size={16} />
                 Print Thermal Bill (80mm / A4)
               </button>
               <button
                 onClick={() => setIsViewModalOpen(false)}
-                className="px-4 py-3 bg-white/10 hover:bg-white/20 text-zinc-300 font-bold text-xs rounded-xl transition cursor-pointer"
+                className="px-5 py-3.5 bg-[#FAF7F2] hover:bg-[#F2ECE4] text-[#14171F] font-bold text-xs rounded-full border border-[#14171F]/10 transition cursor-pointer"
               >
                 Done
               </button>

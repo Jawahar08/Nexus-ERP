@@ -147,64 +147,63 @@ export default function HRPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      
-      {/* Controls Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 no-print">
+      {/* Controls row */}
+      <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-[#14171F] no-print">
         <div>
-          <h2 className="text-xl font-bold">HR, Commissions & Attendance Command</h2>
-          <p className="text-xs text-[var(--text-muted)] mt-0.5">Personnel directory, sales commission bonuses, and Mobile QR attendance clock-in.</p>
+          <h2 className="text-xl font-serif font-bold text-[#14171F]">Human Resources & Staff Payroll</h2>
+          <p className="text-xs text-[#4F5565] font-medium mt-0.5">Personnel directory, July 1-5 attendance logs, absence approvals, sales commissions, and printable 80mm payslips.</p>
         </div>
-        <div className="flex gap-2.5">
+        <div className="flex flex-wrap gap-2">
           <button 
-            onClick={() => setActiveTab('commissions')}
-            className={`btn flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold border transition cursor-pointer ${
-              activeTab === 'commissions' ? 'bg-indigo-600 text-white border-indigo-500' : 'bg-slate-900 border-[var(--border)] text-indigo-300 hover:bg-[var(--border)]'
-            }`}
-          >
-            <Trophy size={14} />
-            Commissions
-          </button>
-          <button 
-            onClick={() => setActiveTab('qr-attendance')}
-            className={`btn flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold border transition cursor-pointer ${
-              activeTab === 'qr-attendance' ? 'bg-purple-600 text-white border-purple-500' : 'bg-slate-900 border-[var(--border)] text-purple-300 hover:bg-[var(--border)]'
+            onClick={() => setActiveTab(activeTab === 'qr-attendance' ? 'directory' : 'qr-attendance')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold border transition cursor-pointer ${
+              activeTab === 'qr-attendance' ? 'bg-[#14171F] text-white border-[#14171F] shadow-sm' : 'bg-[#FAF7F2] border-[#14171F]/10 text-[#5C64ED] hover:bg-white'
             }`}
           >
             <QrCode size={14} />
-            Mobile QR Terminal
+            {activeTab === 'qr-attendance' ? 'Back to HR Directory' : 'QR Scanner Kiosk Terminal'}
+          </button>
+          <button 
+            onClick={() => setActiveTab(activeTab === 'commissions' ? 'directory' : 'commissions')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold border transition cursor-pointer ${
+              activeTab === 'commissions' ? 'bg-purple-700 text-white border-purple-700 shadow-sm' : 'bg-purple-50 border border-purple-200 text-purple-800 hover:bg-purple-100'
+            }`}
+          >
+            <Trophy size={14} />
+            {activeTab === 'commissions' ? 'Back to HR Directory' : 'Sales Commissions Engine'}
           </button>
           <button 
             onClick={() => setShowLeaveForm(true)}
-            className="btn flex items-center gap-2 bg-slate-900 border border-[var(--border)] px-4 py-2 rounded-lg text-xs font-semibold hover:bg-[var(--border)] transition cursor-pointer"
+            className="flex items-center gap-2 bg-[#FAF7F2] border border-[#14171F]/10 px-4 py-2 rounded-full text-xs font-bold text-[#14171F] hover:bg-white transition cursor-pointer shadow-xs"
           >
-            <Calendar size={14} />
-            Apply Leave
+            <Calendar size={14} className="text-[#5C64ED]" />
+            Request Absence
           </button>
           <button 
             onClick={() => setShowAddEmployee(true)}
-            className="btn flex items-center gap-2 bg-[var(--primary)] text-white px-4 py-2 rounded-lg text-xs font-semibold hover:bg-[var(--primary-hover)] transition cursor-pointer"
+            className="flex items-center gap-2 bg-[#5C64ED] text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-[#4B52D9] transition cursor-pointer shadow-xs"
           >
             <Plus size={14} />
-            Onboard Personnel
+            Register Staff
           </button>
         </div>
       </div>
 
-      {activeTab === 'commissions' ? (
-        <StaffCommissionsHub />
-      ) : activeTab === 'qr-attendance' ? (
+      {activeTab === 'qr-attendance' ? (
         <QRAttendanceTerminal employees={data.employees} onClockInSuccess={fetchHR} />
+      ) : activeTab === 'commissions' ? (
+        <StaffCommissionsHub />
       ) : (
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 no-print">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 text-[#14171F]">
         
         {/* Personnel table list */}
-        <div className="glass p-6 rounded-xl border border-[var(--border)] xl:col-span-2 flex flex-col gap-4">
-          <h3 className="font-bold text-sm">Employee Directory & Attendance</h3>
+        <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs xl:col-span-2 flex flex-col gap-4 text-[#14171F]">
+          <h3 className="font-serif font-bold text-base text-[#14171F]">Employee Directory & Attendance</h3>
           
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-[var(--border)] text-[var(--text-muted)] h-10 uppercase tracking-wider font-bold">
+                <tr className="border-b border-[#14171F]/10 text-[#4F5565] h-10 uppercase tracking-wider font-bold font-mono">
                   <th className="pb-2">Name</th>
                   <th className="pb-2">Department</th>
                   <th className="pb-2 text-right">Salary</th>
@@ -212,7 +211,7 @@ export default function HRPage() {
                   <th className="pb-2 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-[#14171F]/5 text-[#14171F]">
                 {data.employees.map((emp: any) => {
                   
                   // Construct map of attendance values
@@ -222,19 +221,19 @@ export default function HRPage() {
                   });
 
                   return (
-                    <tr key={emp.id} className="border-b border-[var(--border)] hover:bg-[rgba(255,255,255,0.01)] h-12 transition-colors">
+                    <tr key={emp.id} className="hover:bg-[#FAF7F2]/60 h-14 transition-colors">
                       <td>
                         <div className="flex flex-col gap-0.5">
-                          <span className="font-bold text-white">{emp.name}</span>
-                          <span className="text-[9px] text-[var(--text-muted)] font-mono">{emp.role} &bull; {emp.email}</span>
+                          <span className="font-bold text-[#14171F]">{emp.name}</span>
+                          <span className="text-[10px] text-[#4F5565] font-mono">{emp.role} &bull; {emp.email}</span>
                         </div>
                       </td>
                       <td>
-                        <span className="bg-slate-800 text-[var(--text-muted)] px-2 py-0.5 rounded text-[10px]">
+                        <span className="bg-[#FAF7F2] border border-[#14171F]/10 text-[#14171F] px-2.5 py-1 rounded-full text-[10px] font-bold font-mono">
                           {emp.department}
                         </span>
                       </td>
-                      <td className="text-right font-mono font-bold">{formatAmount(emp.salary)}/mo</td>
+                      <td className="text-right font-mono font-bold text-[#5C64ED]">{formatAmount(emp.salary)}/mo</td>
                       <td>
                         <div className="flex justify-center gap-1">
                           {daysOfWeek.map(date => {
@@ -243,11 +242,11 @@ export default function HRPage() {
                               <button
                                 key={date}
                                 onClick={() => handleToggleAttendance(emp.id, date, status)}
-                                className={`w-6 h-6 rounded flex items-center justify-center font-bold text-[9px] cursor-pointer transition ${
-                                  status === 'present' ? 'bg-emerald-950 text-emerald-400 border border-emerald-500/20' :
-                                  status === 'absent' ? 'bg-red-950 text-red-400 border border-red-500/20' :
-                                  status === 'leave' ? 'bg-amber-950 text-amber-400 border border-amber-500/20' :
-                                  'bg-slate-800 text-[var(--text-muted)] hover:bg-slate-700'
+                                className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-[10px] cursor-pointer transition font-mono ${
+                                  status === 'present' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
+                                  status === 'absent' ? 'bg-rose-100 text-rose-800 border border-rose-300' :
+                                  status === 'leave' ? 'bg-amber-100 text-amber-800 border border-amber-300' :
+                                  'bg-[#FAF7F2] text-[#4F5565] hover:bg-white border border-[#14171F]/10'
                                 }`}
                                 title={`${date}: ${status || 'No entry (click to toggle)'}`}
                               >
@@ -262,9 +261,9 @@ export default function HRPage() {
                       <td className="text-right">
                         <button
                           onClick={() => setActivePayslip(emp)}
-                          className="btn border border-[var(--border)] bg-slate-900 px-2.5 py-1 rounded text-[10px] font-semibold hover:bg-[var(--border)] text-white cursor-pointer transition flex items-center gap-1.5 ml-auto"
+                          className="border border-[#14171F]/10 bg-[#14171F] hover:bg-[#202532] px-3.5 py-1.5 rounded-full text-[10px] font-bold text-white cursor-pointer transition flex items-center gap-1.5 ml-auto shadow-xs"
                         >
-                          <Printer size={10} /> Payslip
+                          <Printer size={12} /> Payslip
                         </button>
                       </td>
                     </tr>
@@ -276,43 +275,43 @@ export default function HRPage() {
         </div>
 
         {/* Leave Requests sidebar */}
-        <div className="glass p-6 rounded-xl border border-[var(--border)] flex flex-col gap-4">
-          <h3 className="font-bold text-sm flex items-center gap-2">
-            <UserCheck size={16} className="text-[var(--primary)]" />
+        <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs flex flex-col gap-4 text-[#14171F]">
+          <h3 className="font-serif font-bold text-base text-[#14171F] flex items-center gap-2">
+            <UserCheck size={16} className="text-[#5C64ED]" />
             Absence Approvals
           </h3>
 
           <div className="flex flex-col gap-3 overflow-y-auto max-h-[350px]">
             {data.leaves.map((l: any) => (
-              <div key={l.id} className="border border-[var(--border)] bg-[rgba(255,255,255,0.01)] p-3 rounded-lg flex flex-col gap-2 text-xs">
+              <div key={l.id} className="border border-[#14171F]/10 bg-[#FAF7F2] p-3.5 rounded-2xl flex flex-col gap-2 text-xs">
                 <div className="flex justify-between items-start">
                   <div>
-                    <span className="font-bold text-white">{l.employeeName}</span>
-                    <div className="text-[9px] text-[var(--text-muted)] mt-0.5">{l.startDate} to {l.endDate}</div>
+                    <span className="font-bold text-[#14171F]">{l.employeeName}</span>
+                    <div className="text-[10px] text-[#4F5565] font-mono mt-0.5">{l.startDate} to {l.endDate}</div>
                   </div>
-                  <span className={`px-2 py-0.5 rounded text-[9px] font-bold ${
-                    l.status === 'approved' ? 'bg-emerald-950 text-emerald-400' :
-                    l.status === 'rejected' ? 'bg-red-950 text-red-400' :
-                    'bg-amber-950 text-amber-400'
+                  <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-bold font-mono uppercase border ${
+                    l.status === 'approved' ? 'bg-emerald-100 text-emerald-800 border-emerald-300' :
+                    l.status === 'rejected' ? 'bg-rose-100 text-rose-800 border-rose-300' :
+                    'bg-amber-100 text-amber-800 border-amber-300'
                   }`}>
                     {l.status}
                   </span>
                 </div>
-                <div className="text-[10px] text-[var(--text-muted)] italic">Reason: "{l.reason}"</div>
+                <div className="text-[10px] text-[#4F5565] italic font-medium">Reason: "{l.reason}"</div>
 
                 {l.status === 'pending' && (
-                  <div className="flex gap-2 border-t border-[var(--border)] pt-2 mt-1">
+                  <div className="flex gap-2 border-t border-[#14171F]/10 pt-2 mt-1">
                     <button
                       onClick={() => handleProcessLeave(l.id, 'approved')}
-                      className="flex-1 h-7 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-[10px] font-bold flex items-center justify-center gap-1 transition cursor-pointer"
+                      className="flex-1 h-8 bg-emerald-700 hover:bg-emerald-800 text-white rounded-full text-[10px] font-bold flex items-center justify-center gap-1 transition cursor-pointer shadow-xs"
                     >
-                      <CheckCircle2 size={10} /> Approve
+                      <CheckCircle2 size={12} /> Approve
                     </button>
                     <button
                       onClick={() => handleProcessLeave(l.id, 'rejected')}
-                      className="flex-1 h-7 bg-red-600 hover:bg-red-700 text-white rounded text-[10px] font-bold flex items-center justify-center gap-1 transition cursor-pointer"
+                      className="flex-1 h-8 bg-rose-700 hover:bg-rose-800 text-white rounded-full text-[10px] font-bold flex items-center justify-center gap-1 transition cursor-pointer shadow-xs"
                     >
-                      <XCircle size={10} /> Reject
+                      <XCircle size={12} /> Reject
                     </button>
                   </div>
                 )}

@@ -334,32 +334,32 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
     <div className="flex flex-col gap-6">
       
       {/* Controls Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-[#14171F]">
         <div>
-          <h2 className="text-xl font-bold">Inventory & Warehouse Management</h2>
-          <p className="text-xs text-[var(--text-muted)] mt-0.5">Single product CRUD, 500-1000+ item bulk CSV import, daily physical stock sync, and POS scanning.</p>
+          <h2 className="text-xl font-serif font-bold text-[#14171F]">Inventory & Warehouse Management</h2>
+          <p className="text-xs text-[#4F5565] font-medium mt-0.5">Single product CRUD, 500-1000+ item bulk CSV import, daily physical stock sync, and POS scanning.</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <button 
             onClick={() => setShowBulkImportModal(true)}
-            className="btn flex items-center gap-2 bg-purple-950/80 hover:bg-purple-900 border border-purple-500/40 text-purple-300 px-3.5 py-2 rounded-lg text-xs font-semibold transition cursor-pointer"
+            className="flex items-center gap-2 bg-purple-100 hover:bg-purple-200 border border-purple-300 text-purple-900 px-4 py-2 rounded-full text-xs font-bold transition cursor-pointer shadow-xs"
           >
-            <FileSpreadsheet size={14} />
+            <FileSpreadsheet size={14} className="text-purple-700" />
             Bulk Import (500+ Items)
           </button>
 
           <button 
             onClick={() => setShowDailyStockModal(true)}
-            className="btn flex items-center gap-2 bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-500/40 text-indigo-300 px-3.5 py-2 rounded-lg text-xs font-semibold transition cursor-pointer"
+            className="flex items-center gap-2 bg-[#FAF7F2] hover:bg-white border border-[#14171F]/10 text-[#14171F] px-4 py-2 rounded-full text-xs font-bold transition cursor-pointer shadow-xs"
           >
-            <RefreshCw size={14} />
+            <RefreshCw size={14} className="text-[#5C64ED]" />
             Daily Stock Sync
           </button>
 
           <button 
             onClick={() => setActiveView('procurement')}
-            className={`btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold border transition cursor-pointer ${
-              activeView === 'procurement' ? 'bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-500/20' : 'bg-slate-900 border-[var(--border)] text-indigo-300 hover:bg-[var(--border)]'
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold border transition cursor-pointer ${
+              activeView === 'procurement' ? 'bg-[#14171F] text-white border-[#14171F] shadow-sm' : 'bg-[#FAF7F2] border-[#14171F]/10 text-[#4F5565] hover:text-[#14171F] hover:bg-white'
             }`}
           >
             <Building2 size={14} />
@@ -368,7 +368,7 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
 
           <button 
             onClick={() => setShowAddProduct(true)}
-            className="btn flex items-center gap-2 bg-[var(--primary)] text-white px-3.5 py-2 rounded-lg text-xs font-semibold hover:bg-[var(--primary-hover)] transition cursor-pointer"
+            className="flex items-center gap-2 bg-[#5C64ED] hover:bg-[#4B52D9] text-white px-4 py-2 rounded-full text-xs font-bold transition cursor-pointer shadow-xs"
           >
             <Plus size={14} />
             Add Product
@@ -394,18 +394,18 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
           onRefresh={fetchInventory} 
         />
       ) : activeView === 'pos' ? (
-        <div className="glass p-6 rounded-xl border border-indigo-500/30">
-          <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
+        <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs text-[#14171F]">
+          <div className="flex items-center justify-between border-b border-[#14171F]/10 pb-4 mb-6">
             <div>
-              <h3 className="font-bold text-base text-white flex items-center gap-2">
-                <ScanBarcode size={20} className="text-indigo-400" />
+              <h3 className="font-serif font-bold text-base text-[#14171F] flex items-center gap-2">
+                <ScanBarcode size={20} className="text-[#5C64ED]" />
                 Live Store POS Terminal
               </h3>
-              <p className="text-xs text-zinc-400 mt-0.5">Instant Checkout Terminal using Webcam Barcode Scanner or Voice Search Commands.</p>
+              <p className="text-xs text-[#4F5565] font-medium mt-0.5">Instant Checkout Terminal using Webcam Barcode Scanner or Voice Search Commands.</p>
             </div>
             <button
               onClick={() => setActiveView('catalogue')}
-              className="text-xs text-zinc-400 hover:text-white px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 cursor-pointer"
+              className="text-xs text-[#14171F] font-bold px-4 py-2 rounded-full border border-[#14171F]/10 bg-[#FAF7F2] hover:bg-white cursor-pointer shadow-xs"
             >
               Back to Catalog
             </button>
@@ -416,22 +416,22 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           
           {/* Products Table list */}
-          <div className="glass p-6 rounded-xl border border-[var(--border)] xl:col-span-2 flex flex-col gap-4">
+          <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs xl:col-span-2 flex flex-col gap-4 text-[#14171F]">
             
             {/* Tab selectors */}
-            <div className="flex gap-4 border-b border-[var(--border)] pb-2 mb-2">
+            <div className="flex gap-4 border-b border-[#14171F]/10 pb-2 mb-2">
               <button 
                 onClick={() => setActiveView('catalogue')}
-                className={`text-xs font-semibold pb-2 border-b-2 transition cursor-pointer ${
-                  activeView === 'catalogue' ? 'border-[var(--primary)] text-white' : 'border-transparent text-[var(--text-muted)] hover:text-white'
+                className={`text-xs font-serif font-bold pb-2 border-b-2 transition cursor-pointer ${
+                  activeView === 'catalogue' ? 'border-[#5C64ED] text-[#5C64ED]' : 'border-transparent text-[#4F5565] hover:text-[#14171F]'
                 }`}
               >
                 Catalog List ({data.products.length} SKUs)
               </button>
               <button 
                 onClick={() => setActiveView('matrix')}
-                className={`text-xs font-semibold pb-2 border-b-2 transition cursor-pointer ${
-                  activeView === 'matrix' ? 'border-[var(--primary)] text-white' : 'border-transparent text-[var(--text-muted)] hover:text-white'
+                className={`text-xs font-serif font-bold pb-2 border-b-2 transition cursor-pointer ${
+                  activeView === 'matrix' ? 'border-[#5C64ED] text-[#5C64ED]' : 'border-transparent text-[#4F5565] hover:text-[#14171F]'
                 }`}
               >
                 Warehouse Stock Matrix

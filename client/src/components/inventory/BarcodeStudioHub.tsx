@@ -6,16 +6,8 @@ import {
   ScanBarcode,
   Printer,
   Search,
-  CheckCircle2,
   Settings,
-  Grid,
-  Layers,
-  Sparkles,
-  Download,
-  Copy,
-  Tag,
-  Calendar,
-  Building2
+  Grid
 } from 'lucide-react';
 import { useCurrencyStore } from '@/store/currencyStore';
 
@@ -73,7 +65,6 @@ export default function BarcodeStudioHub({ products }: BarcodeStudioHubProps) {
 
   // Generate SVG Code128 simulated stripes representation
   const renderCode128Stripe = (text: string) => {
-    // Generate deterministic bar widths based on character charcodes
     const bars = [];
     for (let i = 0; i < text.length; i++) {
       const code = text.charCodeAt(i);
@@ -92,16 +83,14 @@ export default function BarcodeStudioHub({ products }: BarcodeStudioHubProps) {
   return (
     <div className="flex flex-col gap-6">
       
-      {/* ════════════════════════════════════════════════════════════════ */}
-      {/* 1. TOP STUDIO HEADER & PRINTER PRESET CONTROL                    */}
-      {/* ════════════════════════════════════════════════════════════════ */}
-      <div className="glass p-5 rounded-2xl border border-indigo-500/20 bg-slate-900/90 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      {/* 1. TOP STUDIO HEADER & PRINTER PRESET CONTROL */}
+      <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-[#14171F]">
         <div>
-          <h2 className="text-lg font-extrabold text-white flex items-center gap-2">
-            <ScanBarcode className="text-indigo-400" size={20} />
+          <h2 className="text-lg font-serif font-bold text-[#14171F] flex items-center gap-2">
+            <ScanBarcode className="text-[#5C64ED]" size={20} />
             Barcode & QR Code Label Sticker Generator Studio
           </h2>
-          <p className="text-xs text-zinc-400 mt-1">
+          <p className="text-xs text-[#4F5565] font-medium mt-1">
             Design, customize, and print CODE128 barcodes or QR code stickers for retail items, shelf tags, and batch expiry tracking.
           </p>
         </div>
@@ -109,7 +98,7 @@ export default function BarcodeStudioHub({ products }: BarcodeStudioHubProps) {
         <div className="flex items-center gap-2">
           <button
             onClick={handlePrintBarcodes}
-            className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center gap-2 cursor-pointer"
+            className="px-4 py-2.5 bg-[#14171F] hover:bg-[#202532] text-white font-bold text-xs rounded-full shadow-md transition flex items-center gap-2 cursor-pointer"
           >
             <Printer size={16} />
             Print Label Sheet ({quantityToPrint} Labels)
@@ -117,29 +106,27 @@ export default function BarcodeStudioHub({ products }: BarcodeStudioHubProps) {
         </div>
       </div>
 
-      {/* ════════════════════════════════════════════════════════════════ */}
-      {/* 2. MAIN TWO-COLUMN STUDIO LAYOUT                                 */}
-      {/* ════════════════════════════════════════════════════════════════ */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      {/* 2. MAIN TWO-COLUMN STUDIO LAYOUT */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 text-[#14171F]">
         
         {/* LEFT COLUMN: PRODUCT SELECTOR & CUSTOMIZATION SETTINGS (5 Cols) */}
         <div className="lg:col-span-5 space-y-5">
           
           {/* Product Selector Card */}
-          <div className="glass p-5 rounded-2xl border border-white/10 bg-slate-900/80 space-y-4">
-            <h3 className="text-xs font-bold text-zinc-300 uppercase tracking-wider flex items-center gap-1.5">
-              <Search size={14} className="text-indigo-400" />
+          <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs space-y-4">
+            <h3 className="text-xs font-mono font-bold text-[#14171F] uppercase tracking-wider flex items-center gap-1.5">
+              <Search size={14} className="text-[#5C64ED]" />
               1. Select Product for Label Printing
             </h3>
 
             <div className="relative">
-              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+              <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#5C64ED]" />
               <input
                 type="text"
                 placeholder="Search product SKU or title..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-9 bg-slate-950 border border-white/10 rounded-xl pl-9 pr-3 text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="w-full h-10 bg-[#FAF7F2] border border-[#14171F]/10 rounded-full pl-10 pr-4 text-xs font-medium text-[#14171F] placeholder-[#4F5565] focus:outline-none focus:ring-1 focus:ring-[#5C64ED]"
               />
             </div>
 
@@ -150,17 +137,17 @@ export default function BarcodeStudioHub({ products }: BarcodeStudioHubProps) {
                   <button
                     key={p.id}
                     onClick={() => setSelectedProduct(p)}
-                    className={`w-full p-2.5 rounded-xl text-left transition flex items-center justify-between border cursor-pointer ${
+                    className={`w-full p-3 rounded-2xl text-left transition flex items-center justify-between border cursor-pointer ${
                       isSelected
-                        ? 'bg-indigo-600/20 border-indigo-500 text-white font-bold'
-                        : 'bg-slate-950/60 border-white/5 text-zinc-400 hover:text-white hover:bg-white/5'
+                        ? 'bg-[#14171F] text-white border-[#14171F] font-bold shadow-xs'
+                        : 'bg-[#FAF7F2] border-[#14171F]/10 text-[#4F5565] hover:text-[#14171F] hover:bg-white'
                     }`}
                   >
                     <div className="truncate pr-2">
                       <span className="block truncate">{p.name}</span>
-                      <span className="text-[10px] font-mono text-zinc-500">{p.sku}</span>
+                      <span className={`text-[10px] font-mono ${isSelected ? 'text-zinc-300' : 'text-[#4F5565]'}`}>{p.sku}</span>
                     </div>
-                    <span className="font-mono text-indigo-300 font-bold shrink-0">
+                    <span className={`font-mono font-bold shrink-0 ${isSelected ? 'text-[#F5C84B]' : 'text-[#5C64ED]'}`}>
                       {formatAmount(p.price, { decimals: 2 })}
                     </span>
                   </button>
@@ -170,15 +157,15 @@ export default function BarcodeStudioHub({ products }: BarcodeStudioHubProps) {
           </div>
 
           {/* Label Layout & Options Card */}
-          <div className="glass p-5 rounded-2xl border border-white/10 bg-slate-900/80 space-y-4 text-xs">
-            <h3 className="text-xs font-bold text-zinc-300 uppercase tracking-wider flex items-center gap-1.5">
-              <Settings size={14} className="text-indigo-400" />
+          <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs space-y-4 text-xs">
+            <h3 className="text-xs font-mono font-bold text-[#14171F] uppercase tracking-wider flex items-center gap-1.5">
+              <Settings size={14} className="text-[#5C64ED]" />
               2. Label Design & Symbology Settings
             </h3>
 
             {/* Label Size Selection */}
             <div>
-              <label className="text-zinc-400 block mb-1.5 text-[11px] font-bold">Sticker Label Size Preset</label>
+              <label className="text-[#4F5565] block mb-1.5 text-[11px] font-bold">Sticker Label Size Preset</label>
               <div className="grid grid-cols-2 gap-2">
                 {[
                   { id: 'standard', name: '50x25mm Standard' },
@@ -189,10 +176,10 @@ export default function BarcodeStudioHub({ products }: BarcodeStudioHubProps) {
                   <button
                     key={sz.id}
                     onClick={() => setLabelSize(sz.id as any)}
-                    className={`py-2 px-2.5 rounded-xl font-semibold border text-[11px] transition cursor-pointer ${
+                    className={`py-2 px-3 rounded-xl font-bold border text-[11px] transition cursor-pointer ${
                       labelSize === sz.id
-                        ? 'bg-indigo-600 text-white border-indigo-400 shadow'
-                        : 'bg-slate-950 text-zinc-400 border-white/10 hover:text-white'
+                        ? 'bg-[#14171F] text-white border-[#14171F] shadow-xs'
+                        : 'bg-[#FAF7F2] text-[#4F5565] border-[#14171F]/10 hover:text-[#14171F] hover:bg-white'
                     }`}
                   >
                     {sz.name}
@@ -204,11 +191,11 @@ export default function BarcodeStudioHub({ products }: BarcodeStudioHubProps) {
             {/* Symbology Type */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-zinc-400 block mb-1 text-[11px] font-bold">Barcode Type</label>
+                <label className="text-[#4F5565] block mb-1 text-[11px] font-bold">Barcode Type</label>
                 <select
                   value={codeType}
                   onChange={(e) => setCodeType(e.target.value as any)}
-                  className="w-full h-9 bg-slate-950 border border-white/10 rounded-xl px-2.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full h-10 bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3 text-xs font-semibold text-[#14171F] focus:outline-none focus:ring-1 focus:ring-[#5C64ED]"
                 >
                   <option value="CODE128">CODE128 (1D Barcode)</option>
                   <option value="QR">2D QR Code</option>
@@ -216,40 +203,40 @@ export default function BarcodeStudioHub({ products }: BarcodeStudioHubProps) {
               </div>
 
               <div>
-                <label className="text-zinc-400 block mb-1 text-[11px] font-bold">Print Quantity</label>
+                <label className="text-[#4F5565] block mb-1 text-[11px] font-bold">Print Quantity</label>
                 <input
                   type="number"
                   min="1"
                   max="200"
                   value={quantityToPrint}
                   onChange={(e) => setQuantityToPrint(parseInt(e.target.value, 10) || 1)}
-                  className="w-full h-9 bg-slate-950 border border-white/10 rounded-xl px-2 text-xs font-mono text-white text-center focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full h-10 bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3 text-xs font-mono font-bold text-[#5C64ED] text-center focus:outline-none focus:ring-1 focus:ring-[#5C64ED]"
                 />
               </div>
             </div>
 
             {/* Display Element Switches */}
-            <div className="space-y-2 pt-1 border-t border-white/10">
-              <span className="text-zinc-400 block text-[10px] font-bold uppercase tracking-wider">Visible Elements on Label</span>
-              <div className="grid grid-cols-2 gap-2 text-[11px]">
-                <label className="flex items-center gap-2 cursor-pointer text-zinc-300">
-                  <input type="checkbox" checked={showStoreName} onChange={(e) => setShowStoreName(e.target.checked)} className="rounded accent-indigo-600" />
+            <div className="space-y-2 pt-2 border-t border-[#14171F]/10">
+              <span className="text-[#4F5565] block text-[10px] font-mono font-bold uppercase tracking-wider">Visible Elements on Label</span>
+              <div className="grid grid-cols-2 gap-2.5 text-[11px] font-medium text-[#14171F]">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" checked={showStoreName} onChange={(e) => setShowStoreName(e.target.checked)} className="rounded accent-[#5C64ED]" />
                   Store Name Header
                 </label>
-                <label className="flex items-center gap-2 cursor-pointer text-zinc-300">
-                  <input type="checkbox" checked={showTitle} onChange={(e) => setShowTitle(e.target.checked)} className="rounded accent-indigo-600" />
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" checked={showTitle} onChange={(e) => setShowTitle(e.target.checked)} className="rounded accent-[#5C64ED]" />
                   Product Name
                 </label>
-                <label className="flex items-center gap-2 cursor-pointer text-zinc-300">
-                  <input type="checkbox" checked={showPrice} onChange={(e) => setShowPrice(e.target.checked)} className="rounded accent-indigo-600" />
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" checked={showPrice} onChange={(e) => setShowPrice(e.target.checked)} className="rounded accent-[#5C64ED]" />
                   MRP / Price
                 </label>
-                <label className="flex items-center gap-2 cursor-pointer text-zinc-300">
-                  <input type="checkbox" checked={showSKU} onChange={(e) => setShowSKU(e.target.checked)} className="rounded accent-indigo-600" />
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" checked={showSKU} onChange={(e) => setShowSKU(e.target.checked)} className="rounded accent-[#5C64ED]" />
                   SKU Text
                 </label>
-                <label className="flex items-center gap-2 cursor-pointer text-zinc-300 col-span-2">
-                  <input type="checkbox" checked={showBatchInfo} onChange={(e) => setShowBatchInfo(e.target.checked)} className="rounded accent-indigo-600" />
+                <label className="flex items-center gap-2 cursor-pointer col-span-2">
+                  <input type="checkbox" checked={showBatchInfo} onChange={(e) => setShowBatchInfo(e.target.checked)} className="rounded accent-[#5C64ED]" />
                   Batch & Expiry Dates
                 </label>
               </div>
@@ -257,18 +244,18 @@ export default function BarcodeStudioHub({ products }: BarcodeStudioHubProps) {
 
             {/* Batch & Expiry Settings */}
             {showBatchInfo && (
-              <div className="grid grid-cols-3 gap-2 pt-2 text-[10px]">
+              <div className="grid grid-cols-3 gap-2 pt-2 text-[10px] font-mono">
                 <div>
-                  <span className="text-zinc-500 block mb-0.5">BATCH NO</span>
-                  <input type="text" value={batchNo} onChange={(e) => setBatchNo(e.target.value)} className="w-full bg-slate-950 border border-white/10 rounded px-1.5 py-1 text-white font-mono" />
+                  <span className="text-[#4F5565] block mb-0.5 font-bold">BATCH NO</span>
+                  <input type="text" value={batchNo} onChange={(e) => setBatchNo(e.target.value)} className="w-full bg-[#FAF7F2] border border-[#14171F]/10 rounded px-2 py-1 text-[#14171F] font-bold" />
                 </div>
                 <div>
-                  <span className="text-zinc-500 block mb-0.5">MFD DATE</span>
-                  <input type="text" value={mfdDate} onChange={(e) => setMfdDate(e.target.value)} className="w-full bg-slate-950 border border-white/10 rounded px-1.5 py-1 text-white font-mono" />
+                  <span className="text-[#4F5565] block mb-0.5 font-bold">MFD DATE</span>
+                  <input type="text" value={mfdDate} onChange={(e) => setMfdDate(e.target.value)} className="w-full bg-[#FAF7F2] border border-[#14171F]/10 rounded px-2 py-1 text-[#14171F] font-bold" />
                 </div>
                 <div>
-                  <span className="text-zinc-500 block mb-0.5">EXP DATE</span>
-                  <input type="text" value={expDate} onChange={(e) => setExpDate(e.target.value)} className="w-full bg-slate-950 border border-white/10 rounded px-1.5 py-1 text-white font-mono" />
+                  <span className="text-[#4F5565] block mb-0.5 font-bold">EXP DATE</span>
+                  <input type="text" value={expDate} onChange={(e) => setExpDate(e.target.value)} className="w-full bg-[#FAF7F2] border border-[#14171F]/10 rounded px-2 py-1 text-[#14171F] font-bold" />
                 </div>
               </div>
             )}
@@ -281,27 +268,27 @@ export default function BarcodeStudioHub({ products }: BarcodeStudioHubProps) {
         <div className="lg:col-span-7 space-y-4">
           
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-bold text-zinc-300 uppercase tracking-wider flex items-center gap-1.5">
-              <Grid size={14} className="text-indigo-400" />
+            <h3 className="text-xs font-serif font-bold text-[#14171F] uppercase tracking-wider flex items-center gap-1.5">
+              <Grid size={14} className="text-[#5C64ED]" />
               Live Label Print Sheet Preview ({quantityToPrint} Stickers)
             </h3>
-            <span className="text-[10px] text-indigo-300 font-mono">Format: {labelSize.toUpperCase()}</span>
+            <span className="text-[10px] text-[#5C64ED] font-mono font-bold">Format: {labelSize.toUpperCase()}</span>
           </div>
 
           {/* PRINTABLE BARCODE SHEET CONTAINER */}
           <div
             id="barcode-sheet"
-            className="glass p-6 rounded-2xl border border-white/10 bg-slate-950 min-h-[420px] max-h-[620px] overflow-y-auto"
+            className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs min-h-[420px] max-h-[620px] overflow-y-auto"
           >
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               {Array.from({ length: quantityToPrint }).map((_, idx) => (
                 <div
                   key={idx}
-                  className="bg-white text-black p-3 rounded-md border border-black flex flex-col justify-between items-center text-center font-mono select-none space-y-1.5 shadow-md hover:scale-105 transition"
+                  className="bg-[#FAF7F2] text-[#14171F] p-3 rounded-2xl border border-[#14171F]/15 flex flex-col justify-between items-center text-center font-mono select-none space-y-1.5 shadow-xs hover:scale-105 transition"
                 >
                   {/* Store Header */}
                   {showStoreName && (
-                    <span className="text-[9px] font-black uppercase tracking-wider block border-b border-black w-full pb-0.5">
+                    <span className="text-[9px] font-black uppercase tracking-wider block border-b border-[#14171F]/20 w-full pb-0.5">
                       NEXUS RETAIL STORE
                     </span>
                   )}
@@ -321,14 +308,14 @@ export default function BarcodeStudioHub({ products }: BarcodeStudioHubProps) {
                     </div>
                   ) : (
                     <div className="my-1 flex flex-col items-center">
-                      <QrCode size={48} className="text-black" />
+                      <QrCode size={48} className="text-[#14171F]" />
                       {showSKU && <span className="text-[8px] font-bold block mt-0.5">{targetProd.sku}</span>}
                     </div>
                   )}
 
                   {/* Batch & Expiry */}
                   {showBatchInfo && (
-                    <div className="text-[8px] leading-none text-zinc-700 w-full border-t border-zinc-300 pt-1 flex justify-between">
+                    <div className="text-[8px] leading-none text-[#4F5565] w-full border-t border-[#14171F]/20 pt-1 flex justify-between">
                       <span>B:{batchNo}</span>
                       <span>EXP:{expDate}</span>
                     </div>
@@ -336,7 +323,7 @@ export default function BarcodeStudioHub({ products }: BarcodeStudioHubProps) {
 
                   {/* Price Badge */}
                   {showPrice && (
-                    <div className="w-full bg-black text-white font-black text-[11px] py-0.5 rounded-sm uppercase tracking-wider">
+                    <div className="w-full bg-[#14171F] text-white font-black text-[11px] py-1 rounded-lg uppercase tracking-wider">
                       MRP: {formatAmount(targetProd.price, { decimals: 2 })}
                     </div>
                   )}

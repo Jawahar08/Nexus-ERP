@@ -218,16 +218,16 @@ export default function CRMPage() {
     <div className="flex flex-col gap-6">
       
       {/* Controls row */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-[#14171F]">
         <div>
-          <h2 className="text-xl font-bold">CRM & Customer Retention Hub</h2>
-          <p className="text-xs text-[var(--text-muted)] mt-0.5">Manage customer contacts, sales pipelines, and automated WhatsApp/SMS messaging.</p>
+          <h2 className="text-xl font-serif font-bold text-[#14171F]">CRM & Customer Retention Hub</h2>
+          <p className="text-xs text-[#4F5565] font-medium mt-0.5">Manage customer contacts, sales pipelines, and automated WhatsApp/SMS messaging.</p>
         </div>
-        <div className="flex gap-2.5">
+        <div className="flex flex-wrap gap-2">
           <button 
             onClick={() => setActiveTab(activeTab === 'online-orders' ? 'pipeline' : 'online-orders')}
-            className={`btn flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold border transition cursor-pointer ${
-              activeTab === 'online-orders' ? 'bg-indigo-600 text-white border-indigo-500' : 'bg-slate-900 border-[var(--border)] text-indigo-400 hover:bg-[var(--border)]'
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold border transition cursor-pointer ${
+              activeTab === 'online-orders' ? 'bg-[#14171F] text-white border-[#14171F] shadow-sm' : 'bg-[#FAF7F2] border-[#14171F]/10 text-[#5C64ED] hover:bg-white'
             }`}
           >
             <ShoppingCart size={14} />
@@ -235,8 +235,8 @@ export default function CRMPage() {
           </button>
           <button 
             onClick={() => setActiveTab(activeTab === 'whatsapp' ? 'pipeline' : 'whatsapp')}
-            className={`btn flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold border transition cursor-pointer ${
-              activeTab === 'whatsapp' ? 'bg-emerald-600 text-white border-emerald-500' : 'bg-slate-900 border-[var(--border)] text-emerald-400 hover:bg-[var(--border)]'
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold border transition cursor-pointer ${
+              activeTab === 'whatsapp' ? 'bg-emerald-700 text-white border-emerald-700 shadow-sm' : 'bg-emerald-50 border border-emerald-200 text-emerald-800 hover:bg-emerald-100'
             }`}
           >
             <MessageSquare size={14} />
@@ -244,14 +244,14 @@ export default function CRMPage() {
           </button>
           <button 
             onClick={() => setShowAddCustomer(true)}
-            className="btn flex items-center gap-2 bg-slate-900 border border-[var(--border)] px-4 py-2 rounded-lg text-xs font-semibold hover:bg-[var(--border)] transition cursor-pointer"
+            className="flex items-center gap-2 bg-[#FAF7F2] border border-[#14171F]/10 px-4 py-2 rounded-full text-xs font-bold text-[#14171F] hover:bg-white transition cursor-pointer shadow-xs"
           >
-            <Users size={14} />
+            <Users size={14} className="text-[#5C64ED]" />
             Register Customer
           </button>
           <button 
             onClick={() => setShowAddDeal(true)}
-            className="btn flex items-center gap-2 bg-[var(--primary)] text-white px-4 py-2 rounded-lg text-xs font-semibold hover:bg-[var(--primary-hover)] transition cursor-pointer"
+            className="flex items-center gap-2 bg-[#5C64ED] text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-[#4B52D9] transition cursor-pointer shadow-xs"
           >
             <Plus size={14} />
             Track Contract Deal
@@ -260,18 +260,18 @@ export default function CRMPage() {
       </div>
 
       {activeTab === 'online-orders' ? (
-        <div className="glass p-6 rounded-2xl border border-indigo-500/30 bg-slate-900/80 space-y-4">
-          <div className="flex items-center justify-between border-b border-white/10 pb-4">
+        <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs space-y-4 text-[#14171F]">
+          <div className="flex items-center justify-between border-b border-[#14171F]/10 pb-4">
             <div>
-              <h3 className="font-extrabold text-base text-white flex items-center gap-2">
-                <ShoppingCart size={18} className="text-indigo-400" />
+              <h3 className="font-serif font-bold text-base text-[#14171F] flex items-center gap-2">
+                <ShoppingCart size={18} className="text-[#5C64ED]" />
                 Live Storefront Online Orders
               </h3>
-              <p className="text-xs text-zinc-400 mt-0.5">
+              <p className="text-xs text-[#4F5565] font-medium mt-0.5">
                 Paid online e-commerce orders placed directly by customers on your public storefront catalog.
               </p>
             </div>
-            <span className="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-[10px] font-bold px-3 py-1 rounded-full font-mono">
+            <span className="bg-[#5C64ED]/10 text-[#5C64ED] border border-[#5C64ED]/20 text-[10px] font-bold px-3 py-1 rounded-full font-mono">
               {data.onlineOrders?.length || 0} Total Orders
             </span>
           </div>
@@ -279,7 +279,7 @@ export default function CRMPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-white/10 text-zinc-400 h-10 uppercase tracking-wider font-bold">
+                <tr className="border-b border-[#14171F]/10 text-[#4F5565] h-10 uppercase tracking-wider font-bold font-mono">
                   <th className="pb-2">Order Reference</th>
                   <th className="pb-2">Date & Time</th>
                   <th className="pb-2">Customer & Details</th>
@@ -290,22 +290,22 @@ export default function CRMPage() {
               <tbody>
                 {!data.onlineOrders || data.onlineOrders.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="py-8 text-center text-zinc-500 text-xs font-mono">
+                    <td colSpan={5} className="py-8 text-center text-[#4F5565] text-xs font-mono">
                       No online storefront orders recorded yet. Place an order at /shop/nexus.erp to test!
                     </td>
                   </tr>
                 ) : (
                   data.onlineOrders.map((ord: any) => (
-                    <tr key={ord.id} className="border-b border-white/5 hover:bg-white/[0.02] h-14 transition-colors">
-                      <td className="font-bold font-mono text-indigo-400">{ord.reference}</td>
-                      <td className="text-zinc-400 font-mono">{new Date(ord.date).toLocaleString()}</td>
-                      <td className="text-white font-medium">{ord.description}</td>
+                    <tr key={ord.id} className="border-b border-[#14171F]/5 hover:bg-[#FAF7F2]/60 h-14 transition-colors">
+                      <td className="font-bold font-mono text-[#5C64ED]">{ord.reference}</td>
+                      <td className="text-[#4F5565] font-mono">{new Date(ord.date).toLocaleString()}</td>
+                      <td className="text-[#14171F] font-bold">{ord.description}</td>
                       <td className="text-right">
-                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold font-mono bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 uppercase">
+                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold font-mono bg-emerald-100 text-emerald-800 border border-emerald-300 uppercase">
                           PAID
                         </span>
                       </td>
-                      <td className="text-right font-mono font-bold text-emerald-400 text-sm">
+                      <td className="text-right font-mono font-bold text-emerald-700 text-sm">
                         +{formatAmount(ord.amount, { decimals: 2 })}
                       </td>
                     </tr>
@@ -318,33 +318,33 @@ export default function CRMPage() {
       ) : activeTab === 'whatsapp' ? (
         <WhatsAppAutomationHub customers={data.customers} />
       ) : (
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 text-[#14171F]">
         
         {/* Kanban Board pipeline */}
-        <div className="glass p-6 rounded-xl border border-[var(--border)] xl:col-span-2 flex flex-col gap-4">
-          <h3 className="font-bold text-sm">Sales Pipeline Kanban</h3>
+        <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs xl:col-span-2 flex flex-col gap-4 text-[#14171F]">
+          <h3 className="font-serif font-bold text-base text-[#14171F]">Sales Pipeline Kanban</h3>
           
           <div className="grid grid-cols-1 md:grid-cols-5 gap-3.5 mt-2">
             {dealStages.map(stage => {
               const stageDeals = data.deals.filter((d: any) => d.stage === stage.key);
               return (
-                <div key={stage.key} className="flex flex-col gap-3.5 bg-slate-900/50 border border-[var(--border)] p-3 rounded-lg min-h-[250px]">
-                  <div className="flex justify-between items-center border-b border-[var(--border)] pb-2">
-                    <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">{stage.label}</span>
-                    <span className="text-[10px] bg-slate-800 text-white px-1.5 py-0.5 rounded font-mono font-bold">{stageDeals.length}</span>
+                <div key={stage.key} className="flex flex-col gap-3.5 bg-[#FAF7F2] border border-[#14171F]/10 p-3.5 rounded-2xl min-h-[250px]">
+                  <div className="flex justify-between items-center border-b border-[#14171F]/10 pb-2">
+                    <span className="text-[10px] font-mono font-bold text-[#4F5565] uppercase tracking-wider">{stage.label}</span>
+                    <span className="text-[10px] bg-white text-[#14171F] border border-[#14171F]/10 px-2 py-0.5 rounded-full font-mono font-bold">{stageDeals.length}</span>
                   </div>
 
                   <div className="flex flex-col gap-2 overflow-y-auto max-h-[300px]">
                     {stageDeals.map((deal: any) => (
-                      <div key={deal.id} className="bg-slate-950 border border-[var(--border)] hover:border-slate-700 p-3 rounded flex flex-col gap-2 text-xs transition">
+                      <div key={deal.id} className="bg-white border border-[#14171F]/10 hover:border-[#5C64ED] p-3.5 rounded-xl flex flex-col gap-2 text-xs transition shadow-xs">
                         <div>
-                          <div className="font-bold text-white truncate">{deal.company}</div>
-                          <div className="text-[9px] text-[var(--text-muted)] mt-0.5">{deal.contact}</div>
+                          <div className="font-bold text-[#14171F] truncate">{deal.company}</div>
+                          <div className="text-[10px] text-[#4F5565] font-mono mt-0.5">{deal.contact}</div>
                         </div>
-                        <div className="font-mono font-bold text-[var(--accent)] text-xs">{formatAmount(deal.value)}</div>
+                        <div className="font-mono font-bold text-[#5C64ED] text-xs">{formatAmount(deal.value)}</div>
                         
                         {/* Status swappers */}
-                        <div className="flex gap-1 border-t border-[var(--border)] pt-2 mt-1">
+                        <div className="flex gap-1 border-t border-[#14171F]/10 pt-2 mt-1">
                           {dealStages.map(ds => {
                             if (ds.key === deal.stage) return null;
                             return (

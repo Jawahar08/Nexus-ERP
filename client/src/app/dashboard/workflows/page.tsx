@@ -83,46 +83,46 @@ export default function WorkflowsPage() {
     <div className="flex flex-col gap-6">
       
       {/* Header title */}
-      <div>
-        <h2 className="text-xl font-bold">Manager Approval Desk</h2>
-        <p className="text-xs text-[var(--text-muted)] mt-0.5">Authorise budget acquisitions, purchase orders, and employee absence schedules.</p>
+      <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs text-[#14171F]">
+        <h2 className="text-xl font-serif font-bold text-[#14171F]">Manager Approval Desk</h2>
+        <p className="text-xs text-[#4F5565] font-medium mt-0.5">Authorise budget acquisitions, purchase orders, and employee absence schedules.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 text-[#14171F]">
         
         {/* Purchase Order Approval workflow */}
-        <div className="glass p-6 rounded-xl border border-[var(--border)] flex flex-col gap-4">
-          <h3 className="font-bold text-sm flex items-center gap-2 border-b border-[var(--border)] pb-3">
-            <ShoppingBag size={16} className="text-[var(--primary)]" />
+        <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs flex flex-col gap-4 text-[#14171F]">
+          <h3 className="font-serif font-bold text-base text-[#14171F] flex items-center gap-2 border-b border-[#14171F]/10 pb-3">
+            <ShoppingBag size={16} className="text-[#5C64ED]" />
             Pending PO Restocks ({approvals.pendingPOs.length})
           </h3>
 
-          <div className="flex flex-col gap-3 max-h-[300px] overflow-y-auto">
+          <div className="flex flex-col gap-3.5 max-h-[300px] overflow-y-auto">
             {approvals.pendingPOs.length > 0 ? (
               approvals.pendingPOs.map((po: any) => (
-                <div key={po.id} className="border border-[var(--border)] bg-slate-900/50 p-4 rounded-lg flex flex-col gap-3 text-xs">
+                <div key={po.id} className="border border-[#14171F]/10 bg-[#FAF7F2] p-4 rounded-2xl flex flex-col gap-3 text-xs">
                   <div className="flex justify-between items-start">
                     <div>
-                      <span className="font-bold text-white">PO Ref: PO-{po.id.substring(0, 5).toUpperCase()}</span>
-                      <div className="text-[10px] text-[var(--text-muted)] mt-0.5">Supplier: {po.supplier.name}</div>
+                      <span className="font-bold text-[#14171F]">PO Ref: PO-{po.id.substring(0, 5).toUpperCase()}</span>
+                      <div className="text-[10px] text-[#4F5565] font-mono mt-0.5">Supplier: {po.supplier.name}</div>
                     </div>
-                    <span className="font-mono font-bold text-yellow-400 text-sm">{formatAmount(po.total)}</span>
+                    <span className="font-mono font-bold text-[#5C64ED] text-sm">{formatAmount(po.total)}</span>
                   </div>
 
-                  <div className="bg-slate-950 p-2.5 rounded border border-[var(--border)] text-[10px] text-[var(--text-muted)]">
-                    Trigger item ID: <code className="text-white">{po.productId?.substring(0, 8)}</code> &bull; Target Volume: <code className="text-white">{po.qty} units</code>
+                  <div className="bg-white p-2.5 rounded-xl border border-[#14171F]/10 text-[10px] text-[#4F5565] font-mono">
+                    Trigger item ID: <code className="text-[#14171F] font-bold">{po.productId?.substring(0, 8)}</code> &bull; Target Volume: <code className="text-[#14171F] font-bold">{po.qty} units</code>
                   </div>
 
-                  <div className="flex gap-2 border-t border-[var(--border)] pt-3">
+                  <div className="flex gap-2 border-t border-[#14171F]/10 pt-3">
                     <button
                       onClick={() => handleProcessApproval('po', po.id, 'approved')}
-                      className="flex-1 h-8 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-[10px] font-bold flex items-center justify-center gap-1.5 transition cursor-pointer"
+                      className="flex-1 h-8 bg-emerald-700 hover:bg-emerald-800 text-white rounded-full text-[10px] font-bold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs"
                     >
                       <CheckCircle2 size={12} /> Approve PO
                     </button>
                     <button
                       onClick={() => handleProcessApproval('po', po.id, 'rejected')}
-                      className="flex-1 h-8 bg-red-600 hover:bg-red-700 text-white rounded text-[10px] font-bold flex items-center justify-center gap-1.5 transition cursor-pointer"
+                      className="flex-1 h-8 bg-rose-700 hover:bg-rose-800 text-white rounded-full text-[10px] font-bold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs"
                     >
                       <XCircle size={12} /> Deny PO
                     </button>
@@ -130,8 +130,8 @@ export default function WorkflowsPage() {
                 </div>
               ))
             ) : (
-              <div className="text-center text-[var(--text-muted)] py-10 text-xs flex flex-col gap-2 items-center">
-                <CheckCircle2 size={24} className="text-[var(--success)]" />
+              <div className="text-center text-[#4F5565] py-10 text-xs flex flex-col gap-2 items-center font-medium">
+                <CheckCircle2 size={24} className="text-emerald-700" />
                 No pending purchase orders.
               </div>
             )}
@@ -139,36 +139,36 @@ export default function WorkflowsPage() {
         </div>
 
         {/* Leave Requests Approval workflow */}
-        <div className="glass p-6 rounded-xl border border-[var(--border)] flex flex-col gap-4">
-          <h3 className="font-bold text-sm flex items-center gap-2 border-b border-[var(--border)] pb-3">
-            <Calendar size={16} className="text-cyan-400" />
+        <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs flex flex-col gap-4 text-[#14171F]">
+          <h3 className="font-serif font-bold text-base text-[#14171F] flex items-center gap-2 border-b border-[#14171F]/10 pb-3">
+            <Calendar size={16} className="text-[#5C64ED]" />
             Absence Sabbatical approvals ({approvals.pendingLeaves.length})
           </h3>
 
-          <div className="flex flex-col gap-3 max-h-[300px] overflow-y-auto">
+          <div className="flex flex-col gap-3.5 max-h-[300px] overflow-y-auto">
             {approvals.pendingLeaves.length > 0 ? (
               approvals.pendingLeaves.map((l: any) => (
-                <div key={l.id} className="border border-[var(--border)] bg-slate-900/50 p-4 rounded-lg flex flex-col gap-3 text-xs">
+                <div key={l.id} className="border border-[#14171F]/10 bg-[#FAF7F2] p-4 rounded-2xl flex flex-col gap-3 text-xs">
                   <div className="flex justify-between items-start">
                     <div>
-                      <span className="font-bold text-white">{l.employeeName}</span>
-                      <div className="text-[9px] text-[var(--text-muted)] mt-0.5">{l.startDate} to {l.endDate}</div>
+                      <span className="font-bold text-[#14171F]">{l.employeeName}</span>
+                      <div className="text-[10px] text-[#4F5565] font-mono mt-0.5">{l.startDate} to {l.endDate}</div>
                     </div>
-                    <span className="bg-amber-950 text-amber-400 px-2 py-0.5 rounded text-[10px] font-bold">Pending</span>
+                    <span className="bg-amber-100 border border-amber-300 text-amber-800 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase">Pending</span>
                   </div>
 
-                  <div className="text-[10px] text-[var(--text-muted)] italic">Reason: "{l.reason}"</div>
+                  <div className="text-[10px] text-[#4F5565] italic font-medium">Reason: "{l.reason}"</div>
 
-                  <div className="flex gap-2 border-t border-[var(--border)] pt-3">
+                  <div className="flex gap-2 border-t border-[#14171F]/10 pt-3">
                     <button
                       onClick={() => handleProcessApproval('leave', l.id, 'approved')}
-                      className="flex-1 h-8 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-[10px] font-bold flex items-center justify-center gap-1.5 transition cursor-pointer"
+                      className="flex-1 h-8 bg-emerald-700 hover:bg-emerald-800 text-white rounded-full text-[10px] font-bold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs"
                     >
                       <CheckCircle2 size={12} /> Approve Leave
                     </button>
                     <button
                       onClick={() => handleProcessApproval('leave', l.id, 'rejected')}
-                      className="flex-1 h-8 bg-red-600 hover:bg-red-700 text-white rounded text-[10px] font-bold flex items-center justify-center gap-1.5 transition cursor-pointer"
+                      className="flex-1 h-8 bg-rose-700 hover:bg-rose-800 text-white rounded-full text-[10px] font-bold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs"
                     >
                       <XCircle size={12} /> Reject Leave
                     </button>
@@ -176,8 +176,8 @@ export default function WorkflowsPage() {
                 </div>
               ))
             ) : (
-              <div className="text-center text-[var(--text-muted)] py-10 text-xs flex flex-col gap-2 items-center">
-                <CheckCircle2 size={24} className="text-[var(--success)]" />
+              <div className="text-center text-[#4F5565] py-10 text-xs flex flex-col gap-2 items-center font-medium">
+                <CheckCircle2 size={24} className="text-emerald-700" />
                 No pending leaves.
               </div>
             )}
@@ -187,16 +187,16 @@ export default function WorkflowsPage() {
       </div>
 
       {/* Reconciled approvals audits history */}
-      <div className="glass p-6 rounded-xl border border-[var(--border)] flex flex-col gap-4">
-        <h3 className="font-bold text-sm flex items-center gap-2 border-b border-[var(--border)] pb-3">
-          <History size={16} className="text-emerald-400" />
+      <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs flex flex-col gap-4 text-[#14171F]">
+        <h3 className="font-serif font-bold text-base text-[#14171F] flex items-center gap-2 border-b border-[#14171F]/10 pb-3">
+          <History size={16} className="text-emerald-700" />
           Recently Reconciled Purchase Orders
         </h3>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-[var(--border)] text-[var(--text-muted)] h-10 uppercase tracking-wider font-bold">
+              <tr className="border-b border-[#14171F]/10 text-[#4F5565] h-10 uppercase tracking-wider font-bold font-mono">
                 <th className="pb-2">PO Code</th>
                 <th className="pb-2">Supplier</th>
                 <th className="pb-2">Date processed</th>
@@ -204,15 +204,15 @@ export default function WorkflowsPage() {
                 <th className="pb-2 text-right">Status</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-[#14171F]/5 text-[#14171F]">
               {approvals.approvedPOs.map((po: any) => (
-                <tr key={po.id} className="border-b border-[var(--border)] h-12">
-                  <td className="font-mono text-white">PO-{po.id.substring(0, 5).toUpperCase()}</td>
-                  <td>{po.supplier.name}</td>
-                  <td className="text-[var(--text-muted)] font-mono">{new Date(po.date).toLocaleDateString()}</td>
-                  <td className="text-right font-mono font-bold text-white">{formatAmount(po.total)}</td>
+                <tr key={po.id} className="hover:bg-[#FAF7F2]/60 h-14 transition-colors">
+                  <td className="font-mono text-[#5C64ED] font-bold">PO-{po.id.substring(0, 5).toUpperCase()}</td>
+                  <td className="font-bold text-[#14171F]">{po.supplier.name}</td>
+                  <td className="text-[#4F5565] font-mono">{new Date(po.date).toLocaleDateString()}</td>
+                  <td className="text-right font-mono font-bold text-[#14171F]">{formatAmount(po.total)}</td>
                   <td className="text-right">
-                    <span className="bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded text-[10px] font-bold">
+                    <span className="bg-emerald-100 border border-emerald-300 text-emerald-800 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase">
                       approved
                     </span>
                   </td>
@@ -220,7 +220,7 @@ export default function WorkflowsPage() {
               ))}
               {approvals.approvedPOs.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="text-center py-6 text-[var(--text-muted)]">No historical entries.</td>
+                  <td colSpan={5} className="text-center py-6 text-[#4F5565] font-medium">No historical entries.</td>
                 </tr>
               )}
             </tbody>
