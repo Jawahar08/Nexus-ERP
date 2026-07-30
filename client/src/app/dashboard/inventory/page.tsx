@@ -240,19 +240,38 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
   };
 
   // Generate & Bulk Import 500 Test Items Demonstration
+  // Generate & Bulk Import 500 Supermarket Items Demonstration
   const handleGenerate500Items = async () => {
     setImporting(true);
     try {
-      const categoriesList = ['HARDWARE', 'NETWORKING', 'COOLING', 'DAIRY', 'ELECTRONICS', 'ACCESSORIES'];
-      const generatedItems = Array.from({ length: 500 }).map((_, i) => ({
-        name: `Product Item #${i + 101}`,
-        sku: `SKU-${1000 + i}`,
-        category: categoriesList[i % categoriesList.length],
-        price: Number((15 + (i * 2.5) % 350).toFixed(2)),
-        cost: Number((10 + (i * 1.5) % 200).toFixed(2)),
-        stock: Math.floor(20 + (i * 7) % 150),
-        minStock: 10
-      }));
+      const superCategories = [
+        { cat: 'BEVERAGES', items: ['Organic Orange Juice 1L', 'Sparkling Lime Water 500ml', 'Arabica Dark Roast Coffee 250g', 'Green Tea Mint 25 Bags', 'Energy Drink 250ml', 'Almond Milk Unsweetened 1L', 'Pure Coconut Water 330ml', 'Mango Nectar Juice 1L'] },
+        { cat: 'BAKERY', items: ['Whole Wheat Sandwich Bread', 'Artisanal Sourdough Loaf', 'Butter Croissants 4 Pack', 'Chocolate Muffin 2 Pack', 'Vanilla Sponge Cake 400g', 'Multigrain Toast Rusk 300g', 'Blueberry Bagels 4 Pack', 'Gluten Free Oat Bread'] },
+        { cat: 'DAIRY', items: ['Fresh Full Cream Milk 1L', 'Greek Yogurt Strawberry 200g', 'Aged Cheddar Cheese Slice 200g', 'Unsalted Cultured Butter 500g', 'Organic Cottage Cheese 250g', 'Heavy Whipping Cream 250ml', 'Low Fat Slim Milk 1L', 'Gouda Cheese Block 200g'] },
+        { cat: 'SNACKS', items: ['Crispy Potato Chips Salted 150g', 'Roasted Salted Almonds 200g', '70% Dark Belgian Chocolate 100g', 'Oatmeal Raisin Cookies 250g', 'Honey Roasted Cashews 150g', 'Nachos Cheese Flavour 150g', 'Pretzel Thins Sea Salt 120g', 'Trail Mix Dried Fruit 250g'] },
+        { cat: 'STAPLES', items: ['Premium Extra Long Basmati Rice 5kg', 'Whole Wheat Chakki Atta 5kg', 'Organic Toor Dal 1kg', 'Extra Virgin Olive Oil 1L', 'Refined Sunflower Cooking Oil 1L', 'Pink Himalayan Salt 1kg', 'Pure Cane White Sugar 1kg', 'Raw Organic Honey 500g'] },
+        { cat: 'PERSONAL CARE', items: ['Herbal Nourishing Shampoo 400ml', 'Moisturizing Bath Soap 125g', 'Triple Action Toothpaste 150g', 'Gentle Foaming Face Wash 100ml', 'Hydrating Hand Sanitizer 250ml', 'Deep Moisture Body Lotion 400ml', 'Aloe Vera Hair Conditioner 200ml', 'Antiseptic Liquid Handwash 250ml'] },
+        { cat: 'HOUSEHOLD', items: ['Lemon Dishwashing Gel 750ml', 'Disinfectant Floor Cleaner 1L', 'Concentrated Laundry Detergent 1L', 'Soft 2-Ply Facial Tissues 200s', 'Heavy Duty Garbage Bags 30s', 'Multi-Surface Cleaner Spray 500ml', 'Microfiber Cleaning Cloth 4 Pack', 'Fabric Softener Fresh 1L'] }
+      ];
+
+      const brandList = ['Nestle', 'Dabur', 'Britannia', 'Amul', 'Sunfeast', 'Parle', 'Pepsico', 'Unilever', 'Colgate', 'Kelloggs'];
+
+      const generatedItems = Array.from({ length: 500 }).map((_, i) => {
+        const catGroup = superCategories[i % superCategories.length];
+        const baseName = catGroup.items[i % catGroup.items.length];
+        const brand = brandList[i % brandList.length];
+        const costVal = Number((2.50 + (i * 1.35) % 85).toFixed(2));
+
+        return {
+          name: `${brand} - ${baseName} (Batch #${Math.floor(i / superCategories.length) + 1})`,
+          sku: `SMP-${(1000 + i + 1).toString()}`,
+          category: catGroup.cat,
+          price: Number((costVal * 1.4).toFixed(2)),
+          cost: costVal,
+          stock: Math.floor(15 + (i * 11) % 250),
+          minStock: 15
+        };
+      });
 
       const res = await fetch('/api/inventory/bulk-import', {
         method: 'POST',
@@ -262,12 +281,12 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
 
       if (res.ok) {
         const result = await res.json();
-        alert(`Bulk Import Success! Added/Updated ${result.totalProcessed} inventory SKUs.`);
+        alert(`Supermarket Import Complete! Successfully loaded ${result.totalProcessed} supermarket SKUs into Nexus ERP inventory.`);
         setShowBulkImportModal(false);
         fetchInventory();
       }
     } catch (err) {
-      alert('Bulk test generation failed.');
+      alert('Bulk supermarket test generation failed.');
     } finally {
       setImporting(false);
     }

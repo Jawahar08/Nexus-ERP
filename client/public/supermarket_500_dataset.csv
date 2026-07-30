@@ -1,0 +1,501 @@
+name,sku,category,price,cost,stock,minStock
+"Nestle - Organic Orange Juice 1L (Variant #1)",SMP-1001,BEVERAGES,3.5,2.5,15,15
+"Dabur - Artisanal Sourdough Loaf (Variant #1)",SMP-1002,BAKERY,5.39,3.85,26,15
+"Britannia - Aged Cheddar Cheese Slice 200g (Variant #1)",SMP-1003,DAIRY,7.28,5.2,37,15
+"Amul - Oatmeal Raisin Cookies 250g (Variant #1)",SMP-1004,SNACKS,9.17,6.55,48,15
+"Sunfeast - Refined Sunflower Cooking Oil 1L (Variant #1)",SMP-1005,STAPLES,11.06,7.9,59,15
+"Parle - Deep Moisture Body Lotion 400ml (Variant #1)",SMP-1006,PERSONAL CARE,12.95,9.25,70,15
+"Pepsico - Microfiber Cleaning Cloth 4 Pack (Variant #1)",SMP-1007,HOUSEHOLD,14.84,10.6,81,15
+"Unilever - Mango Nectar Juice 1L (Variant #2)",SMP-1008,BEVERAGES,16.73,11.95,92,15
+"Colgate - Whole Wheat Sandwich Bread (Variant #2)",SMP-1009,BAKERY,18.62,13.3,103,15
+"Kelloggs - Greek Yogurt Strawberry 200g (Variant #2)",SMP-1010,DAIRY,20.51,14.65,114,15
+"Nestle - 70% Dark Belgian Chocolate 100g (Variant #2)",SMP-1011,SNACKS,22.4,16,125,15
+"Dabur - Extra Virgin Olive Oil 1L (Variant #2)",SMP-1012,STAPLES,24.29,17.35,136,15
+"Britannia - Hydrating Hand Sanitizer 250ml (Variant #2)",SMP-1013,PERSONAL CARE,26.18,18.7,147,15
+"Amul - Multi-Surface Cleaner Spray 500ml (Variant #2)",SMP-1014,HOUSEHOLD,28.07,20.05,158,15
+"Sunfeast - Pure Coconut Water 330ml (Variant #3)",SMP-1015,BEVERAGES,29.96,21.4,169,15
+"Parle - Gluten Free Oat Bread (Variant #3)",SMP-1016,BAKERY,31.85,22.75,180,15
+"Pepsico - Fresh Full Cream Milk 1L (Variant #3)",SMP-1017,DAIRY,33.74,24.1,191,15
+"Unilever - Roasted Salted Almonds 200g (Variant #3)",SMP-1018,SNACKS,35.63,25.45,202,15
+"Colgate - Organic Toor Dal 1kg (Variant #3)",SMP-1019,STAPLES,37.52,26.8,213,15
+"Kelloggs - Gentle Foaming Face Wash 100ml (Variant #3)",SMP-1020,PERSONAL CARE,39.41,28.15,224,15
+"Nestle - Heavy Duty Garbage Bags 30s (Variant #3)",SMP-1021,HOUSEHOLD,41.3,29.5,235,15
+"Dabur - Almond Milk Unsweetened 1L (Variant #4)",SMP-1022,BEVERAGES,43.19,30.85,246,15
+"Britannia - Blueberry Bagels 4 Pack (Variant #4)",SMP-1023,BAKERY,45.08,32.2,257,15
+"Amul - Gouda Cheese Block 200g (Variant #4)",SMP-1024,DAIRY,46.97,33.55,18,15
+"Sunfeast - Crispy Potato Chips Salted 150g (Variant #4)",SMP-1025,SNACKS,48.86,34.9,29,15
+"Parle - Whole Wheat Chakki Atta 5kg (Variant #4)",SMP-1026,STAPLES,50.75,36.25,40,15
+"Pepsico - Triple Action Toothpaste 150g (Variant #4)",SMP-1027,PERSONAL CARE,52.64,37.6,51,15
+"Unilever - Soft 2-Ply Facial Tissues 200s (Variant #4)",SMP-1028,HOUSEHOLD,54.53,38.95,62,15
+"Colgate - Energy Drink 250ml (Variant #5)",SMP-1029,BEVERAGES,56.42,40.3,73,15
+"Kelloggs - Multigrain Toast Rusk 300g (Variant #5)",SMP-1030,BAKERY,58.31,41.65,84,15
+"Nestle - Low Fat Slim Milk 1L (Variant #5)",SMP-1031,DAIRY,60.2,43,95,15
+"Dabur - Trail Mix Dried Fruit 250g (Variant #5)",SMP-1032,SNACKS,62.09,44.35,106,15
+"Britannia - Premium Extra Long Basmati Rice 5kg (Variant #5)",SMP-1033,STAPLES,63.98,45.7,117,15
+"Amul - Moisturizing Bath Soap 125g (Variant #5)",SMP-1034,PERSONAL CARE,65.87,47.05,128,15
+"Sunfeast - Concentrated Laundry Detergent 1L (Variant #5)",SMP-1035,HOUSEHOLD,67.76,48.4,139,15
+"Parle - Green Tea Mint 25 Bags (Variant #6)",SMP-1036,BEVERAGES,69.65,49.75,150,15
+"Pepsico - Vanilla Sponge Cake 400g (Variant #6)",SMP-1037,BAKERY,71.54,51.1,161,15
+"Unilever - Heavy Whipping Cream 250ml (Variant #6)",SMP-1038,DAIRY,73.43,52.45,172,15
+"Colgate - Pretzel Thins Sea Salt 120g (Variant #6)",SMP-1039,SNACKS,75.32,53.8,183,15
+"Kelloggs - Raw Organic Honey 500g (Variant #6)",SMP-1040,STAPLES,77.21,55.15,194,15
+"Nestle - Herbal Nourishing Shampoo 400ml (Variant #6)",SMP-1041,PERSONAL CARE,79.1,56.5,205,15
+"Dabur - Disinfectant Floor Cleaner 1L (Variant #6)",SMP-1042,HOUSEHOLD,80.99,57.85,216,15
+"Britannia - Arabica Dark Roast Coffee 250g (Variant #7)",SMP-1043,BEVERAGES,82.88,59.2,227,15
+"Amul - Chocolate Muffin 2 Pack (Variant #7)",SMP-1044,BAKERY,84.77,60.55,238,15
+"Sunfeast - Organic Cottage Cheese 250g (Variant #7)",SMP-1045,DAIRY,86.66,61.9,249,15
+"Parle - Nachos Cheese Flavour 150g (Variant #7)",SMP-1046,SNACKS,88.55,63.25,260,15
+"Pepsico - Pure Cane White Sugar 1kg (Variant #7)",SMP-1047,STAPLES,90.44,64.6,21,15
+"Unilever - Antiseptic Liquid Handwash 250ml (Variant #7)",SMP-1048,PERSONAL CARE,92.33,65.95,32,15
+"Colgate - Lemon Dishwashing Gel 750ml (Variant #7)",SMP-1049,HOUSEHOLD,94.22,67.3,43,15
+"Kelloggs - Sparkling Lime Water 500ml (Variant #8)",SMP-1050,BEVERAGES,96.11,68.65,54,15
+"Nestle - Butter Croissants 4 Pack (Variant #8)",SMP-1051,BAKERY,98,70,65,15
+"Dabur - Unsalted Cultured Butter 500g (Variant #8)",SMP-1052,DAIRY,99.89,71.35,76,15
+"Britannia - Honey Roasted Cashews 150g (Variant #8)",SMP-1053,SNACKS,101.78,72.7,87,15
+"Amul - Pink Himalayan Salt 1kg (Variant #8)",SMP-1054,STAPLES,103.67,74.05,98,15
+"Sunfeast - Aloe Vera Hair Conditioner 200ml (Variant #8)",SMP-1055,PERSONAL CARE,105.56,75.4,109,15
+"Parle - Fabric Softener Fresh 1L (Variant #8)",SMP-1056,HOUSEHOLD,107.45,76.75,120,15
+"Pepsico - Organic Orange Juice 1L (Variant #9)",SMP-1057,BEVERAGES,109.34,78.1,131,15
+"Unilever - Artisanal Sourdough Loaf (Variant #9)",SMP-1058,BAKERY,111.23,79.45,142,15
+"Colgate - Aged Cheddar Cheese Slice 200g (Variant #9)",SMP-1059,DAIRY,113.12,80.8,153,15
+"Kelloggs - Oatmeal Raisin Cookies 250g (Variant #9)",SMP-1060,SNACKS,115.01,82.15,164,15
+"Nestle - Refined Sunflower Cooking Oil 1L (Variant #9)",SMP-1061,STAPLES,116.9,83.5,175,15
+"Dabur - Deep Moisture Body Lotion 400ml (Variant #9)",SMP-1062,PERSONAL CARE,118.79,84.85,186,15
+"Britannia - Microfiber Cleaning Cloth 4 Pack (Variant #9)",SMP-1063,HOUSEHOLD,120.68,86.2,197,15
+"Amul - Mango Nectar Juice 1L (Variant #10)",SMP-1064,BEVERAGES,3.57,2.55,208,15
+"Sunfeast - Whole Wheat Sandwich Bread (Variant #10)",SMP-1065,BAKERY,5.46,3.9,219,15
+"Parle - Greek Yogurt Strawberry 200g (Variant #10)",SMP-1066,DAIRY,7.35,5.25,230,15
+"Pepsico - 70% Dark Belgian Chocolate 100g (Variant #10)",SMP-1067,SNACKS,9.24,6.6,241,15
+"Unilever - Extra Virgin Olive Oil 1L (Variant #10)",SMP-1068,STAPLES,11.13,7.95,252,15
+"Colgate - Hydrating Hand Sanitizer 250ml (Variant #10)",SMP-1069,PERSONAL CARE,13.02,9.3,263,15
+"Kelloggs - Multi-Surface Cleaner Spray 500ml (Variant #10)",SMP-1070,HOUSEHOLD,14.91,10.65,24,15
+"Nestle - Pure Coconut Water 330ml (Variant #11)",SMP-1071,BEVERAGES,16.8,12,35,15
+"Dabur - Gluten Free Oat Bread (Variant #11)",SMP-1072,BAKERY,18.69,13.35,46,15
+"Britannia - Fresh Full Cream Milk 1L (Variant #11)",SMP-1073,DAIRY,20.58,14.7,57,15
+"Amul - Roasted Salted Almonds 200g (Variant #11)",SMP-1074,SNACKS,22.47,16.05,68,15
+"Sunfeast - Organic Toor Dal 1kg (Variant #11)",SMP-1075,STAPLES,24.36,17.4,79,15
+"Parle - Gentle Foaming Face Wash 100ml (Variant #11)",SMP-1076,PERSONAL CARE,26.25,18.75,90,15
+"Pepsico - Heavy Duty Garbage Bags 30s (Variant #11)",SMP-1077,HOUSEHOLD,28.14,20.1,101,15
+"Unilever - Almond Milk Unsweetened 1L (Variant #12)",SMP-1078,BEVERAGES,30.03,21.45,112,15
+"Colgate - Blueberry Bagels 4 Pack (Variant #12)",SMP-1079,BAKERY,31.92,22.8,123,15
+"Kelloggs - Gouda Cheese Block 200g (Variant #12)",SMP-1080,DAIRY,33.81,24.15,134,15
+"Nestle - Crispy Potato Chips Salted 150g (Variant #12)",SMP-1081,SNACKS,35.7,25.5,145,15
+"Dabur - Whole Wheat Chakki Atta 5kg (Variant #12)",SMP-1082,STAPLES,37.59,26.85,156,15
+"Britannia - Triple Action Toothpaste 150g (Variant #12)",SMP-1083,PERSONAL CARE,39.48,28.2,167,15
+"Amul - Soft 2-Ply Facial Tissues 200s (Variant #12)",SMP-1084,HOUSEHOLD,41.37,29.55,178,15
+"Sunfeast - Energy Drink 250ml (Variant #13)",SMP-1085,BEVERAGES,43.26,30.9,189,15
+"Parle - Multigrain Toast Rusk 300g (Variant #13)",SMP-1086,BAKERY,45.15,32.25,200,15
+"Pepsico - Low Fat Slim Milk 1L (Variant #13)",SMP-1087,DAIRY,47.04,33.6,211,15
+"Unilever - Trail Mix Dried Fruit 250g (Variant #13)",SMP-1088,SNACKS,48.93,34.95,222,15
+"Colgate - Premium Extra Long Basmati Rice 5kg (Variant #13)",SMP-1089,STAPLES,50.82,36.3,233,15
+"Kelloggs - Moisturizing Bath Soap 125g (Variant #13)",SMP-1090,PERSONAL CARE,52.71,37.65,244,15
+"Nestle - Concentrated Laundry Detergent 1L (Variant #13)",SMP-1091,HOUSEHOLD,54.6,39,255,15
+"Dabur - Green Tea Mint 25 Bags (Variant #14)",SMP-1092,BEVERAGES,56.49,40.35,16,15
+"Britannia - Vanilla Sponge Cake 400g (Variant #14)",SMP-1093,BAKERY,58.38,41.7,27,15
+"Amul - Heavy Whipping Cream 250ml (Variant #14)",SMP-1094,DAIRY,60.27,43.05,38,15
+"Sunfeast - Pretzel Thins Sea Salt 120g (Variant #14)",SMP-1095,SNACKS,62.16,44.4,49,15
+"Parle - Raw Organic Honey 500g (Variant #14)",SMP-1096,STAPLES,64.05,45.75,60,15
+"Pepsico - Herbal Nourishing Shampoo 400ml (Variant #14)",SMP-1097,PERSONAL CARE,65.94,47.1,71,15
+"Unilever - Disinfectant Floor Cleaner 1L (Variant #14)",SMP-1098,HOUSEHOLD,67.83,48.45,82,15
+"Colgate - Arabica Dark Roast Coffee 250g (Variant #15)",SMP-1099,BEVERAGES,69.72,49.8,93,15
+"Kelloggs - Chocolate Muffin 2 Pack (Variant #15)",SMP-1100,BAKERY,71.61,51.15,104,15
+"Nestle - Organic Cottage Cheese 250g (Variant #15)",SMP-1101,DAIRY,73.5,52.5,115,15
+"Dabur - Nachos Cheese Flavour 150g (Variant #15)",SMP-1102,SNACKS,75.39,53.85,126,15
+"Britannia - Pure Cane White Sugar 1kg (Variant #15)",SMP-1103,STAPLES,77.28,55.2,137,15
+"Amul - Antiseptic Liquid Handwash 250ml (Variant #15)",SMP-1104,PERSONAL CARE,79.17,56.55,148,15
+"Sunfeast - Lemon Dishwashing Gel 750ml (Variant #15)",SMP-1105,HOUSEHOLD,81.06,57.9,159,15
+"Parle - Sparkling Lime Water 500ml (Variant #16)",SMP-1106,BEVERAGES,82.95,59.25,170,15
+"Pepsico - Butter Croissants 4 Pack (Variant #16)",SMP-1107,BAKERY,84.84,60.6,181,15
+"Unilever - Unsalted Cultured Butter 500g (Variant #16)",SMP-1108,DAIRY,86.73,61.95,192,15
+"Colgate - Honey Roasted Cashews 150g (Variant #16)",SMP-1109,SNACKS,88.62,63.3,203,15
+"Kelloggs - Pink Himalayan Salt 1kg (Variant #16)",SMP-1110,STAPLES,90.51,64.65,214,15
+"Nestle - Aloe Vera Hair Conditioner 200ml (Variant #16)",SMP-1111,PERSONAL CARE,92.4,66,225,15
+"Dabur - Fabric Softener Fresh 1L (Variant #16)",SMP-1112,HOUSEHOLD,94.29,67.35,236,15
+"Britannia - Organic Orange Juice 1L (Variant #17)",SMP-1113,BEVERAGES,96.18,68.7,247,15
+"Amul - Artisanal Sourdough Loaf (Variant #17)",SMP-1114,BAKERY,98.07,70.05,258,15
+"Sunfeast - Aged Cheddar Cheese Slice 200g (Variant #17)",SMP-1115,DAIRY,99.96,71.4,19,15
+"Parle - Oatmeal Raisin Cookies 250g (Variant #17)",SMP-1116,SNACKS,101.85,72.75,30,15
+"Pepsico - Refined Sunflower Cooking Oil 1L (Variant #17)",SMP-1117,STAPLES,103.74,74.1,41,15
+"Unilever - Deep Moisture Body Lotion 400ml (Variant #17)",SMP-1118,PERSONAL CARE,105.63,75.45,52,15
+"Colgate - Microfiber Cleaning Cloth 4 Pack (Variant #17)",SMP-1119,HOUSEHOLD,107.52,76.8,63,15
+"Kelloggs - Mango Nectar Juice 1L (Variant #18)",SMP-1120,BEVERAGES,109.41,78.15,74,15
+"Nestle - Whole Wheat Sandwich Bread (Variant #18)",SMP-1121,BAKERY,111.3,79.5,85,15
+"Dabur - Greek Yogurt Strawberry 200g (Variant #18)",SMP-1122,DAIRY,113.19,80.85,96,15
+"Britannia - 70% Dark Belgian Chocolate 100g (Variant #18)",SMP-1123,SNACKS,115.08,82.2,107,15
+"Amul - Extra Virgin Olive Oil 1L (Variant #18)",SMP-1124,STAPLES,116.97,83.55,118,15
+"Sunfeast - Hydrating Hand Sanitizer 250ml (Variant #18)",SMP-1125,PERSONAL CARE,118.86,84.9,129,15
+"Parle - Multi-Surface Cleaner Spray 500ml (Variant #18)",SMP-1126,HOUSEHOLD,120.75,86.25,140,15
+"Pepsico - Pure Coconut Water 330ml (Variant #19)",SMP-1127,BEVERAGES,3.64,2.6,151,15
+"Unilever - Gluten Free Oat Bread (Variant #19)",SMP-1128,BAKERY,5.53,3.95,162,15
+"Colgate - Fresh Full Cream Milk 1L (Variant #19)",SMP-1129,DAIRY,7.42,5.3,173,15
+"Kelloggs - Roasted Salted Almonds 200g (Variant #19)",SMP-1130,SNACKS,9.31,6.65,184,15
+"Nestle - Organic Toor Dal 1kg (Variant #19)",SMP-1131,STAPLES,11.2,8,195,15
+"Dabur - Gentle Foaming Face Wash 100ml (Variant #19)",SMP-1132,PERSONAL CARE,13.09,9.35,206,15
+"Britannia - Heavy Duty Garbage Bags 30s (Variant #19)",SMP-1133,HOUSEHOLD,14.98,10.7,217,15
+"Amul - Almond Milk Unsweetened 1L (Variant #20)",SMP-1134,BEVERAGES,16.87,12.05,228,15
+"Sunfeast - Blueberry Bagels 4 Pack (Variant #20)",SMP-1135,BAKERY,18.76,13.4,239,15
+"Parle - Gouda Cheese Block 200g (Variant #20)",SMP-1136,DAIRY,20.65,14.75,250,15
+"Pepsico - Crispy Potato Chips Salted 150g (Variant #20)",SMP-1137,SNACKS,22.54,16.1,261,15
+"Unilever - Whole Wheat Chakki Atta 5kg (Variant #20)",SMP-1138,STAPLES,24.43,17.45,22,15
+"Colgate - Triple Action Toothpaste 150g (Variant #20)",SMP-1139,PERSONAL CARE,26.32,18.8,33,15
+"Kelloggs - Soft 2-Ply Facial Tissues 200s (Variant #20)",SMP-1140,HOUSEHOLD,28.21,20.15,44,15
+"Nestle - Energy Drink 250ml (Variant #21)",SMP-1141,BEVERAGES,30.1,21.5,55,15
+"Dabur - Multigrain Toast Rusk 300g (Variant #21)",SMP-1142,BAKERY,31.99,22.85,66,15
+"Britannia - Low Fat Slim Milk 1L (Variant #21)",SMP-1143,DAIRY,33.88,24.2,77,15
+"Amul - Trail Mix Dried Fruit 250g (Variant #21)",SMP-1144,SNACKS,35.77,25.55,88,15
+"Sunfeast - Premium Extra Long Basmati Rice 5kg (Variant #21)",SMP-1145,STAPLES,37.66,26.9,99,15
+"Parle - Moisturizing Bath Soap 125g (Variant #21)",SMP-1146,PERSONAL CARE,39.55,28.25,110,15
+"Pepsico - Concentrated Laundry Detergent 1L (Variant #21)",SMP-1147,HOUSEHOLD,41.44,29.6,121,15
+"Unilever - Green Tea Mint 25 Bags (Variant #22)",SMP-1148,BEVERAGES,43.33,30.95,132,15
+"Colgate - Vanilla Sponge Cake 400g (Variant #22)",SMP-1149,BAKERY,45.22,32.3,143,15
+"Kelloggs - Heavy Whipping Cream 250ml (Variant #22)",SMP-1150,DAIRY,47.11,33.65,154,15
+"Nestle - Pretzel Thins Sea Salt 120g (Variant #22)",SMP-1151,SNACKS,49,35,165,15
+"Dabur - Raw Organic Honey 500g (Variant #22)",SMP-1152,STAPLES,50.89,36.35,176,15
+"Britannia - Herbal Nourishing Shampoo 400ml (Variant #22)",SMP-1153,PERSONAL CARE,52.78,37.7,187,15
+"Amul - Disinfectant Floor Cleaner 1L (Variant #22)",SMP-1154,HOUSEHOLD,54.67,39.05,198,15
+"Sunfeast - Arabica Dark Roast Coffee 250g (Variant #23)",SMP-1155,BEVERAGES,56.56,40.4,209,15
+"Parle - Chocolate Muffin 2 Pack (Variant #23)",SMP-1156,BAKERY,58.45,41.75,220,15
+"Pepsico - Organic Cottage Cheese 250g (Variant #23)",SMP-1157,DAIRY,60.34,43.1,231,15
+"Unilever - Nachos Cheese Flavour 150g (Variant #23)",SMP-1158,SNACKS,62.23,44.45,242,15
+"Colgate - Pure Cane White Sugar 1kg (Variant #23)",SMP-1159,STAPLES,64.12,45.8,253,15
+"Kelloggs - Antiseptic Liquid Handwash 250ml (Variant #23)",SMP-1160,PERSONAL CARE,66.01,47.15,264,15
+"Nestle - Lemon Dishwashing Gel 750ml (Variant #23)",SMP-1161,HOUSEHOLD,67.9,48.5,25,15
+"Dabur - Sparkling Lime Water 500ml (Variant #24)",SMP-1162,BEVERAGES,69.79,49.85,36,15
+"Britannia - Butter Croissants 4 Pack (Variant #24)",SMP-1163,BAKERY,71.68,51.2,47,15
+"Amul - Unsalted Cultured Butter 500g (Variant #24)",SMP-1164,DAIRY,73.57,52.55,58,15
+"Sunfeast - Honey Roasted Cashews 150g (Variant #24)",SMP-1165,SNACKS,75.46,53.9,69,15
+"Parle - Pink Himalayan Salt 1kg (Variant #24)",SMP-1166,STAPLES,77.35,55.25,80,15
+"Pepsico - Aloe Vera Hair Conditioner 200ml (Variant #24)",SMP-1167,PERSONAL CARE,79.24,56.6,91,15
+"Unilever - Fabric Softener Fresh 1L (Variant #24)",SMP-1168,HOUSEHOLD,81.13,57.95,102,15
+"Colgate - Organic Orange Juice 1L (Variant #25)",SMP-1169,BEVERAGES,83.02,59.3,113,15
+"Kelloggs - Artisanal Sourdough Loaf (Variant #25)",SMP-1170,BAKERY,84.91,60.65,124,15
+"Nestle - Aged Cheddar Cheese Slice 200g (Variant #25)",SMP-1171,DAIRY,86.8,62,135,15
+"Dabur - Oatmeal Raisin Cookies 250g (Variant #25)",SMP-1172,SNACKS,88.69,63.35,146,15
+"Britannia - Refined Sunflower Cooking Oil 1L (Variant #25)",SMP-1173,STAPLES,90.58,64.7,157,15
+"Amul - Deep Moisture Body Lotion 400ml (Variant #25)",SMP-1174,PERSONAL CARE,92.47,66.05,168,15
+"Sunfeast - Microfiber Cleaning Cloth 4 Pack (Variant #25)",SMP-1175,HOUSEHOLD,94.36,67.4,179,15
+"Parle - Mango Nectar Juice 1L (Variant #26)",SMP-1176,BEVERAGES,96.25,68.75,190,15
+"Pepsico - Whole Wheat Sandwich Bread (Variant #26)",SMP-1177,BAKERY,98.14,70.1,201,15
+"Unilever - Greek Yogurt Strawberry 200g (Variant #26)",SMP-1178,DAIRY,100.03,71.45,212,15
+"Colgate - 70% Dark Belgian Chocolate 100g (Variant #26)",SMP-1179,SNACKS,101.92,72.8,223,15
+"Kelloggs - Extra Virgin Olive Oil 1L (Variant #26)",SMP-1180,STAPLES,103.81,74.15,234,15
+"Nestle - Hydrating Hand Sanitizer 250ml (Variant #26)",SMP-1181,PERSONAL CARE,105.7,75.5,245,15
+"Dabur - Multi-Surface Cleaner Spray 500ml (Variant #26)",SMP-1182,HOUSEHOLD,107.59,76.85,256,15
+"Britannia - Pure Coconut Water 330ml (Variant #27)",SMP-1183,BEVERAGES,109.48,78.2,17,15
+"Amul - Gluten Free Oat Bread (Variant #27)",SMP-1184,BAKERY,111.37,79.55,28,15
+"Sunfeast - Fresh Full Cream Milk 1L (Variant #27)",SMP-1185,DAIRY,113.26,80.9,39,15
+"Parle - Roasted Salted Almonds 200g (Variant #27)",SMP-1186,SNACKS,115.15,82.25,50,15
+"Pepsico - Organic Toor Dal 1kg (Variant #27)",SMP-1187,STAPLES,117.04,83.6,61,15
+"Unilever - Gentle Foaming Face Wash 100ml (Variant #27)",SMP-1188,PERSONAL CARE,118.93,84.95,72,15
+"Colgate - Heavy Duty Garbage Bags 30s (Variant #27)",SMP-1189,HOUSEHOLD,120.82,86.3,83,15
+"Kelloggs - Almond Milk Unsweetened 1L (Variant #28)",SMP-1190,BEVERAGES,3.71,2.65,94,15
+"Nestle - Blueberry Bagels 4 Pack (Variant #28)",SMP-1191,BAKERY,5.6,4,105,15
+"Dabur - Gouda Cheese Block 200g (Variant #28)",SMP-1192,DAIRY,7.49,5.35,116,15
+"Britannia - Crispy Potato Chips Salted 150g (Variant #28)",SMP-1193,SNACKS,9.38,6.7,127,15
+"Amul - Whole Wheat Chakki Atta 5kg (Variant #28)",SMP-1194,STAPLES,11.27,8.05,138,15
+"Sunfeast - Triple Action Toothpaste 150g (Variant #28)",SMP-1195,PERSONAL CARE,13.16,9.4,149,15
+"Parle - Soft 2-Ply Facial Tissues 200s (Variant #28)",SMP-1196,HOUSEHOLD,15.05,10.75,160,15
+"Pepsico - Energy Drink 250ml (Variant #29)",SMP-1197,BEVERAGES,16.94,12.1,171,15
+"Unilever - Multigrain Toast Rusk 300g (Variant #29)",SMP-1198,BAKERY,18.83,13.45,182,15
+"Colgate - Low Fat Slim Milk 1L (Variant #29)",SMP-1199,DAIRY,20.72,14.8,193,15
+"Kelloggs - Trail Mix Dried Fruit 250g (Variant #29)",SMP-1200,SNACKS,22.61,16.15,204,15
+"Nestle - Premium Extra Long Basmati Rice 5kg (Variant #29)",SMP-1201,STAPLES,24.5,17.5,215,15
+"Dabur - Moisturizing Bath Soap 125g (Variant #29)",SMP-1202,PERSONAL CARE,26.39,18.85,226,15
+"Britannia - Concentrated Laundry Detergent 1L (Variant #29)",SMP-1203,HOUSEHOLD,28.28,20.2,237,15
+"Amul - Green Tea Mint 25 Bags (Variant #30)",SMP-1204,BEVERAGES,30.17,21.55,248,15
+"Sunfeast - Vanilla Sponge Cake 400g (Variant #30)",SMP-1205,BAKERY,32.06,22.9,259,15
+"Parle - Heavy Whipping Cream 250ml (Variant #30)",SMP-1206,DAIRY,33.95,24.25,20,15
+"Pepsico - Pretzel Thins Sea Salt 120g (Variant #30)",SMP-1207,SNACKS,35.84,25.6,31,15
+"Unilever - Raw Organic Honey 500g (Variant #30)",SMP-1208,STAPLES,37.73,26.95,42,15
+"Colgate - Herbal Nourishing Shampoo 400ml (Variant #30)",SMP-1209,PERSONAL CARE,39.62,28.3,53,15
+"Kelloggs - Disinfectant Floor Cleaner 1L (Variant #30)",SMP-1210,HOUSEHOLD,41.51,29.65,64,15
+"Nestle - Arabica Dark Roast Coffee 250g (Variant #31)",SMP-1211,BEVERAGES,43.4,31,75,15
+"Dabur - Chocolate Muffin 2 Pack (Variant #31)",SMP-1212,BAKERY,45.29,32.35,86,15
+"Britannia - Organic Cottage Cheese 250g (Variant #31)",SMP-1213,DAIRY,47.18,33.7,97,15
+"Amul - Nachos Cheese Flavour 150g (Variant #31)",SMP-1214,SNACKS,49.07,35.05,108,15
+"Sunfeast - Pure Cane White Sugar 1kg (Variant #31)",SMP-1215,STAPLES,50.96,36.4,119,15
+"Parle - Antiseptic Liquid Handwash 250ml (Variant #31)",SMP-1216,PERSONAL CARE,52.85,37.75,130,15
+"Pepsico - Lemon Dishwashing Gel 750ml (Variant #31)",SMP-1217,HOUSEHOLD,54.74,39.1,141,15
+"Unilever - Sparkling Lime Water 500ml (Variant #32)",SMP-1218,BEVERAGES,56.63,40.45,152,15
+"Colgate - Butter Croissants 4 Pack (Variant #32)",SMP-1219,BAKERY,58.52,41.8,163,15
+"Kelloggs - Unsalted Cultured Butter 500g (Variant #32)",SMP-1220,DAIRY,60.41,43.15,174,15
+"Nestle - Honey Roasted Cashews 150g (Variant #32)",SMP-1221,SNACKS,62.3,44.5,185,15
+"Dabur - Pink Himalayan Salt 1kg (Variant #32)",SMP-1222,STAPLES,64.19,45.85,196,15
+"Britannia - Aloe Vera Hair Conditioner 200ml (Variant #32)",SMP-1223,PERSONAL CARE,66.08,47.2,207,15
+"Amul - Fabric Softener Fresh 1L (Variant #32)",SMP-1224,HOUSEHOLD,67.97,48.55,218,15
+"Sunfeast - Organic Orange Juice 1L (Variant #33)",SMP-1225,BEVERAGES,69.86,49.9,229,15
+"Parle - Artisanal Sourdough Loaf (Variant #33)",SMP-1226,BAKERY,71.75,51.25,240,15
+"Pepsico - Aged Cheddar Cheese Slice 200g (Variant #33)",SMP-1227,DAIRY,73.64,52.6,251,15
+"Unilever - Oatmeal Raisin Cookies 250g (Variant #33)",SMP-1228,SNACKS,75.53,53.95,262,15
+"Colgate - Refined Sunflower Cooking Oil 1L (Variant #33)",SMP-1229,STAPLES,77.42,55.3,23,15
+"Kelloggs - Deep Moisture Body Lotion 400ml (Variant #33)",SMP-1230,PERSONAL CARE,79.31,56.65,34,15
+"Nestle - Microfiber Cleaning Cloth 4 Pack (Variant #33)",SMP-1231,HOUSEHOLD,81.2,58,45,15
+"Dabur - Mango Nectar Juice 1L (Variant #34)",SMP-1232,BEVERAGES,83.09,59.35,56,15
+"Britannia - Whole Wheat Sandwich Bread (Variant #34)",SMP-1233,BAKERY,84.98,60.7,67,15
+"Amul - Greek Yogurt Strawberry 200g (Variant #34)",SMP-1234,DAIRY,86.87,62.05,78,15
+"Sunfeast - 70% Dark Belgian Chocolate 100g (Variant #34)",SMP-1235,SNACKS,88.76,63.4,89,15
+"Parle - Extra Virgin Olive Oil 1L (Variant #34)",SMP-1236,STAPLES,90.65,64.75,100,15
+"Pepsico - Hydrating Hand Sanitizer 250ml (Variant #34)",SMP-1237,PERSONAL CARE,92.54,66.1,111,15
+"Unilever - Multi-Surface Cleaner Spray 500ml (Variant #34)",SMP-1238,HOUSEHOLD,94.43,67.45,122,15
+"Colgate - Pure Coconut Water 330ml (Variant #35)",SMP-1239,BEVERAGES,96.32,68.8,133,15
+"Kelloggs - Gluten Free Oat Bread (Variant #35)",SMP-1240,BAKERY,98.21,70.15,144,15
+"Nestle - Fresh Full Cream Milk 1L (Variant #35)",SMP-1241,DAIRY,100.1,71.5,155,15
+"Dabur - Roasted Salted Almonds 200g (Variant #35)",SMP-1242,SNACKS,101.99,72.85,166,15
+"Britannia - Organic Toor Dal 1kg (Variant #35)",SMP-1243,STAPLES,103.88,74.2,177,15
+"Amul - Gentle Foaming Face Wash 100ml (Variant #35)",SMP-1244,PERSONAL CARE,105.77,75.55,188,15
+"Sunfeast - Heavy Duty Garbage Bags 30s (Variant #35)",SMP-1245,HOUSEHOLD,107.66,76.9,199,15
+"Parle - Almond Milk Unsweetened 1L (Variant #36)",SMP-1246,BEVERAGES,109.55,78.25,210,15
+"Pepsico - Blueberry Bagels 4 Pack (Variant #36)",SMP-1247,BAKERY,111.44,79.6,221,15
+"Unilever - Gouda Cheese Block 200g (Variant #36)",SMP-1248,DAIRY,113.33,80.95,232,15
+"Colgate - Crispy Potato Chips Salted 150g (Variant #36)",SMP-1249,SNACKS,115.22,82.3,243,15
+"Kelloggs - Whole Wheat Chakki Atta 5kg (Variant #36)",SMP-1250,STAPLES,117.11,83.65,254,15
+"Nestle - Triple Action Toothpaste 150g (Variant #36)",SMP-1251,PERSONAL CARE,119,85,15,15
+"Dabur - Soft 2-Ply Facial Tissues 200s (Variant #36)",SMP-1252,HOUSEHOLD,120.89,86.35,26,15
+"Britannia - Energy Drink 250ml (Variant #37)",SMP-1253,BEVERAGES,3.78,2.7,37,15
+"Amul - Multigrain Toast Rusk 300g (Variant #37)",SMP-1254,BAKERY,5.67,4.05,48,15
+"Sunfeast - Low Fat Slim Milk 1L (Variant #37)",SMP-1255,DAIRY,7.56,5.4,59,15
+"Parle - Trail Mix Dried Fruit 250g (Variant #37)",SMP-1256,SNACKS,9.45,6.75,70,15
+"Pepsico - Premium Extra Long Basmati Rice 5kg (Variant #37)",SMP-1257,STAPLES,11.34,8.1,81,15
+"Unilever - Moisturizing Bath Soap 125g (Variant #37)",SMP-1258,PERSONAL CARE,13.23,9.45,92,15
+"Colgate - Concentrated Laundry Detergent 1L (Variant #37)",SMP-1259,HOUSEHOLD,15.12,10.8,103,15
+"Kelloggs - Green Tea Mint 25 Bags (Variant #38)",SMP-1260,BEVERAGES,17.01,12.15,114,15
+"Nestle - Vanilla Sponge Cake 400g (Variant #38)",SMP-1261,BAKERY,18.9,13.5,125,15
+"Dabur - Heavy Whipping Cream 250ml (Variant #38)",SMP-1262,DAIRY,20.79,14.85,136,15
+"Britannia - Pretzel Thins Sea Salt 120g (Variant #38)",SMP-1263,SNACKS,22.68,16.2,147,15
+"Amul - Raw Organic Honey 500g (Variant #38)",SMP-1264,STAPLES,24.57,17.55,158,15
+"Sunfeast - Herbal Nourishing Shampoo 400ml (Variant #38)",SMP-1265,PERSONAL CARE,26.46,18.9,169,15
+"Parle - Disinfectant Floor Cleaner 1L (Variant #38)",SMP-1266,HOUSEHOLD,28.35,20.25,180,15
+"Pepsico - Arabica Dark Roast Coffee 250g (Variant #39)",SMP-1267,BEVERAGES,30.24,21.6,191,15
+"Unilever - Chocolate Muffin 2 Pack (Variant #39)",SMP-1268,BAKERY,32.13,22.95,202,15
+"Colgate - Organic Cottage Cheese 250g (Variant #39)",SMP-1269,DAIRY,34.02,24.3,213,15
+"Kelloggs - Nachos Cheese Flavour 150g (Variant #39)",SMP-1270,SNACKS,35.91,25.65,224,15
+"Nestle - Pure Cane White Sugar 1kg (Variant #39)",SMP-1271,STAPLES,37.8,27,235,15
+"Dabur - Antiseptic Liquid Handwash 250ml (Variant #39)",SMP-1272,PERSONAL CARE,39.69,28.35,246,15
+"Britannia - Lemon Dishwashing Gel 750ml (Variant #39)",SMP-1273,HOUSEHOLD,41.58,29.7,257,15
+"Amul - Sparkling Lime Water 500ml (Variant #40)",SMP-1274,BEVERAGES,43.47,31.05,18,15
+"Sunfeast - Butter Croissants 4 Pack (Variant #40)",SMP-1275,BAKERY,45.36,32.4,29,15
+"Parle - Unsalted Cultured Butter 500g (Variant #40)",SMP-1276,DAIRY,47.25,33.75,40,15
+"Pepsico - Honey Roasted Cashews 150g (Variant #40)",SMP-1277,SNACKS,49.14,35.1,51,15
+"Unilever - Pink Himalayan Salt 1kg (Variant #40)",SMP-1278,STAPLES,51.03,36.45,62,15
+"Colgate - Aloe Vera Hair Conditioner 200ml (Variant #40)",SMP-1279,PERSONAL CARE,52.92,37.8,73,15
+"Kelloggs - Fabric Softener Fresh 1L (Variant #40)",SMP-1280,HOUSEHOLD,54.81,39.15,84,15
+"Nestle - Organic Orange Juice 1L (Variant #41)",SMP-1281,BEVERAGES,56.7,40.5,95,15
+"Dabur - Artisanal Sourdough Loaf (Variant #41)",SMP-1282,BAKERY,58.59,41.85,106,15
+"Britannia - Aged Cheddar Cheese Slice 200g (Variant #41)",SMP-1283,DAIRY,60.48,43.2,117,15
+"Amul - Oatmeal Raisin Cookies 250g (Variant #41)",SMP-1284,SNACKS,62.37,44.55,128,15
+"Sunfeast - Refined Sunflower Cooking Oil 1L (Variant #41)",SMP-1285,STAPLES,64.26,45.9,139,15
+"Parle - Deep Moisture Body Lotion 400ml (Variant #41)",SMP-1286,PERSONAL CARE,66.15,47.25,150,15
+"Pepsico - Microfiber Cleaning Cloth 4 Pack (Variant #41)",SMP-1287,HOUSEHOLD,68.04,48.6,161,15
+"Unilever - Mango Nectar Juice 1L (Variant #42)",SMP-1288,BEVERAGES,69.93,49.95,172,15
+"Colgate - Whole Wheat Sandwich Bread (Variant #42)",SMP-1289,BAKERY,71.82,51.3,183,15
+"Kelloggs - Greek Yogurt Strawberry 200g (Variant #42)",SMP-1290,DAIRY,73.71,52.65,194,15
+"Nestle - 70% Dark Belgian Chocolate 100g (Variant #42)",SMP-1291,SNACKS,75.6,54,205,15
+"Dabur - Extra Virgin Olive Oil 1L (Variant #42)",SMP-1292,STAPLES,77.49,55.35,216,15
+"Britannia - Hydrating Hand Sanitizer 250ml (Variant #42)",SMP-1293,PERSONAL CARE,79.38,56.7,227,15
+"Amul - Multi-Surface Cleaner Spray 500ml (Variant #42)",SMP-1294,HOUSEHOLD,81.27,58.05,238,15
+"Sunfeast - Pure Coconut Water 330ml (Variant #43)",SMP-1295,BEVERAGES,83.16,59.4,249,15
+"Parle - Gluten Free Oat Bread (Variant #43)",SMP-1296,BAKERY,85.05,60.75,260,15
+"Pepsico - Fresh Full Cream Milk 1L (Variant #43)",SMP-1297,DAIRY,86.94,62.1,21,15
+"Unilever - Roasted Salted Almonds 200g (Variant #43)",SMP-1298,SNACKS,88.83,63.45,32,15
+"Colgate - Organic Toor Dal 1kg (Variant #43)",SMP-1299,STAPLES,90.72,64.8,43,15
+"Kelloggs - Gentle Foaming Face Wash 100ml (Variant #43)",SMP-1300,PERSONAL CARE,92.61,66.15,54,15
+"Nestle - Heavy Duty Garbage Bags 30s (Variant #43)",SMP-1301,HOUSEHOLD,94.5,67.5,65,15
+"Dabur - Almond Milk Unsweetened 1L (Variant #44)",SMP-1302,BEVERAGES,96.39,68.85,76,15
+"Britannia - Blueberry Bagels 4 Pack (Variant #44)",SMP-1303,BAKERY,98.28,70.2,87,15
+"Amul - Gouda Cheese Block 200g (Variant #44)",SMP-1304,DAIRY,100.17,71.55,98,15
+"Sunfeast - Crispy Potato Chips Salted 150g (Variant #44)",SMP-1305,SNACKS,102.06,72.9,109,15
+"Parle - Whole Wheat Chakki Atta 5kg (Variant #44)",SMP-1306,STAPLES,103.95,74.25,120,15
+"Pepsico - Triple Action Toothpaste 150g (Variant #44)",SMP-1307,PERSONAL CARE,105.84,75.6,131,15
+"Unilever - Soft 2-Ply Facial Tissues 200s (Variant #44)",SMP-1308,HOUSEHOLD,107.73,76.95,142,15
+"Colgate - Energy Drink 250ml (Variant #45)",SMP-1309,BEVERAGES,109.62,78.3,153,15
+"Kelloggs - Multigrain Toast Rusk 300g (Variant #45)",SMP-1310,BAKERY,111.51,79.65,164,15
+"Nestle - Low Fat Slim Milk 1L (Variant #45)",SMP-1311,DAIRY,113.4,81,175,15
+"Dabur - Trail Mix Dried Fruit 250g (Variant #45)",SMP-1312,SNACKS,115.29,82.35,186,15
+"Britannia - Premium Extra Long Basmati Rice 5kg (Variant #45)",SMP-1313,STAPLES,117.18,83.7,197,15
+"Amul - Moisturizing Bath Soap 125g (Variant #45)",SMP-1314,PERSONAL CARE,119.07,85.05,208,15
+"Sunfeast - Concentrated Laundry Detergent 1L (Variant #45)",SMP-1315,HOUSEHOLD,120.96,86.4,219,15
+"Parle - Green Tea Mint 25 Bags (Variant #46)",SMP-1316,BEVERAGES,3.85,2.75,230,15
+"Pepsico - Vanilla Sponge Cake 400g (Variant #46)",SMP-1317,BAKERY,5.74,4.1,241,15
+"Unilever - Heavy Whipping Cream 250ml (Variant #46)",SMP-1318,DAIRY,7.63,5.45,252,15
+"Colgate - Pretzel Thins Sea Salt 120g (Variant #46)",SMP-1319,SNACKS,9.52,6.8,263,15
+"Kelloggs - Raw Organic Honey 500g (Variant #46)",SMP-1320,STAPLES,11.41,8.15,24,15
+"Nestle - Herbal Nourishing Shampoo 400ml (Variant #46)",SMP-1321,PERSONAL CARE,13.3,9.5,35,15
+"Dabur - Disinfectant Floor Cleaner 1L (Variant #46)",SMP-1322,HOUSEHOLD,15.19,10.85,46,15
+"Britannia - Arabica Dark Roast Coffee 250g (Variant #47)",SMP-1323,BEVERAGES,17.08,12.2,57,15
+"Amul - Chocolate Muffin 2 Pack (Variant #47)",SMP-1324,BAKERY,18.97,13.55,68,15
+"Sunfeast - Organic Cottage Cheese 250g (Variant #47)",SMP-1325,DAIRY,20.86,14.9,79,15
+"Parle - Nachos Cheese Flavour 150g (Variant #47)",SMP-1326,SNACKS,22.75,16.25,90,15
+"Pepsico - Pure Cane White Sugar 1kg (Variant #47)",SMP-1327,STAPLES,24.64,17.6,101,15
+"Unilever - Antiseptic Liquid Handwash 250ml (Variant #47)",SMP-1328,PERSONAL CARE,26.53,18.95,112,15
+"Colgate - Lemon Dishwashing Gel 750ml (Variant #47)",SMP-1329,HOUSEHOLD,28.42,20.3,123,15
+"Kelloggs - Sparkling Lime Water 500ml (Variant #48)",SMP-1330,BEVERAGES,30.31,21.65,134,15
+"Nestle - Butter Croissants 4 Pack (Variant #48)",SMP-1331,BAKERY,32.2,23,145,15
+"Dabur - Unsalted Cultured Butter 500g (Variant #48)",SMP-1332,DAIRY,34.09,24.35,156,15
+"Britannia - Honey Roasted Cashews 150g (Variant #48)",SMP-1333,SNACKS,35.98,25.7,167,15
+"Amul - Pink Himalayan Salt 1kg (Variant #48)",SMP-1334,STAPLES,37.87,27.05,178,15
+"Sunfeast - Aloe Vera Hair Conditioner 200ml (Variant #48)",SMP-1335,PERSONAL CARE,39.76,28.4,189,15
+"Parle - Fabric Softener Fresh 1L (Variant #48)",SMP-1336,HOUSEHOLD,41.65,29.75,200,15
+"Pepsico - Organic Orange Juice 1L (Variant #49)",SMP-1337,BEVERAGES,43.54,31.1,211,15
+"Unilever - Artisanal Sourdough Loaf (Variant #49)",SMP-1338,BAKERY,45.43,32.45,222,15
+"Colgate - Aged Cheddar Cheese Slice 200g (Variant #49)",SMP-1339,DAIRY,47.32,33.8,233,15
+"Kelloggs - Oatmeal Raisin Cookies 250g (Variant #49)",SMP-1340,SNACKS,49.21,35.15,244,15
+"Nestle - Refined Sunflower Cooking Oil 1L (Variant #49)",SMP-1341,STAPLES,51.1,36.5,255,15
+"Dabur - Deep Moisture Body Lotion 400ml (Variant #49)",SMP-1342,PERSONAL CARE,52.99,37.85,16,15
+"Britannia - Microfiber Cleaning Cloth 4 Pack (Variant #49)",SMP-1343,HOUSEHOLD,54.88,39.2,27,15
+"Amul - Mango Nectar Juice 1L (Variant #50)",SMP-1344,BEVERAGES,56.77,40.55,38,15
+"Sunfeast - Whole Wheat Sandwich Bread (Variant #50)",SMP-1345,BAKERY,58.66,41.9,49,15
+"Parle - Greek Yogurt Strawberry 200g (Variant #50)",SMP-1346,DAIRY,60.55,43.25,60,15
+"Pepsico - 70% Dark Belgian Chocolate 100g (Variant #50)",SMP-1347,SNACKS,62.44,44.6,71,15
+"Unilever - Extra Virgin Olive Oil 1L (Variant #50)",SMP-1348,STAPLES,64.33,45.95,82,15
+"Colgate - Hydrating Hand Sanitizer 250ml (Variant #50)",SMP-1349,PERSONAL CARE,66.22,47.3,93,15
+"Kelloggs - Multi-Surface Cleaner Spray 500ml (Variant #50)",SMP-1350,HOUSEHOLD,68.11,48.65,104,15
+"Nestle - Pure Coconut Water 330ml (Variant #51)",SMP-1351,BEVERAGES,70,50,115,15
+"Dabur - Gluten Free Oat Bread (Variant #51)",SMP-1352,BAKERY,71.89,51.35,126,15
+"Britannia - Fresh Full Cream Milk 1L (Variant #51)",SMP-1353,DAIRY,73.78,52.7,137,15
+"Amul - Roasted Salted Almonds 200g (Variant #51)",SMP-1354,SNACKS,75.67,54.05,148,15
+"Sunfeast - Organic Toor Dal 1kg (Variant #51)",SMP-1355,STAPLES,77.56,55.4,159,15
+"Parle - Gentle Foaming Face Wash 100ml (Variant #51)",SMP-1356,PERSONAL CARE,79.45,56.75,170,15
+"Pepsico - Heavy Duty Garbage Bags 30s (Variant #51)",SMP-1357,HOUSEHOLD,81.34,58.1,181,15
+"Unilever - Almond Milk Unsweetened 1L (Variant #52)",SMP-1358,BEVERAGES,83.23,59.45,192,15
+"Colgate - Blueberry Bagels 4 Pack (Variant #52)",SMP-1359,BAKERY,85.12,60.8,203,15
+"Kelloggs - Gouda Cheese Block 200g (Variant #52)",SMP-1360,DAIRY,87.01,62.15,214,15
+"Nestle - Crispy Potato Chips Salted 150g (Variant #52)",SMP-1361,SNACKS,88.9,63.5,225,15
+"Dabur - Whole Wheat Chakki Atta 5kg (Variant #52)",SMP-1362,STAPLES,90.79,64.85,236,15
+"Britannia - Triple Action Toothpaste 150g (Variant #52)",SMP-1363,PERSONAL CARE,92.68,66.2,247,15
+"Amul - Soft 2-Ply Facial Tissues 200s (Variant #52)",SMP-1364,HOUSEHOLD,94.57,67.55,258,15
+"Sunfeast - Energy Drink 250ml (Variant #53)",SMP-1365,BEVERAGES,96.46,68.9,19,15
+"Parle - Multigrain Toast Rusk 300g (Variant #53)",SMP-1366,BAKERY,98.35,70.25,30,15
+"Pepsico - Low Fat Slim Milk 1L (Variant #53)",SMP-1367,DAIRY,100.24,71.6,41,15
+"Unilever - Trail Mix Dried Fruit 250g (Variant #53)",SMP-1368,SNACKS,102.13,72.95,52,15
+"Colgate - Premium Extra Long Basmati Rice 5kg (Variant #53)",SMP-1369,STAPLES,104.02,74.3,63,15
+"Kelloggs - Moisturizing Bath Soap 125g (Variant #53)",SMP-1370,PERSONAL CARE,105.91,75.65,74,15
+"Nestle - Concentrated Laundry Detergent 1L (Variant #53)",SMP-1371,HOUSEHOLD,107.8,77,85,15
+"Dabur - Green Tea Mint 25 Bags (Variant #54)",SMP-1372,BEVERAGES,109.69,78.35,96,15
+"Britannia - Vanilla Sponge Cake 400g (Variant #54)",SMP-1373,BAKERY,111.58,79.7,107,15
+"Amul - Heavy Whipping Cream 250ml (Variant #54)",SMP-1374,DAIRY,113.47,81.05,118,15
+"Sunfeast - Pretzel Thins Sea Salt 120g (Variant #54)",SMP-1375,SNACKS,115.36,82.4,129,15
+"Parle - Raw Organic Honey 500g (Variant #54)",SMP-1376,STAPLES,117.25,83.75,140,15
+"Pepsico - Herbal Nourishing Shampoo 400ml (Variant #54)",SMP-1377,PERSONAL CARE,119.14,85.1,151,15
+"Unilever - Disinfectant Floor Cleaner 1L (Variant #54)",SMP-1378,HOUSEHOLD,121.03,86.45,162,15
+"Colgate - Arabica Dark Roast Coffee 250g (Variant #55)",SMP-1379,BEVERAGES,3.92,2.8,173,15
+"Kelloggs - Chocolate Muffin 2 Pack (Variant #55)",SMP-1380,BAKERY,5.81,4.15,184,15
+"Nestle - Organic Cottage Cheese 250g (Variant #55)",SMP-1381,DAIRY,7.7,5.5,195,15
+"Dabur - Nachos Cheese Flavour 150g (Variant #55)",SMP-1382,SNACKS,9.59,6.85,206,15
+"Britannia - Pure Cane White Sugar 1kg (Variant #55)",SMP-1383,STAPLES,11.48,8.2,217,15
+"Amul - Antiseptic Liquid Handwash 250ml (Variant #55)",SMP-1384,PERSONAL CARE,13.37,9.55,228,15
+"Sunfeast - Lemon Dishwashing Gel 750ml (Variant #55)",SMP-1385,HOUSEHOLD,15.26,10.9,239,15
+"Parle - Sparkling Lime Water 500ml (Variant #56)",SMP-1386,BEVERAGES,17.15,12.25,250,15
+"Pepsico - Butter Croissants 4 Pack (Variant #56)",SMP-1387,BAKERY,19.04,13.6,261,15
+"Unilever - Unsalted Cultured Butter 500g (Variant #56)",SMP-1388,DAIRY,20.93,14.95,22,15
+"Colgate - Honey Roasted Cashews 150g (Variant #56)",SMP-1389,SNACKS,22.82,16.3,33,15
+"Kelloggs - Pink Himalayan Salt 1kg (Variant #56)",SMP-1390,STAPLES,24.71,17.65,44,15
+"Nestle - Aloe Vera Hair Conditioner 200ml (Variant #56)",SMP-1391,PERSONAL CARE,26.6,19,55,15
+"Dabur - Fabric Softener Fresh 1L (Variant #56)",SMP-1392,HOUSEHOLD,28.49,20.35,66,15
+"Britannia - Organic Orange Juice 1L (Variant #57)",SMP-1393,BEVERAGES,30.38,21.7,77,15
+"Amul - Artisanal Sourdough Loaf (Variant #57)",SMP-1394,BAKERY,32.27,23.05,88,15
+"Sunfeast - Aged Cheddar Cheese Slice 200g (Variant #57)",SMP-1395,DAIRY,34.16,24.4,99,15
+"Parle - Oatmeal Raisin Cookies 250g (Variant #57)",SMP-1396,SNACKS,36.05,25.75,110,15
+"Pepsico - Refined Sunflower Cooking Oil 1L (Variant #57)",SMP-1397,STAPLES,37.94,27.1,121,15
+"Unilever - Deep Moisture Body Lotion 400ml (Variant #57)",SMP-1398,PERSONAL CARE,39.83,28.45,132,15
+"Colgate - Microfiber Cleaning Cloth 4 Pack (Variant #57)",SMP-1399,HOUSEHOLD,41.72,29.8,143,15
+"Kelloggs - Mango Nectar Juice 1L (Variant #58)",SMP-1400,BEVERAGES,43.61,31.15,154,15
+"Nestle - Whole Wheat Sandwich Bread (Variant #58)",SMP-1401,BAKERY,45.5,32.5,165,15
+"Dabur - Greek Yogurt Strawberry 200g (Variant #58)",SMP-1402,DAIRY,47.39,33.85,176,15
+"Britannia - 70% Dark Belgian Chocolate 100g (Variant #58)",SMP-1403,SNACKS,49.28,35.2,187,15
+"Amul - Extra Virgin Olive Oil 1L (Variant #58)",SMP-1404,STAPLES,51.17,36.55,198,15
+"Sunfeast - Hydrating Hand Sanitizer 250ml (Variant #58)",SMP-1405,PERSONAL CARE,53.06,37.9,209,15
+"Parle - Multi-Surface Cleaner Spray 500ml (Variant #58)",SMP-1406,HOUSEHOLD,54.95,39.25,220,15
+"Pepsico - Pure Coconut Water 330ml (Variant #59)",SMP-1407,BEVERAGES,56.84,40.6,231,15
+"Unilever - Gluten Free Oat Bread (Variant #59)",SMP-1408,BAKERY,58.73,41.95,242,15
+"Colgate - Fresh Full Cream Milk 1L (Variant #59)",SMP-1409,DAIRY,60.62,43.3,253,15
+"Kelloggs - Roasted Salted Almonds 200g (Variant #59)",SMP-1410,SNACKS,62.51,44.65,264,15
+"Nestle - Organic Toor Dal 1kg (Variant #59)",SMP-1411,STAPLES,64.4,46,25,15
+"Dabur - Gentle Foaming Face Wash 100ml (Variant #59)",SMP-1412,PERSONAL CARE,66.29,47.35,36,15
+"Britannia - Heavy Duty Garbage Bags 30s (Variant #59)",SMP-1413,HOUSEHOLD,68.18,48.7,47,15
+"Amul - Almond Milk Unsweetened 1L (Variant #60)",SMP-1414,BEVERAGES,70.07,50.05,58,15
+"Sunfeast - Blueberry Bagels 4 Pack (Variant #60)",SMP-1415,BAKERY,71.96,51.4,69,15
+"Parle - Gouda Cheese Block 200g (Variant #60)",SMP-1416,DAIRY,73.85,52.75,80,15
+"Pepsico - Crispy Potato Chips Salted 150g (Variant #60)",SMP-1417,SNACKS,75.74,54.1,91,15
+"Unilever - Whole Wheat Chakki Atta 5kg (Variant #60)",SMP-1418,STAPLES,77.63,55.45,102,15
+"Colgate - Triple Action Toothpaste 150g (Variant #60)",SMP-1419,PERSONAL CARE,79.52,56.8,113,15
+"Kelloggs - Soft 2-Ply Facial Tissues 200s (Variant #60)",SMP-1420,HOUSEHOLD,81.41,58.15,124,15
+"Nestle - Energy Drink 250ml (Variant #61)",SMP-1421,BEVERAGES,83.3,59.5,135,15
+"Dabur - Multigrain Toast Rusk 300g (Variant #61)",SMP-1422,BAKERY,85.19,60.85,146,15
+"Britannia - Low Fat Slim Milk 1L (Variant #61)",SMP-1423,DAIRY,87.08,62.2,157,15
+"Amul - Trail Mix Dried Fruit 250g (Variant #61)",SMP-1424,SNACKS,88.97,63.55,168,15
+"Sunfeast - Premium Extra Long Basmati Rice 5kg (Variant #61)",SMP-1425,STAPLES,90.86,64.9,179,15
+"Parle - Moisturizing Bath Soap 125g (Variant #61)",SMP-1426,PERSONAL CARE,92.75,66.25,190,15
+"Pepsico - Concentrated Laundry Detergent 1L (Variant #61)",SMP-1427,HOUSEHOLD,94.64,67.6,201,15
+"Unilever - Green Tea Mint 25 Bags (Variant #62)",SMP-1428,BEVERAGES,96.53,68.95,212,15
+"Colgate - Vanilla Sponge Cake 400g (Variant #62)",SMP-1429,BAKERY,98.42,70.3,223,15
+"Kelloggs - Heavy Whipping Cream 250ml (Variant #62)",SMP-1430,DAIRY,100.31,71.65,234,15
+"Nestle - Pretzel Thins Sea Salt 120g (Variant #62)",SMP-1431,SNACKS,102.2,73,245,15
+"Dabur - Raw Organic Honey 500g (Variant #62)",SMP-1432,STAPLES,104.09,74.35,256,15
+"Britannia - Herbal Nourishing Shampoo 400ml (Variant #62)",SMP-1433,PERSONAL CARE,105.98,75.7,17,15
+"Amul - Disinfectant Floor Cleaner 1L (Variant #62)",SMP-1434,HOUSEHOLD,107.87,77.05,28,15
+"Sunfeast - Arabica Dark Roast Coffee 250g (Variant #63)",SMP-1435,BEVERAGES,109.76,78.4,39,15
+"Parle - Chocolate Muffin 2 Pack (Variant #63)",SMP-1436,BAKERY,111.65,79.75,50,15
+"Pepsico - Organic Cottage Cheese 250g (Variant #63)",SMP-1437,DAIRY,113.54,81.1,61,15
+"Unilever - Nachos Cheese Flavour 150g (Variant #63)",SMP-1438,SNACKS,115.43,82.45,72,15
+"Colgate - Pure Cane White Sugar 1kg (Variant #63)",SMP-1439,STAPLES,117.32,83.8,83,15
+"Kelloggs - Antiseptic Liquid Handwash 250ml (Variant #63)",SMP-1440,PERSONAL CARE,119.21,85.15,94,15
+"Nestle - Lemon Dishwashing Gel 750ml (Variant #63)",SMP-1441,HOUSEHOLD,121.1,86.5,105,15
+"Dabur - Sparkling Lime Water 500ml (Variant #64)",SMP-1442,BEVERAGES,3.99,2.85,116,15
+"Britannia - Butter Croissants 4 Pack (Variant #64)",SMP-1443,BAKERY,5.88,4.2,127,15
+"Amul - Unsalted Cultured Butter 500g (Variant #64)",SMP-1444,DAIRY,7.77,5.55,138,15
+"Sunfeast - Honey Roasted Cashews 150g (Variant #64)",SMP-1445,SNACKS,9.66,6.9,149,15
+"Parle - Pink Himalayan Salt 1kg (Variant #64)",SMP-1446,STAPLES,11.55,8.25,160,15
+"Pepsico - Aloe Vera Hair Conditioner 200ml (Variant #64)",SMP-1447,PERSONAL CARE,13.44,9.6,171,15
+"Unilever - Fabric Softener Fresh 1L (Variant #64)",SMP-1448,HOUSEHOLD,15.33,10.95,182,15
+"Colgate - Organic Orange Juice 1L (Variant #65)",SMP-1449,BEVERAGES,17.22,12.3,193,15
+"Kelloggs - Artisanal Sourdough Loaf (Variant #65)",SMP-1450,BAKERY,19.11,13.65,204,15
+"Nestle - Aged Cheddar Cheese Slice 200g (Variant #65)",SMP-1451,DAIRY,21,15,215,15
+"Dabur - Oatmeal Raisin Cookies 250g (Variant #65)",SMP-1452,SNACKS,22.89,16.35,226,15
+"Britannia - Refined Sunflower Cooking Oil 1L (Variant #65)",SMP-1453,STAPLES,24.78,17.7,237,15
+"Amul - Deep Moisture Body Lotion 400ml (Variant #65)",SMP-1454,PERSONAL CARE,26.67,19.05,248,15
+"Sunfeast - Microfiber Cleaning Cloth 4 Pack (Variant #65)",SMP-1455,HOUSEHOLD,28.56,20.4,259,15
+"Parle - Mango Nectar Juice 1L (Variant #66)",SMP-1456,BEVERAGES,30.45,21.75,20,15
+"Pepsico - Whole Wheat Sandwich Bread (Variant #66)",SMP-1457,BAKERY,32.34,23.1,31,15
+"Unilever - Greek Yogurt Strawberry 200g (Variant #66)",SMP-1458,DAIRY,34.23,24.45,42,15
+"Colgate - 70% Dark Belgian Chocolate 100g (Variant #66)",SMP-1459,SNACKS,36.12,25.8,53,15
+"Kelloggs - Extra Virgin Olive Oil 1L (Variant #66)",SMP-1460,STAPLES,38.01,27.15,64,15
+"Nestle - Hydrating Hand Sanitizer 250ml (Variant #66)",SMP-1461,PERSONAL CARE,39.9,28.5,75,15
+"Dabur - Multi-Surface Cleaner Spray 500ml (Variant #66)",SMP-1462,HOUSEHOLD,41.79,29.85,86,15
+"Britannia - Pure Coconut Water 330ml (Variant #67)",SMP-1463,BEVERAGES,43.68,31.2,97,15
+"Amul - Gluten Free Oat Bread (Variant #67)",SMP-1464,BAKERY,45.57,32.55,108,15
+"Sunfeast - Fresh Full Cream Milk 1L (Variant #67)",SMP-1465,DAIRY,47.46,33.9,119,15
+"Parle - Roasted Salted Almonds 200g (Variant #67)",SMP-1466,SNACKS,49.35,35.25,130,15
+"Pepsico - Organic Toor Dal 1kg (Variant #67)",SMP-1467,STAPLES,51.24,36.6,141,15
+"Unilever - Gentle Foaming Face Wash 100ml (Variant #67)",SMP-1468,PERSONAL CARE,53.13,37.95,152,15
+"Colgate - Heavy Duty Garbage Bags 30s (Variant #67)",SMP-1469,HOUSEHOLD,55.02,39.3,163,15
+"Kelloggs - Almond Milk Unsweetened 1L (Variant #68)",SMP-1470,BEVERAGES,56.91,40.65,174,15
+"Nestle - Blueberry Bagels 4 Pack (Variant #68)",SMP-1471,BAKERY,58.8,42,185,15
+"Dabur - Gouda Cheese Block 200g (Variant #68)",SMP-1472,DAIRY,60.69,43.35,196,15
+"Britannia - Crispy Potato Chips Salted 150g (Variant #68)",SMP-1473,SNACKS,62.58,44.7,207,15
+"Amul - Whole Wheat Chakki Atta 5kg (Variant #68)",SMP-1474,STAPLES,64.47,46.05,218,15
+"Sunfeast - Triple Action Toothpaste 150g (Variant #68)",SMP-1475,PERSONAL CARE,66.36,47.4,229,15
+"Parle - Soft 2-Ply Facial Tissues 200s (Variant #68)",SMP-1476,HOUSEHOLD,68.25,48.75,240,15
+"Pepsico - Energy Drink 250ml (Variant #69)",SMP-1477,BEVERAGES,70.14,50.1,251,15
+"Unilever - Multigrain Toast Rusk 300g (Variant #69)",SMP-1478,BAKERY,72.03,51.45,262,15
+"Colgate - Low Fat Slim Milk 1L (Variant #69)",SMP-1479,DAIRY,73.92,52.8,23,15
+"Kelloggs - Trail Mix Dried Fruit 250g (Variant #69)",SMP-1480,SNACKS,75.81,54.15,34,15
+"Nestle - Premium Extra Long Basmati Rice 5kg (Variant #69)",SMP-1481,STAPLES,77.7,55.5,45,15
+"Dabur - Moisturizing Bath Soap 125g (Variant #69)",SMP-1482,PERSONAL CARE,79.59,56.85,56,15
+"Britannia - Concentrated Laundry Detergent 1L (Variant #69)",SMP-1483,HOUSEHOLD,81.48,58.2,67,15
+"Amul - Green Tea Mint 25 Bags (Variant #70)",SMP-1484,BEVERAGES,83.37,59.55,78,15
+"Sunfeast - Vanilla Sponge Cake 400g (Variant #70)",SMP-1485,BAKERY,85.26,60.9,89,15
+"Parle - Heavy Whipping Cream 250ml (Variant #70)",SMP-1486,DAIRY,87.15,62.25,100,15
+"Pepsico - Pretzel Thins Sea Salt 120g (Variant #70)",SMP-1487,SNACKS,89.04,63.6,111,15
+"Unilever - Raw Organic Honey 500g (Variant #70)",SMP-1488,STAPLES,90.93,64.95,122,15
+"Colgate - Herbal Nourishing Shampoo 400ml (Variant #70)",SMP-1489,PERSONAL CARE,92.82,66.3,133,15
+"Kelloggs - Disinfectant Floor Cleaner 1L (Variant #70)",SMP-1490,HOUSEHOLD,94.71,67.65,144,15
+"Nestle - Arabica Dark Roast Coffee 250g (Variant #71)",SMP-1491,BEVERAGES,96.6,69,155,15
+"Dabur - Chocolate Muffin 2 Pack (Variant #71)",SMP-1492,BAKERY,98.49,70.35,166,15
+"Britannia - Organic Cottage Cheese 250g (Variant #71)",SMP-1493,DAIRY,100.38,71.7,177,15
+"Amul - Nachos Cheese Flavour 150g (Variant #71)",SMP-1494,SNACKS,102.27,73.05,188,15
+"Sunfeast - Pure Cane White Sugar 1kg (Variant #71)",SMP-1495,STAPLES,104.16,74.4,199,15
+"Parle - Antiseptic Liquid Handwash 250ml (Variant #71)",SMP-1496,PERSONAL CARE,106.05,75.75,210,15
+"Pepsico - Lemon Dishwashing Gel 750ml (Variant #71)",SMP-1497,HOUSEHOLD,107.94,77.1,221,15
+"Unilever - Sparkling Lime Water 500ml (Variant #72)",SMP-1498,BEVERAGES,109.83,78.45,232,15
+"Colgate - Butter Croissants 4 Pack (Variant #72)",SMP-1499,BAKERY,111.72,79.8,243,15
+"Kelloggs - Unsalted Cultured Butter 500g (Variant #72)",SMP-1500,DAIRY,113.61,81.15,254,15
