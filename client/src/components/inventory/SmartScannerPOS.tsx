@@ -81,6 +81,10 @@ export default function SmartScannerPOS({
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card' | 'upi' | 'split'>('cash');
   const [cashTendered, setCashTendered] = useState<string>('');
 
+  // Receipt History State
+  const [recentReceipts, setRecentReceipts] = useState<TransactionReceipt[]>([]);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+
   // Shift Management State
   const [shift, setShift] = useState<RegisterShift | null>({
     isOpen: true,
@@ -359,6 +363,7 @@ export default function SmartScannerPOS({
       });
 
       setLastReceipt(receiptPayload);
+      setRecentReceipts((prev) => [receiptPayload, ...prev]);
       setIsReceiptModalOpen(true);
 
       // Reset Cart & Payment Form
@@ -423,6 +428,14 @@ export default function SmartScannerPOS({
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
+          <button
+            onClick={() => setShowHistoryModal(true)}
+            className="px-3.5 py-2 bg-white/5 hover:bg-white/10 text-zinc-300 text-xs font-semibold rounded-lg border border-white/10 transition flex items-center gap-1.5 cursor-pointer"
+          >
+            <Printer size={14} className="text-indigo-400" />
+            Past Bills ({recentReceipts.length})
+          </button>
+
           {shift?.isOpen ? (
             <button
               onClick={() => setIsCloseShiftModal(true)}
@@ -1021,6 +1034,76 @@ export default function SmartScannerPOS({
             >
               Done
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* PAST POS BILLS & REPRINT HISTORY MODAL */}
+      {showHistoryModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-white/10 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl relative">
+            <div className="flex justify-between items-center border-b border-white/10 pb-3">
+              <div>
+                <h3 className="font-bold text-sm text-white flex items-center gap-2">
+                  <Printer size={18} className="text-indigo-400" />
+                  Recent POS Bills History & Thermal Reprint
+                </h3>
+                <span className="text-xs text-zinc-400">Total Bills Recorded: {recentReceipts.length}</span>
+              </div>
+              <button onClick={() => setShowHistoryModal(false)} className="text-zinc-400 hover:text-white p-1">
+                <X size={16} />
+              </button>
+            </div>
+
+            {recentReceipts.length === 0 ? (
+              <div className="p-8 text-center text-zinc-500 text-xs space-y-1">
+                <p className="font-bold text-zinc-400">No bills generated in this shift yet</p>
+                <p>Complete a checkout sale on the POS terminal to record receipts here.</p>
+              </div>
+            ) : (
+              <div className="max-h-80 overflow-y-auto space-y-3 pr-1">
+                {recentReceipts.map((rcpt) => (
+                  <div
+                    key={rcpt.invoiceNo}
+                    className="p-3.5 rounded-xl bg-slate-950/80 border border-white/10 flex items-center justify-between text-xs font-mono"
+                  >
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-indigo-300">{rcpt.invoiceNo}</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-bold uppercase">
+                          {rcpt.paymentMethod}
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-zinc-500 block mt-0.5">{rcpt.date} • {rcpt.items.length} items</span>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <span className="font-bold text-emerald-400 text-sm">{formatAmount(rcpt.total)}</span>
+                      <button
+                        onClick={() => {
+                          setLastReceipt(rcpt);
+                          setIsReceiptModalOpen(true);
+                          setShowHistoryModal(false);
+                        }}
+                        className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-[11px] rounded-lg transition flex items-center gap-1 cursor-pointer"
+                      >
+                        <Printer size={12} />
+                        Receipt
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="pt-2">
+              <button
+                onClick={() => setShowHistoryModal(false)}
+                className="w-full py-2.5 bg-white/10 hover:bg-white/20 text-zinc-300 font-bold text-xs rounded-xl transition cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}
