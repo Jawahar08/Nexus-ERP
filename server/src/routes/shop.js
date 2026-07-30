@@ -3,6 +3,55 @@ import { prisma } from '../lib/db.js';
 
 const router = Router();
 
+// Store Orders Central Memory Ledger
+let storeOrders = [
+  {
+    orderId: 'NEX-ORD-882190',
+    tenantId: 'acme-corp',
+    domain: 'nexus.erp',
+    customerName: 'Ananya Sharma',
+    customerPhone: '+919876543210',
+    customerEmail: 'ananya@example.com',
+    items: [
+      { id: '1', name: 'Britannia - Choco Chill Cake 55g', sku: 'B04-NEXUS', price: 30.00, qty: 2 },
+      { id: '2', name: 'Johri - Johri Rice 1 kg', sku: 'R01-NEXUS', price: 40.00, qty: 1 }
+    ],
+    totalAmount: 100.00,
+    deliveryType: 'delivery',
+    address: '42 MG Road, Sector 4, Tech City',
+    paymentMethod: 'Razorpay Gateway',
+    paymentStatus: 'PAID',
+    fulfillmentStatus: 'Pending',
+    carrierName: 'Unassigned',
+    trackingNumber: '',
+    trackingUrl: '',
+    notes: 'Fragile handling requested',
+    createdAt: new Date(Date.now() - 3600000 * 2).toISOString()
+  },
+  {
+    orderId: 'NEX-ORD-771204',
+    tenantId: 'acme-corp',
+    domain: 'nexus.erp',
+    customerName: 'Rahul Verma',
+    customerPhone: '+919812345678',
+    customerEmail: 'rahul@example.com',
+    items: [
+      { id: '3', name: 'Basmati - Basmati Rice 1 kg', sku: 'R04-NEXUS', price: 70.00, qty: 2 }
+    ],
+    totalAmount: 140.00,
+    deliveryType: 'pickup',
+    address: 'Store Counter Pickup',
+    paymentMethod: 'Pay at Store',
+    paymentStatus: 'NOT YET PAID (Pay on Pickup)',
+    fulfillmentStatus: 'Packing',
+    carrierName: 'In-House Counter',
+    trackingNumber: 'PICKUP-771204',
+    trackingUrl: '',
+    notes: 'Customer will pick up at 5 PM',
+    createdAt: new Date(Date.now() - 3600000 * 5).toISOString()
+  }
+];
+
 // GET /api/shop/public/:domain (Public Digital Catalog API)
 router.get('/public/:domain', async (req, res) => {
   try {
@@ -185,10 +234,26 @@ router.post('/checkout', async (req, res) => {
     const isUnpaid = payMethod.toLowerCase().includes('cash') || payMethod.toLowerCase().includes('pickup') || payMethod.toLowerCase().includes('store') || payMethod.toLowerCase().includes('cod');
     const paymentStatusText = isUnpaid ? 'NOT YET PAID (Pay on Pickup/Delivery)' : 'PAID';
 
-    const itemListText = items.map(i => `• ${i.name} (x${i.qty}) - $${(i.price * i.qty).toFixed(2)}`).join('\n');
-    const whatsappMessage = `🧾 *E-COMMERCE ORDER RECEIPT (${orderId})*\nStore: ${tenant.name}\nCustomer: ${custName}\nPhone: ${customerPhone}\nPayment Status: ⏳ ${paymentStatusText}\nPayment Method: ${payMethod}\nType: ${deliveryType === 'delivery' ? '📦 Local Delivery' : '🏪 Store Pickup'}\n${deliveryType === 'delivery' ? `Address: ${address}\n` : ''}\n*ITEMS:*\n${itemListText}\n\n*TOTAL AMOUNT: $${totalAmount.toFixed(2)}*\n\nThank you for your order!`;
-
-    const whatsappUrl = `https://wa.me/${customerPhone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(whatsappMessage)}`;
+    storeOrders.unshift({
+      orderId,
+      tenantId: tenant.id,
+      domain: tenant.domain,
+      customerName: custName,
+      customerPhone,
+      customerEmail: custEmail,
+      items,
+      totalAmount,
+      deliveryType,
+      address: address || (deliveryType === 'delivery' ? 'Local Customer Address' : 'Store Counter Pickup'),
+      paymentMethod: payMethod,
+      paymentStatus: paymentStatusText,
+      fulfillmentStatus: 'Pending',
+      carrierName: 'Unassigned',
+      trackingNumber: '',
+      trackingUrl: '',
+      notes: '',
+      createdAt: new Date().toISOString()
+    });
 
     return res.json({
       success: true,
@@ -398,13 +463,118 @@ router.post('/verify-razorpay-payment', async (req, res) => {
   }
 });
 
+// GET /api/shop/orders (Get Tenant Storefront & POS Orders)
+router.get('/orders', async (req, res) => {
+  try {
+    const tenantId = req.tenantId || 'acme-corp';
+    const orders = storeOrders.filter(o => o.tenantId === tenantId || !o.tenantId);
+    return res.json({ orders });
+  } catch (error) {
+    console.error('Orders GET error:', error);
+    return res.status(500).json({ error: 'Failed to retrieve order list' });
+  }
+});
+
+// PUT /api/shop/orders/:orderId/fulfillment (Update Order Dispatch & Carrier Info)
+router.put('/orders/:orderId/fulfillment', async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { fulfillmentStatus, carrierName, trackingNumber, notes } = req.body;
+
+    const cleanId = orderId.trim().toUpperCase();
+    const orderIndex = storeOrders.findIndex(o => o.orderId.trim().toUpperCase() === cleanId);
+
+    if (orderIndex === -1) {
+      return res.status(404).json({ error: 'Order reference not found' });
+    }
+
+    const currentOrder = storeOrders[orderIndex];
+
+    const carrier = carrierName || currentOrder.carrierName || 'Shiprocket';
+    const trkNo = trackingNumber || currentOrder.trackingNumber || `TRK-${Math.floor(100000 + Math.random() * 900000)}`;
+
+    let trackingUrl = currentOrder.trackingUrl;
+    if (carrier.toLowerCase().includes('blue')) {
+      trackingUrl = `https://www.bluedart.com/tracking/${trkNo}`;
+    } else if (carrier.toLowerCase().includes('shiprocket')) {
+      trackingUrl = `https://shiprocket.co/tracking/${trkNo}`;
+    } else if (carrier.toLowerCase().includes('fedex')) {
+      trackingUrl = `https://www.fedex.com/fedextrack/?tracknumbers=${trkNo}`;
+    } else if (carrier.toLowerCase().includes('porter')) {
+      trackingUrl = `https://porter.in/track/${trkNo}`;
+    } else {
+      trackingUrl = `https://nexus-erp.com/track/${trkNo}`;
+    }
+
+    storeOrders[orderIndex] = {
+      ...currentOrder,
+      fulfillmentStatus: fulfillmentStatus || currentOrder.fulfillmentStatus,
+      carrierName: carrier,
+      trackingNumber: trkNo,
+      trackingUrl,
+      notes: notes !== undefined ? notes : currentOrder.notes,
+      updatedAt: new Date().toISOString()
+    };
+
+    const updatedOrder = storeOrders[orderIndex];
+
+    try {
+      await prisma.auditLog.create({
+        data: {
+          message: `Order ${cleanId} fulfillment updated to "${updatedOrder.fulfillmentStatus}" (Carrier: ${carrier}, Tracking #: ${trkNo}).`,
+          module: 'Fulfillment',
+          tenantId: updatedOrder.tenantId || 'acme-corp'
+        }
+      });
+    } catch (e) {
+      // Ignore if audit log creation fails
+    }
+
+    return res.json({ success: true, order: updatedOrder });
+  } catch (error) {
+    console.error('Fulfillment PUT error:', error);
+    return res.status(500).json({ error: 'Failed to update order fulfillment' });
+  }
+});
+
 // GET /api/shop/track/:orderId (Live E-Commerce Order Tracking API)
 router.get('/track/:orderId', async (req, res) => {
   try {
     const { orderId } = req.params;
+    const cleanId = orderId.trim().toUpperCase();
+
+    const existingOrder = storeOrders.find(o => o.orderId.trim().toUpperCase() === cleanId);
+
+    if (existingOrder) {
+      const stageMap = {
+        'Pending': 1,
+        'Packing': 2,
+        'Dispatched': 3,
+        'Out for Delivery': 4,
+        'Delivered': 5
+      };
+
+      return res.json({
+        found: true,
+        orderId: existingOrder.orderId,
+        fulfillmentStatus: existingOrder.fulfillmentStatus,
+        stageStep: stageMap[existingOrder.fulfillmentStatus] || 1,
+        carrierName: existingOrder.carrierName,
+        trackingNumber: existingOrder.trackingNumber,
+        trackingUrl: existingOrder.trackingUrl,
+        customerName: existingOrder.customerName,
+        deliveryType: existingOrder.deliveryType,
+        address: existingOrder.address,
+        paymentStatus: existingOrder.paymentStatus,
+        amount: existingOrder.totalAmount,
+        items: existingOrder.items,
+        date: existingOrder.createdAt,
+        estimatedDelivery: existingOrder.fulfillmentStatus === 'Delivered' ? 'Delivered' : 'Today by 6:00 PM (Express Courier)'
+      });
+    }
 
     const transaction = await prisma.transaction.findFirst({
-      where: { reference: orderId.trim() }
+      where: { reference: cleanId }
     });
 
     if (!transaction) {
@@ -414,10 +584,13 @@ router.get('/track/:orderId', async (req, res) => {
     return res.json({
       found: true,
       orderId: transaction.reference,
-      status: 'PAID & DISPATCHED',
+      fulfillmentStatus: 'Dispatched',
+      stageStep: 3,
+      carrierName: 'Standard Courier',
+      trackingNumber: `TRK-${cleanId.replace(/[^0-9]/g, '') || '998210'}`,
+      trackingUrl: `https://nexus-erp.com/track/${cleanId}`,
       amount: transaction.amount,
       date: transaction.date,
-      description: transaction.description,
       estimatedDelivery: 'Today by 6:00 PM (Express Dispatch)'
     });
   } catch (error) {
