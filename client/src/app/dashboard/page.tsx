@@ -286,15 +286,15 @@ export default function DashboardHero() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="lg:col-span-2"
         >
-          <GlassCard className="p-6 h-[400px] flex flex-col justify-between">
+          <GlassCard className="p-6 h-[400px] flex flex-col justify-between bg-white border border-[#14171F]/10 rounded-[28px] shadow-xs">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-base font-bold text-white">Financial Cash Flow Metrics</h3>
-                <p className="text-xs text-zinc-500 mt-0.5">Real-time comparison ledger index</p>
+                <h3 className="text-base font-serif font-bold text-[#14171F]">Financial Cash Flow Metrics</h3>
+                <p className="text-xs text-[#4F5565] mt-0.5 font-mono">Real-time comparison ledger index</p>
               </div>
-              <div className="flex items-center gap-4 text-xs font-semibold">
-                <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-indigo-500" /> Revenue</span>
-                <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-purple-500" /> Expenses</span>
+              <div className="flex items-center gap-4 text-xs font-semibold font-mono">
+                <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#5C64ED]" /> Revenue</span>
+                <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#F5C84B]" /> Expenses</span>
               </div>
             </div>
 
@@ -303,33 +303,33 @@ export default function DashboardHero() {
               <svg className="w-full h-full min-h-[220px] max-h-[240px]" viewBox="0 0 500 200" preserveAspectRatio="none">
                 <defs>
                   <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#6366f1" stopOpacity="0.25" />
-                    <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
+                    <stop offset="0%" stopColor="#5C64ED" stopOpacity="0.2" />
+                    <stop offset="100%" stopColor="#5C64ED" stopOpacity="0" />
                   </linearGradient>
                   <linearGradient id="expGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#a855f7" stopOpacity="0.15" />
-                    <stop offset="100%" stopColor="#a855f7" stopOpacity="0" />
+                    <stop offset="0%" stopColor="#F5C84B" stopOpacity="0.3" />
+                    <stop offset="100%" stopColor="#F5C84B" stopOpacity="0" />
                   </linearGradient>
                 </defs>
                 
                 {/* Horizontal Guide Lines */}
-                <line x1="0" y1="50" x2="500" y2="50" stroke="rgba(255,255,255,0.03)" strokeWidth="1" strokeDasharray="4 4" />
-                <line x1="0" y1="100" x2="500" y2="100" stroke="rgba(255,255,255,0.03)" strokeWidth="1" strokeDasharray="4 4" />
-                <line x1="0" y1="150" x2="500" y2="150" stroke="rgba(255,255,255,0.03)" strokeWidth="1" strokeDasharray="4 4" />
+                <line x1="0" y1="50" x2="500" y2="50" stroke="rgba(20,23,31,0.06)" strokeWidth="1" strokeDasharray="4 4" />
+                <line x1="0" y1="100" x2="500" y2="100" stroke="rgba(20,23,31,0.06)" strokeWidth="1" strokeDasharray="4 4" />
+                <line x1="0" y1="150" x2="500" y2="150" stroke="rgba(20,23,31,0.06)" strokeWidth="1" strokeDasharray="4 4" />
 
                 {/* Revenue Filled Area */}
                 <path d="M 0 160 Q 100 80, 200 110 T 400 60 T 500 40 L 500 200 L 0 200 Z" fill="url(#revGrad)" />
                 {/* Revenue Path */}
-                <path d="M 0 160 Q 100 80, 200 110 T 400 60 T 500 40" fill="none" stroke="#6366f1" strokeWidth="2.5" strokeLinecap="round" />
+                <path d="M 0 160 Q 100 80, 200 110 T 400 60 T 500 40" fill="none" stroke="#5C64ED" strokeWidth="2.5" strokeLinecap="round" />
 
                 {/* Expenses Filled Area */}
                 <path d="M 0 180 Q 100 140, 200 150 T 400 110 T 500 100 L 500 200 L 0 200 Z" fill="url(#expGrad)" />
                 {/* Expenses Path */}
-                <path d="M 0 180 Q 100 140, 200 150 T 400 110 T 500 100" fill="none" stroke="#a855f7" strokeWidth="2" strokeLinecap="round" />
+                <path d="M 0 180 Q 100 140, 200 150 T 400 110 T 500 100" fill="none" stroke="#D9A825" strokeWidth="2" strokeLinecap="round" />
               </svg>
             </div>
 
-            <div className="flex justify-between text-[10px] text-zinc-500 font-mono mt-2">
+            <div className="flex justify-between text-[10px] text-[#4F5565] font-mono mt-2">
               <span>JAN</span>
               <span>MAR</span>
               <span>MAY</span>
@@ -346,16 +346,16 @@ export default function DashboardHero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
         >
-          <GlassCard className="p-6 h-[400px] flex flex-col justify-between items-center text-center">
-            <div className="w-full flex justify-between items-center border-b border-white/5 pb-3">
-              <h3 className="text-sm font-bold text-white text-left">Enterprise health</h3>
-              <span className="px-2 py-0.5 text-[9px] font-bold text-emerald-400 bg-emerald-500/10 rounded">EXCELLENT</span>
+          <GlassCard className="p-6 h-[400px] flex flex-col justify-between items-center text-center bg-white border border-[#14171F]/10 rounded-[28px] shadow-xs">
+            <div className="w-full flex justify-between items-center border-b border-[#14171F]/10 pb-3">
+              <h3 className="text-sm font-serif font-bold text-[#14171F] text-left">Enterprise health</h3>
+              <span className="px-2.5 py-0.5 text-[9px] font-bold text-emerald-700 bg-emerald-100 rounded-full font-mono">EXCELLENT</span>
             </div>
 
             {/* Radial score */}
             <div className="relative my-auto flex items-center justify-center">
               <svg className="w-40 h-40 transform -rotate-90">
-                <circle cx="80" cy="80" r="70" stroke="rgba(255,255,255,0.03)" strokeWidth="8" fill="transparent" />
+                <circle cx="80" cy="80" r="70" stroke="rgba(20,23,31,0.06)" strokeWidth="8" fill="transparent" />
                 <motion.circle
                   cx="80"
                   cy="80"
@@ -371,18 +371,18 @@ export default function DashboardHero() {
                 />
                 <defs>
                   <linearGradient id="radialGrad" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="#6366f1" />
-                    <stop offset="100%" stopColor="#8b5cf6" />
+                    <stop offset="0%" stopColor="#5C64ED" />
+                    <stop offset="100%" stopColor="#F5C84B" />
                   </linearGradient>
                 </defs>
               </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center space-y-1">
-                <span className="text-4xl font-extrabold text-white tracking-tight">92</span>
-                <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Health index</span>
+              <div className="absolute inset-0 flex flex-col items-center justify-center space-y-0.5">
+                <span className="text-4xl font-serif font-bold text-[#14171F] tracking-tight">92</span>
+                <span className="text-[10px] text-[#4F5565] font-bold uppercase tracking-wider font-mono">Health index</span>
               </div>
             </div>
 
-            <p className="text-xs text-zinc-400 leading-normal px-2 mt-2">
+            <p className="text-xs text-[#4F5565] leading-normal px-2 mt-2 font-medium">
               Based on active CRM deal pipeline, safety stock level checks, and quick ledger audit balances.
             </p>
           </GlassCard>
@@ -393,25 +393,25 @@ export default function DashboardHero() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* AI Insights panel */}
         <div className="lg:col-span-2 space-y-5">
-          <h3 className="text-base font-bold text-white flex items-center gap-2">
-            <Sparkles size={16} className="text-yellow-400" /> System AI Insights
+          <h3 className="text-base font-serif font-bold text-[#14171F] flex items-center gap-2">
+            <Sparkles size={16} className="text-[#5C64ED]" /> System AI Insights
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {aiInsights.map((insight, idx) => (
-              <GlassCard key={insight.title} className="p-5 flex flex-col justify-between gap-4 border-white/5 hover:border-white/10 transition-all duration-300">
+              <GlassCard key={insight.title} className="p-5 flex flex-col justify-between gap-4 bg-white border border-[#14171F]/10 rounded-[24px] shadow-xs hover:shadow-md transition-all duration-300">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <div className="p-1.5 rounded-md bg-white/5 border border-white/5 text-zinc-300">
+                    <div className="p-1.5 rounded-lg bg-[#FAF7F2] border border-[#14171F]/10 text-[#5C64ED]">
                       <insight.icon size={14} />
                     </div>
-                    <span className="text-xs font-bold text-white">{insight.title}</span>
+                    <span className="text-xs font-bold text-[#14171F]">{insight.title}</span>
                   </div>
-                  <p className="text-xs text-zinc-400 mt-2 leading-relaxed">
+                  <p className="text-xs text-[#4F5565] mt-2 leading-relaxed font-medium">
                     {replaceUSDInText(insight.desc, formatAmount)}
                   </p>
                 </div>
-                <div className={cn("px-2.5 py-1 rounded border text-[10px] font-bold w-fit uppercase", insight.statusColor)}>
+                <div className="px-2.5 py-1 rounded-full border border-[#14171F]/10 bg-[#FAF7F2] text-[#14171F] text-[10px] font-bold w-fit uppercase font-mono">
                   {insight.risk}
                 </div>
               </GlassCard>
@@ -421,24 +421,24 @@ export default function DashboardHero() {
 
         {/* Real-time Activity Timeline */}
         <div className="space-y-5">
-          <h3 className="text-base font-bold text-white flex items-center gap-2">
-            <Clock size={16} className="text-indigo-400" /> Recent Audit Activity
+          <h3 className="text-base font-serif font-bold text-[#14171F] flex items-center gap-2">
+            <Clock size={16} className="text-[#5C64ED]" /> Recent Audit Activity
           </h3>
 
-          <GlassCard className="p-5 space-y-4">
+          <GlassCard className="p-5 space-y-4 bg-white border border-[#14171F]/10 rounded-[28px] shadow-xs">
             {timelineItems.map((item, idx) => (
               <div key={idx} className="flex gap-3 relative pb-4 last:pb-0 group">
                 {idx < timelineItems.length - 1 && (
-                  <span className="absolute left-[9px] top-6 bottom-0 w-0.5 bg-white/5 group-last:hidden" />
+                  <span className="absolute left-[9px] top-6 bottom-0 w-0.5 bg-[#14171F]/10 group-last:hidden" />
                 )}
-                <div className="w-5 h-5 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center font-bold text-[9px] text-indigo-400 z-10 shrink-0">
+                <div className="w-5 h-5 rounded-full bg-[#5C64ED]/10 border border-[#5C64ED]/30 flex items-center justify-center font-bold text-[9px] text-[#5C64ED] z-10 shrink-0 font-mono">
                   {idx + 1}
                 </div>
                 <div className="space-y-0.5 min-w-0">
-                  <p className="text-xs font-semibold text-zinc-100 leading-normal truncate font-mono">
+                  <p className="text-xs font-semibold text-[#14171F] leading-normal truncate font-mono">
                     {replaceUSDInText(item.action, formatAmount)}
                   </p>
-                  <div className="flex items-center gap-2 text-[10px] text-zinc-500">
+                  <div className="flex items-center gap-2 text-[10px] text-[#4F5565] font-mono">
                     <span className="truncate">{item.user}</span>
                     <span>&bull;</span>
                     <span>{item.time}</span>

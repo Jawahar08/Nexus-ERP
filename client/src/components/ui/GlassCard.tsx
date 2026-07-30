@@ -17,8 +17,8 @@ export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
       <motion.div
         ref={ref}
         className={cn(
-          "quantum-card rounded-xl text-white",
-          interactive && "quantum-card-interactive cursor-pointer",
+          "quantum-card rounded-[24px] bg-white text-[#14171F] border border-[#14171F]/10 shadow-xs",
+          interactive && "quantum-card-interactive cursor-pointer hover:shadow-md",
           className
         )}
         {...(interactive ? theme.animations.hoverCard : {})}
