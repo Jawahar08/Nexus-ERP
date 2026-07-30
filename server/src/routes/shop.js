@@ -515,12 +515,48 @@ router.post('/verify-razorpay-payment', async (req, res) => {
 // GET /api/shop/orders (Get Tenant Storefront & POS Orders)
 router.get('/orders', async (req, res) => {
   try {
-    const tenantId = req.tenantId || 'acme-corp';
-    const orders = storeOrders.filter(o => o.tenantId === tenantId || !o.tenantId);
-    return res.json({ orders });
+    return res.json({ orders: storeOrders });
   } catch (error) {
     console.error('Orders GET error:', error);
     return res.status(500).json({ error: 'Failed to retrieve order list' });
+  }
+});
+
+// POST /api/shop/pos-order (Record POS Counter Bill into Central Store Orders Ledger)
+router.post('/pos-order', async (req, res) => {
+  try {
+    const { invoiceNo, items, subtotal, tax, total, paymentMethod, cashier } = req.body;
+
+    if (!items || items.length === 0) {
+      return res.status(400).json({ error: 'Items required' });
+    }
+
+    const orderRecord = {
+      orderId: invoiceNo || `NX-POS-${Date.now().toString().slice(-6)}`,
+      tenantId: 'acme-corp',
+      domain: 'nexus.erp',
+      customerName: 'Walk-In Store Customer',
+      customerPhone: '+919876543210',
+      customerEmail: 'pos@nexus.erp',
+      items: items.map((i) => ({ name: i.name, sku: i.sku || i.id, price: i.price, qty: i.qty })),
+      totalAmount: total || subtotal + tax,
+      deliveryType: 'pickup',
+      address: 'Store Counter POS',
+      paymentMethod: paymentMethod || 'CASH',
+      paymentStatus: 'PAID',
+      fulfillmentStatus: 'Delivered',
+      carrierName: 'In-House POS',
+      trackingNumber: invoiceNo,
+      trackingUrl: '',
+      notes: `Cashier: ${cashier || 'Admin Cashier'}`,
+      createdAt: new Date().toISOString()
+    };
+
+    storeOrders.unshift(orderRecord);
+    return res.json({ success: true, order: orderRecord });
+  } catch (error) {
+    console.error('POS order POST error:', error);
+    return res.status(500).json({ error: 'Failed to record POS order' });
   }
 });
 

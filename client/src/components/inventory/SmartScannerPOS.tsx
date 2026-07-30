@@ -350,6 +350,17 @@ export default function SmartScannerPOS({
         cashier: shift.cashierName,
       };
 
+      // Save POS bill into central shop orders ledger
+      try {
+        await fetch('/api/shop/pos-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(receiptPayload)
+        });
+      } catch (pErr) {
+        console.warn('POS order sync note:', pErr);
+      }
+
       // Update Shift Sales Ledger
       setShift((prev) => {
         if (!prev) return null;
