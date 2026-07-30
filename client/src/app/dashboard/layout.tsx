@@ -23,6 +23,10 @@ import {
   Building,
   Menu,
   Receipt,
+  ScanBarcode,
+  Truck,
+  QrCode,
+  Tag,
 } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { cn } from "@/lib/utils";
@@ -129,11 +133,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const navigationItems = [
     { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
-    { label: "Inventory", icon: Package, path: "/dashboard/inventory" },
+    { label: "Smart POS", icon: ScanBarcode, path: "/dashboard/pos" },
+    { label: "Invoices & Bills", icon: Receipt, path: "/dashboard/invoices" },
+    { label: "Order Dispatch", icon: Truck, path: "/dashboard/orders" },
+    { label: "Barcode Studio", icon: QrCode, path: "/dashboard/barcodes" },
+    { label: "Promotions & Coupons", icon: Tag, path: "/dashboard/promotions" },
+    { label: "Inventory & Catalog", icon: Package, path: "/dashboard/inventory" },
     { label: "CRM", icon: Users, path: "/dashboard/crm" },
     { label: "HR", icon: Briefcase, path: "/dashboard/hr" },
     { label: "Finance", icon: Coins, path: "/dashboard/finance" },
-    { label: "Invoices & Bills", icon: Receipt, path: "/dashboard/invoices" },
     { label: "Workflows", icon: ShieldCheck, path: "/dashboard/workflows" },
   ];
 

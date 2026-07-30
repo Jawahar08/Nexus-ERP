@@ -357,36 +357,6 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
           </button>
 
           <button 
-            onClick={() => setActiveView('barcodes')}
-            className={`btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold border transition cursor-pointer ${
-              activeView === 'barcodes' ? 'bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-500/20' : 'bg-slate-900 border-[var(--border)] text-indigo-300 hover:bg-[var(--border)]'
-            }`}
-          >
-            <QrCode size={14} />
-            Barcode & QR Studio
-          </button>
-
-          <button 
-            onClick={() => setActiveView('promotions')}
-            className={`btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold border transition cursor-pointer ${
-              activeView === 'promotions' ? 'bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-500/20' : 'bg-slate-900 border-[var(--border)] text-indigo-300 hover:bg-[var(--border)]'
-            }`}
-          >
-            <Tag size={14} />
-            Promotions & Coupons
-          </button>
-
-          <button 
-            onClick={() => setActiveView('orders')}
-            className={`btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold border transition cursor-pointer ${
-              activeView === 'orders' ? 'bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-500/20' : 'bg-slate-900 border-[var(--border)] text-indigo-300 hover:bg-[var(--border)]'
-            }`}
-          >
-            <Truck size={14} />
-            Order Dispatch & Shipping
-          </button>
-
-          <button 
             onClick={() => setActiveView('procurement')}
             className={`btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold border transition cursor-pointer ${
               activeView === 'procurement' ? 'bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-500/20' : 'bg-slate-900 border-[var(--border)] text-indigo-300 hover:bg-[var(--border)]'
@@ -394,16 +364,6 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
           >
             <Building2 size={14} />
             B2B Supplier Portal & RFQ
-          </button>
-
-          <button 
-            onClick={() => setActiveView('pos')}
-            className={`btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold border transition cursor-pointer ${
-              activeView === 'pos' ? 'bg-indigo-600 text-white border-indigo-500' : 'bg-slate-900 border-[var(--border)] text-indigo-300 hover:bg-[var(--border)]'
-            }`}
-          >
-            <ScanBarcode size={14} />
-            Smart POS
           </button>
 
           <button 
