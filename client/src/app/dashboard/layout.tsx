@@ -169,18 +169,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2.5"
               >
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center shadow-[0_0_15px_rgba(99,102,241,0.3)]">
-                  <Sparkles size={16} className="text-white" />
+                <div className="w-8 h-8 rounded-full bg-[#5667F6] flex items-center justify-center text-white font-serif font-black text-base shadow-[0_0_15px_rgba(86,103,246,0.4)]">
+                  N
                 </div>
-                <span className="font-extrabold text-sm tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-400">
-                  NEXUS ERP
+                <span className="font-serif font-bold text-base tracking-tight text-white">
+                  Nexuserp
                 </span>
               </motion.div>
             ) : (
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center mx-auto shadow-[0_0_15px_rgba(99,102,241,0.3)]">
-                <Sparkles size={16} className="text-white" />
+              <div className="w-8 h-8 rounded-full bg-[#5667F6] flex items-center justify-center text-white font-serif font-black text-base mx-auto shadow-[0_0_15px_rgba(86,103,246,0.4)]">
+                N
               </div>
             )}
             {!sidebarCollapsed && (
@@ -228,26 +228,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   key={item.path}
                   onClick={() => router.push(item.path)}
                   className={cn(
-                    "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all group relative cursor-pointer",
+                    "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-full text-xs font-semibold transition-all group relative cursor-pointer",
                     active
-                      ? "bg-white/10 text-white shadow-[0_4px_12px_rgba(255,255,255,0.03)] border border-white/10"
-                      : "text-zinc-400 hover:text-white hover:bg-white/[0.02] border border-transparent"
+                      ? "bg-[#5667F6] text-white shadow-md shadow-[#5667F6]/30 border border-[#5667F6]"
+                      : "text-zinc-400 hover:text-white hover:bg-white/[0.04] border border-transparent"
                   )}
                 >
                   <item.icon
-                    size={18}
+                    size={17}
                     className={cn(
                       "shrink-0 transition-transform group-hover:scale-105",
-                      active ? "text-indigo-400" : "text-zinc-400 group-hover:text-zinc-200"
+                      active ? "text-white" : "text-zinc-400 group-hover:text-zinc-200"
                     )}
                   />
                   {!sidebarCollapsed && <span>{item.label}</span>}
-                  {active && (
-                    <motion.div
-                      layoutId="activeIndicator"
-                      className="absolute left-0 top-1/3 bottom-1/3 w-1 bg-indigo-500 rounded-r-full"
-                    />
-                  )}
                 </button>
               );
             })}

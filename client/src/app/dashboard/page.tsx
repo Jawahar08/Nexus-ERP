@@ -213,15 +213,15 @@ export default function DashboardHero() {
           transition={{ duration: 0.5 }}
         >
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="px-2 py-0.5 text-[10px] font-bold tracking-widest text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 rounded-full flex items-center gap-1">
-              <Sparkles size={10} className="animate-spin" /> PRO ACTIVE SYSTEM ACTIVE
+            <span className="px-3 py-1 text-[10px] font-bold tracking-widest text-[#5667F6] bg-[#5667F6]/10 border border-[#5667F6]/20 rounded-full flex items-center gap-1.5 uppercase font-mono">
+              <Sparkles size={11} className="text-[#5667F6]" /> NEXUSERP AUTOPILOT ACTIVE
             </span>
           </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white leading-tight">
+          <h1 className="text-3xl md:text-5xl font-serif text-white leading-tight">
             Good Morning, Jawahar
           </h1>
           <p className="text-sm text-zinc-400 mt-1">
-            Here is the operational status of <span className="text-white font-medium">Acme Corp</span> workspace.
+            Operational workspace view for <span className="text-[#F5C84B] font-semibold">Acme Corp</span> • {new Date().toLocaleDateString(undefined, { dateStyle: 'full' })}
           </p>
         </motion.div>
 
