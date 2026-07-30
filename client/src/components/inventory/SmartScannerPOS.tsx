@@ -412,26 +412,29 @@ export default function SmartScannerPOS({
       {/* ════════════════════════════════════════════════════════════════ */}
       {/* 1. POS TOP SHIFT BAR & AUDIT CONTROLS                            */}
       {/* ════════════════════════════════════════════════════════════════ */}
-      <div className="glass p-4 rounded-xl border border-indigo-500/20 bg-slate-900/90 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      {/* ════════════════════════════════════════════════════════════════ */}
+      {/* 1. POS TOP SHIFT BAR & AUDIT CONTROLS                            */}
+      {/* ════════════════════════════════════════════════════════════════ */}
+      <div className="bg-white p-5 rounded-[24px] border border-[#14171F]/10 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-[#14171F]">
         
         <div className="flex items-center gap-3">
-          <div className={`p-2.5 rounded-lg border ${shift?.isOpen ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-rose-500/10 border-rose-500/30 text-rose-400'}`}>
+          <div className={`p-2.5 rounded-full border ${shift?.isOpen ? 'bg-emerald-100 border-emerald-300 text-emerald-700' : 'bg-rose-100 border-rose-300 text-rose-700'}`}>
             {shift?.isOpen ? <Unlock size={20} /> : <Lock size={20} />}
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="font-bold text-sm text-white">Cash Register Shift</h3>
-              <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded ${shift?.isOpen ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-rose-500/20 text-rose-300 border border-rose-500/40'}`}>
+              <h3 className="font-serif font-bold text-base text-[#14171F]">Cash Register Shift</h3>
+              <span className={`text-[10px] uppercase font-mono font-bold px-2.5 py-0.5 rounded-full ${shift?.isOpen ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-rose-100 text-rose-800 border border-rose-300'}`}>
                 {shift?.isOpen ? 'ACTIVE SHIFT' : 'REGISTER CLOSED'}
               </span>
             </div>
-            <p className="text-xs text-zinc-400 mt-0.5 flex items-center gap-3">
-              <span>Cashier: <strong className="text-white">{shift?.cashierName || 'None'}</strong></span>
+            <p className="text-xs text-[#4F5565] font-medium mt-0.5 flex flex-wrap items-center gap-3">
+              <span>Cashier: <strong className="text-[#14171F] font-bold">{shift?.cashierName || 'None'}</strong></span>
               {shift?.isOpen && (
                 <>
                   <span>• Started: {shift.startTime}</span>
-                  <span>• Float: <strong className="text-indigo-300">{formatAmount(shift.openingFloat)}</strong></span>
-                  <span>• Live Drawer Cash: <strong className="text-emerald-400">{formatAmount(shift.openingFloat + shift.cashSales)}</strong></span>
+                  <span>• Float: <strong className="text-[#5C64ED] font-mono font-bold">{formatAmount(shift.openingFloat)}</strong></span>
+                  <span>• Live Drawer Cash: <strong className="text-emerald-700 font-mono font-bold">{formatAmount(shift.openingFloat + shift.cashSales)}</strong></span>
                 </>
               )}
             </p>
@@ -441,16 +444,16 @@ export default function SmartScannerPOS({
         <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={() => setShowHistoryModal(true)}
-            className="px-3.5 py-2 bg-white/5 hover:bg-white/10 text-zinc-300 text-xs font-semibold rounded-lg border border-white/10 transition flex items-center gap-1.5 cursor-pointer"
+            className="px-4 py-2 bg-[#FAF7F2] hover:bg-white text-[#14171F] text-xs font-bold rounded-full border border-[#14171F]/10 transition flex items-center gap-1.5 cursor-pointer shadow-xs"
           >
-            <Printer size={14} className="text-indigo-400" />
+            <Printer size={14} className="text-[#5C64ED]" />
             Past Bills ({recentReceipts.length})
           </button>
 
           {shift?.isOpen ? (
             <button
               onClick={() => setIsCloseShiftModal(true)}
-              className="px-3.5 py-2 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 text-xs font-semibold rounded-lg border border-rose-500/30 transition flex items-center gap-2 cursor-pointer"
+              className="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold rounded-full border border-rose-300 transition flex items-center gap-2 cursor-pointer shadow-xs"
             >
               <Lock size={14} />
               End Shift & Balance Register
@@ -458,7 +461,7 @@ export default function SmartScannerPOS({
           ) : (
             <button
               onClick={() => setIsOpenShiftModal(true)}
-              className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg shadow transition flex items-center gap-2 cursor-pointer"
+              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-full shadow transition flex items-center gap-2 cursor-pointer"
             >
               <Unlock size={14} />
               Open New Register Shift
@@ -476,13 +479,13 @@ export default function SmartScannerPOS({
         <div className="lg:col-span-2 flex flex-col gap-5">
           
           {/* Scanner Bar (Webcam + Voice) */}
-          <div className="glass p-4 rounded-xl border border-indigo-500/20 bg-slate-900/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="bg-white p-5 rounded-[24px] border border-[#14171F]/10 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-[#14171F]">
             <div>
-              <h3 className="font-bold text-sm text-white flex items-center gap-2">
-                <ScanBarcode size={18} className="text-indigo-400" />
+              <h3 className="font-serif font-bold text-sm text-[#14171F] flex items-center gap-2">
+                <ScanBarcode size={18} className="text-[#5C64ED]" />
                 Smart Webcam & Voice POS Scanner
               </h3>
-              <p className="text-xs text-zinc-400 mt-0.5">
+              <p className="text-xs text-[#4F5565] font-medium mt-0.5">
                 Use camera barcode scanner or speak voice orders for instant checkout entry.
               </p>
             </div>
@@ -490,10 +493,10 @@ export default function SmartScannerPOS({
             <div className="flex items-center gap-2">
               <button
                 onClick={isCameraActive ? stopCamera : startCamera}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold border flex items-center gap-1.5 transition cursor-pointer ${
+                className={`px-3.5 py-2 rounded-full text-xs font-bold border flex items-center gap-1.5 transition cursor-pointer ${
                   isCameraActive
-                    ? 'bg-red-500/20 text-red-400 border-red-500/30'
-                    : 'bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border-indigo-500/30'
+                    ? 'bg-rose-100 text-rose-700 border-rose-300'
+                    : 'bg-[#5C64ED] hover:bg-[#4B52D9] text-white border-[#5C64ED] shadow-xs'
                 }`}
               >
                 <Camera size={14} />
@@ -502,10 +505,10 @@ export default function SmartScannerPOS({
 
               <button
                 onClick={toggleVoiceSearch}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold border flex items-center gap-1.5 transition cursor-pointer ${
+                className={`px-3.5 py-2 rounded-full text-xs font-bold border flex items-center gap-1.5 transition cursor-pointer ${
                   isListening
-                    ? 'bg-amber-500/20 text-amber-400 border-amber-500/40 animate-pulse'
-                    : 'bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border-purple-500/30'
+                    ? 'bg-amber-100 text-amber-800 border-amber-300 animate-pulse'
+                    : 'bg-[#14171F] hover:bg-[#202532] text-white border-[#14171F] shadow-xs'
                 }`}
               >
                 {isListening ? <MicOff size={14} /> : <Mic size={14} />}
@@ -541,39 +544,39 @@ export default function SmartScannerPOS({
           )}
 
           {/* Product Catalogue Grid */}
-          <div className="glass p-5 rounded-xl border border-white/10 flex flex-col gap-4">
+          <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs flex flex-col gap-4 text-[#14171F]">
             <div className="relative">
-              <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500" />
+              <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#5C64ED]" />
               <input
                 type="text"
                 placeholder="Search product SKU or name..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-10 bg-slate-900 border border-white/10 rounded-lg pl-10 pr-4 text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="w-full h-10 bg-[#FAF7F2] border border-[#14171F]/10 rounded-full pl-10 pr-4 text-xs font-medium text-[#14171F] placeholder-[#4F5565] focus:outline-none focus:ring-1 focus:ring-[#5C64ED]"
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[380px] overflow-y-auto pr-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-h-[400px] overflow-y-auto pr-1">
               {filteredProducts.map((p) => {
                 const isOut = p.stock <= 0;
                 return (
                   <div
                     key={p.id}
                     onClick={() => !isOut && addToCart(p)}
-                    className={`p-3.5 rounded-xl border transition flex items-center justify-between cursor-pointer ${
+                    className={`p-4 rounded-2xl border transition flex items-center justify-between cursor-pointer ${
                       isOut
-                        ? 'bg-slate-900/40 border-white/5 opacity-50 cursor-not-allowed'
-                        : 'bg-slate-900/80 border-white/10 hover:border-indigo-500/50 hover:bg-indigo-950/20'
+                        ? 'bg-[#FAF7F2]/40 border-[#14171F]/5 opacity-50 cursor-not-allowed'
+                        : 'bg-[#FAF7F2] border-[#14171F]/10 hover:border-[#5C64ED] hover:bg-white shadow-xs'
                     }`}
                   >
                     <div>
-                      <h4 className="font-bold text-xs text-white truncate max-w-[170px]">{p.name}</h4>
-                      <p className="text-[10px] text-zinc-400 font-mono mt-0.5">
-                        SKU: {p.sku} &bull; Stock: <strong className={isOut ? 'text-red-400' : 'text-emerald-400'}>{p.stock}</strong>
+                      <h4 className="font-serif font-bold text-xs text-[#14171F] truncate max-w-[170px]">{p.name}</h4>
+                      <p className="text-[10px] text-[#4F5565] font-mono mt-0.5">
+                        SKU: {p.sku} &bull; Stock: <strong className={isOut ? 'text-rose-600' : 'text-emerald-700'}>{p.stock}</strong>
                       </p>
                     </div>
                     <div className="text-right shrink-0">
-                      <span className="font-mono font-bold text-xs text-indigo-300 block">
+                      <span className="font-mono font-bold text-xs text-[#5C64ED] block">
                         {formatAmount(p.price, { decimals: 2 })}
                       </span>
                       <button
@@ -583,7 +586,7 @@ export default function SmartScannerPOS({
                           e.stopPropagation();
                           if (!isOut) addToCart(p);
                         }}
-                        className="mt-1 px-2.5 py-1 bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 text-[10px] font-bold rounded border border-indigo-500/30 transition cursor-pointer"
+                        className="mt-1 px-3 py-1 bg-[#14171F] hover:bg-[#202532] text-white text-[10px] font-bold rounded-full transition cursor-pointer shadow-xs"
                       >
                         + Add
                       </button>
@@ -596,15 +599,15 @@ export default function SmartScannerPOS({
         </div>
 
         {/* RIGHT COL: Active POS Cart & Payment Terminal */}
-        <div className="glass p-5 rounded-xl border border-white/10 flex flex-col justify-between gap-5 bg-slate-900/90">
+        <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs flex flex-col justify-between gap-5 text-[#14171F]">
           
           <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <h3 className="font-bold text-sm text-white flex items-center gap-2">
-                <ShoppingCart size={16} className="text-indigo-400" />
-                Active POS Checkout Cart
+            <div className="flex items-center justify-between border-b border-[#14171F]/10 pb-3">
+              <h3 className="font-serif font-bold text-base text-[#14171F] flex items-center gap-2">
+                <ShoppingCart size={16} className="text-[#5C64ED]" />
+                Active POS Cart
               </h3>
-              <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-500/30">
+              <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-[#5C64ED]/10 text-[#5C64ED] border border-[#5C64ED]/20">
                 {cart.reduce((acc, item) => acc + item.qty, 0)} items
               </span>
             </div>
@@ -612,39 +615,39 @@ export default function SmartScannerPOS({
             {/* Cart Items List */}
             <div className="flex flex-col gap-2 max-h-[220px] overflow-y-auto pr-1">
               {cart.length === 0 ? (
-                <div className="text-center py-8 text-zinc-500 text-xs font-medium">
+                <div className="text-center py-8 text-[#4F5565] text-xs font-medium">
                   Cart is empty. Scan barcode or click items to add.
                 </div>
               ) : (
                 cart.map((item) => (
                   <div
                     key={item.id}
-                    className="p-2.5 rounded-lg bg-white/[0.02] border border-white/5 flex items-center justify-between text-xs"
+                    className="p-3 rounded-2xl bg-[#FAF7F2] border border-[#14171F]/10 flex items-center justify-between text-xs"
                   >
                     <div className="truncate max-w-[120px]">
-                      <span className="font-bold text-white block truncate">{item.name}</span>
-                      <span className="text-[10px] text-zinc-400 font-mono">{formatAmount(item.price)} ea</span>
+                      <span className="font-bold text-[#14171F] block truncate">{item.name}</span>
+                      <span className="text-[10px] text-[#4F5565] font-mono">{formatAmount(item.price)} ea</span>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <div className="flex items-center border border-white/10 rounded overflow-hidden">
+                      <div className="flex items-center border border-[#14171F]/10 rounded-full bg-white overflow-hidden">
                         <button
                           onClick={() => updateCartQty(item.id, item.qty - 1)}
-                          className="px-2 py-0.5 bg-white/5 hover:bg-white/10 text-zinc-300 text-xs"
+                          className="px-2.5 py-0.5 hover:bg-[#FAF7F2] text-[#14171F] text-xs font-bold"
                         >
                           -
                         </button>
-                        <span className="px-2 font-mono font-bold text-white text-xs">{item.qty}</span>
+                        <span className="px-2 font-mono font-bold text-[#14171F] text-xs">{item.qty}</span>
                         <button
                           onClick={() => updateCartQty(item.id, item.qty + 1)}
-                          className="px-2 py-0.5 bg-white/5 hover:bg-white/10 text-zinc-300 text-xs"
+                          className="px-2.5 py-0.5 hover:bg-[#FAF7F2] text-[#14171F] text-xs font-bold"
                         >
                           +
                         </button>
                       </div>
                       <button
                         onClick={() => updateCartQty(item.id, 0)}
-                        className="text-zinc-500 hover:text-red-400 p-1"
+                        className="text-[#4F5565] hover:text-rose-600 p-1"
                       >
                         <Trash2 size={13} />
                       </button>
@@ -656,11 +659,11 @@ export default function SmartScannerPOS({
           </div>
 
           {/* Payment & Total Section */}
-          <div className="border-t border-white/10 pt-4 space-y-4">
+          <div className="border-t border-[#14171F]/10 pt-4 space-y-4">
             
             {/* Payment Method Selector */}
             <div>
-              <label className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block mb-2">
+              <label className="text-[11px] font-mono font-bold text-[#4F5565] uppercase tracking-wider block mb-2">
                 Payment Method
               </label>
               <div className="grid grid-cols-4 gap-1.5">
@@ -677,10 +680,10 @@ export default function SmartScannerPOS({
                       key={m.id}
                       type="button"
                       onClick={() => setPaymentMethod(m.id as any)}
-                      className={`py-2 px-1 rounded-lg border text-[11px] font-bold flex flex-col items-center gap-1 transition cursor-pointer ${
+                      className={`py-2.5 px-1 rounded-xl border text-[11px] font-bold flex flex-col items-center gap-1 transition cursor-pointer ${
                         isActive
-                          ? 'bg-indigo-600 text-white border-indigo-400 shadow-md'
-                          : 'bg-white/5 text-zinc-400 border-white/10 hover:bg-white/10'
+                          ? 'bg-[#14171F] text-white border-[#14171F] shadow-sm'
+                          : 'bg-[#FAF7F2] text-[#4F5565] border-[#14171F]/10 hover:bg-white hover:text-[#14171F]'
                       }`}
                     >
                       <Icon size={14} />
@@ -693,20 +696,20 @@ export default function SmartScannerPOS({
 
             {/* Cash Tendered Input (if Cash selected) */}
             {paymentMethod === 'cash' && (
-              <div className="p-3 rounded-lg bg-indigo-950/30 border border-indigo-500/20 space-y-2">
+              <div className="p-3.5 rounded-2xl bg-[#FAF7F2] border border-[#14171F]/10 space-y-2">
                 <div className="flex justify-between items-center text-xs">
-                  <span className="text-zinc-300 font-medium">Cash Tendered:</span>
+                  <span className="text-[#14171F] font-bold">Cash Tendered:</span>
                   <input
                     type="number"
                     placeholder={cartTotal.toFixed(0)}
                     value={cashTendered}
                     onChange={(e) => setCashTendered(e.target.value)}
-                    className="w-28 h-7 bg-slate-900 border border-indigo-500/40 rounded text-right px-2 text-xs font-mono font-bold text-indigo-300 focus:outline-none focus:ring-1 focus:ring-indigo-400"
+                    className="w-28 h-8 bg-white border border-[#14171F]/15 rounded-lg text-right px-2.5 text-xs font-mono font-bold text-[#5C64ED] focus:outline-none focus:ring-1 focus:ring-[#5C64ED]"
                   />
                 </div>
                 <div className="flex justify-between items-center text-xs font-mono">
-                  <span className="text-zinc-400">Change Due:</span>
-                  <span className={`font-bold ${changeDue > 0 ? 'text-emerald-400' : 'text-zinc-400'}`}>
+                  <span className="text-[#4F5565]">Change Due:</span>
+                  <span className={`font-bold ${changeDue > 0 ? 'text-emerald-700' : 'text-[#4F5565]'}`}>
                     {formatAmount(changeDue, { decimals: 2 })}
                   </span>
                 </div>
@@ -714,41 +717,41 @@ export default function SmartScannerPOS({
             )}
 
             {/* POS Promo Code Input */}
-            <form onSubmit={applyPosPromo} className="flex items-center gap-1.5">
+            <form onSubmit={applyPosPromo} className="flex items-center gap-2">
               <input
                 type="text"
                 placeholder="PROMO CODE (E.G. SAVE20)"
                 value={posPromoCode}
                 onChange={(e) => setPosPromoCode(e.target.value)}
-                className="w-full h-8 bg-slate-950 border border-white/10 rounded-lg px-2.5 text-[11px] font-mono font-bold text-indigo-300 placeholder-zinc-500 uppercase focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="w-full h-9 bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3 text-[11px] font-mono font-bold text-[#5C64ED] placeholder-[#4F5565] uppercase focus:outline-none focus:ring-1 focus:ring-[#5C64ED]"
               />
               <button
                 type="submit"
-                className="px-3 h-8 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-[10px] rounded-lg shadow transition shrink-0 cursor-pointer"
+                className="px-4 h-9 bg-[#5C64ED] hover:bg-[#4B52D9] text-white font-bold text-[11px] rounded-xl shadow transition shrink-0 cursor-pointer"
               >
                 Apply
               </button>
             </form>
 
             {/* Subtotal, Tax & Total Calculation */}
-            <div className="space-y-1 text-xs">
-              <div className="flex justify-between text-zinc-400">
+            <div className="space-y-1.5 text-xs">
+              <div className="flex justify-between text-[#4F5565]">
                 <span>Subtotal:</span>
-                <span className="font-mono">{formatAmount(cartSubtotal, { decimals: 2 })}</span>
+                <span className="font-mono font-semibold text-[#14171F]">{formatAmount(cartSubtotal, { decimals: 2 })}</span>
               </div>
               {posDiscount > 0 && (
-                <div className="flex justify-between text-emerald-400 font-mono">
+                <div className="flex justify-between text-emerald-700 font-mono font-bold">
                   <span>Coupon Discount:</span>
                   <span>-{formatAmount(posDiscount, { decimals: 2 })}</span>
                 </div>
               )}
-              <div className="flex justify-between text-zinc-400">
+              <div className="flex justify-between text-[#4F5565]">
                 <span>Tax (GST 18%):</span>
-                <span className="font-mono">{formatAmount(cartTax, { decimals: 2 })}</span>
+                <span className="font-mono font-semibold text-[#14171F]">{formatAmount(cartTax, { decimals: 2 })}</span>
               </div>
-              <div className="flex justify-between items-center text-sm font-bold text-white pt-2 border-t border-white/10">
+              <div className="flex justify-between items-center text-sm font-bold text-[#14171F] pt-2 border-t border-[#14171F]/10">
                 <span>Total Amount:</span>
-                <span className="font-mono text-indigo-400 text-lg">{formatAmount(cartTotal, { decimals: 2 })}</span>
+                <span className="font-mono text-[#5C64ED] text-xl font-black">{formatAmount(cartTotal, { decimals: 2 })}</span>
               </div>
             </div>
 
@@ -756,7 +759,7 @@ export default function SmartScannerPOS({
             <button
               onClick={handlePOSCheckout}
               disabled={cart.length === 0 || checkoutLoading}
-              className="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 disabled:opacity-50 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-4 bg-[#14171F] hover:bg-[#202532] disabled:opacity-50 text-white font-bold text-xs rounded-full shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
             >
               <CheckCircle2 size={16} />
               {checkoutLoading ? 'Processing Sale...' : 'Complete POS Sale & Print Receipt'}
