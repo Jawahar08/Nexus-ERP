@@ -22,6 +22,7 @@ import {
   X,
   Building,
   Menu,
+  Receipt,
 } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { cn } from "@/lib/utils";
@@ -132,6 +133,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { label: "CRM", icon: Users, path: "/dashboard/crm" },
     { label: "HR", icon: Briefcase, path: "/dashboard/hr" },
     { label: "Finance", icon: Coins, path: "/dashboard/finance" },
+    { label: "Invoices & Bills", icon: Receipt, path: "/dashboard/invoices" },
     { label: "Workflows", icon: ShieldCheck, path: "/dashboard/workflows" },
   ];
 
