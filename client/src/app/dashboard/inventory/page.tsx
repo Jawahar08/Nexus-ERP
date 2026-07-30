@@ -4,15 +4,16 @@ import React, { useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 import { 
   Package, Plus, ArrowLeftRight, ShoppingBag, 
-  RotateCcw, Warehouse, AlertCircle, ShoppingCart, Trash2, ScanBarcode, Sparkles, FileSpreadsheet, Upload, Download, RefreshCw, CheckCircle2, X, Building2, Truck
+  RotateCcw, Warehouse, AlertCircle, ShoppingCart, Trash2, ScanBarcode, Sparkles, FileSpreadsheet, Upload, Download, RefreshCw, CheckCircle2, X, Building2, Truck, Tag
 } from 'lucide-react';
 import { useCurrencyStore } from '@/store/currencyStore';
 import AutoPilotBanner from '@/components/inventory/AutoPilotBanner';
 import SmartScannerPOS from '@/components/inventory/SmartScannerPOS';
 import B2BProcurementHub from '@/components/inventory/B2BProcurementHub';
 import OrderFulfillmentHub from '@/components/inventory/OrderFulfillmentHub';
+import PromotionsManagerHub from '@/components/inventory/PromotionsManagerHub';
 
-type ActiveView = 'catalogue' | 'matrix' | 'pos' | 'procurement' | 'orders';
+type ActiveView = 'catalogue' | 'matrix' | 'pos' | 'procurement' | 'orders' | 'promotions';
 
 export default function InventoryPage() {
   const { formatAmount, currentCountry } = useCurrencyStore();
@@ -336,6 +337,16 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
           </button>
 
           <button 
+            onClick={() => setActiveView('promotions')}
+            className={`btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold border transition cursor-pointer ${
+              activeView === 'promotions' ? 'bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-500/20' : 'bg-slate-900 border-[var(--border)] text-indigo-300 hover:bg-[var(--border)]'
+            }`}
+          >
+            <Tag size={14} />
+            Promotions & Coupons
+          </button>
+
+          <button 
             onClick={() => setActiveView('orders')}
             className={`btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold border transition cursor-pointer ${
               activeView === 'orders' ? 'bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-500/20' : 'bg-slate-900 border-[var(--border)] text-indigo-300 hover:bg-[var(--border)]'
@@ -379,7 +390,9 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
       <AutoPilotBanner onRestockExecuted={fetchInventory} />
 
       {/* View Switcher View Content */}
-      {activeView === 'orders' ? (
+      {activeView === 'promotions' ? (
+        <PromotionsManagerHub />
+      ) : activeView === 'orders' ? (
         <OrderFulfillmentHub />
       ) : activeView === 'procurement' ? (
         <B2BProcurementHub 

@@ -52,6 +52,49 @@ let storeOrders = [
   }
 ];
 
+// Central Store Promotions & Coupons Ledger
+let promotionsStore = [
+  {
+    code: 'SAVE20',
+    description: '20% OFF Everything Storewide',
+    discountType: 'percentage',
+    discountValue: 20,
+    minOrderValue: 30,
+    maxDiscount: 100,
+    usageCount: 42,
+    maxUsage: 500,
+    expiryDate: '2026-12-31',
+    isActive: true,
+    bannerHeadline: '🔥 FLASH SALE: 20% OFF STOREWIDE (Use Code: SAVE20)'
+  },
+  {
+    code: 'NEXUS10',
+    description: '10% OFF Welcome Bonus',
+    discountType: 'percentage',
+    discountValue: 10,
+    minOrderValue: 0,
+    maxDiscount: 50,
+    usageCount: 118,
+    maxUsage: 1000,
+    expiryDate: '2026-12-31',
+    isActive: true,
+    bannerHeadline: '🎁 WELCOME DISCOUNT: 10% OFF YOUR ORDER (Use Code: NEXUS10)'
+  },
+  {
+    code: 'FLAT50',
+    description: '$50 Flat Instant Savings on Orders Over $150',
+    discountType: 'flat',
+    discountValue: 50,
+    minOrderValue: 150,
+    maxDiscount: 50,
+    usageCount: 19,
+    maxUsage: 200,
+    expiryDate: '2026-12-31',
+    isActive: true,
+    bannerHeadline: '⚡ BIG SAVINGS: Flat $50 OFF on Orders Above $150 (Use Code: FLAT50)'
+  }
+];
+
 // GET /api/shop/public/:domain (Public Digital Catalog API)
 router.get('/public/:domain', async (req, res) => {
   try {
@@ -594,8 +637,132 @@ router.get('/track/:orderId', async (req, res) => {
       estimatedDelivery: 'Today by 6:00 PM (Express Dispatch)'
     });
   } catch (error) {
-    console.error('Track order GET error:', error);
-    return res.status(500).json({ error: 'Failed to look up order status' });
+// GET /api/shop/promotions (Get Storefront & POS Promo Codes List & Active Banner)
+router.get('/promotions', async (req, res) => {
+  try {
+    const activeBanner = promotionsStore.find((p) => p.isActive && p.bannerHeadline);
+    return res.json({
+      promotions: promotionsStore,
+      activeBanner: activeBanner ? activeBanner.bannerHeadline : null,
+      activeCode: activeBanner ? activeBanner.code : null,
+    });
+  } catch (error) {
+    console.error('Promotions GET error:', error);
+    return res.status(500).json({ error: 'Failed to retrieve store promotions' });
+  }
+});
+
+// POST /api/shop/promotions (Create New Store Promo Code)
+router.post('/promotions', async (req, res) => {
+  try {
+    const { code, description, discountType, discountValue, minOrderValue, maxDiscount, maxUsage, expiryDate, bannerHeadline } = req.body;
+
+    if (!code || !discountValue) {
+      return res.status(400).json({ error: 'Promo Code and Discount Value are required' });
+    }
+
+    const cleanCode = code.trim().toUpperCase();
+
+    const existingIndex = promotionsStore.findIndex((p) => p.code === cleanCode);
+
+    const newPromo = {
+      code: cleanCode,
+      description: description || `${discountValue}${discountType === 'percentage' ? '%' : '$'} OFF Promo Code`,
+      discountType: discountType || 'percentage',
+      discountValue: Number(discountValue),
+      minOrderValue: Number(minOrderValue) || 0,
+      maxDiscount: Number(maxDiscount) || 100,
+      usageCount: 0,
+      maxUsage: Number(maxUsage) || 500,
+      expiryDate: expiryDate || '2026-12-31',
+      isActive: true,
+      bannerHeadline: bannerHeadline || `🔥 SPECIAL PROMO: ${cleanCode} for Discount!`
+    };
+
+    if (existingIndex !== -1) {
+      promotionsStore[existingIndex] = newPromo;
+    } else {
+      promotionsStore.unshift(newPromo);
+    }
+
+    return res.json({ success: true, promotion: newPromo });
+  } catch (error) {
+    console.error('Promotions POST error:', error);
+    return res.status(500).json({ error: 'Failed to create promotion code' });
+  }
+});
+
+// PUT /api/shop/promotions/:code/toggle (Toggle Active Status of Promo Code)
+router.put('/promotions/:code/toggle', async (req, res) => {
+  try {
+    const { code } = req.params;
+    const cleanCode = code.trim().toUpperCase();
+
+    const promoIndex = promotionsStore.findIndex((p) => p.code === cleanCode);
+
+    if (promoIndex === -1) {
+      return res.status(404).json({ error: 'Promo code not found' });
+    }
+
+    promotionsStore[promoIndex].isActive = !promotionsStore[promoIndex].isActive;
+
+    return res.json({ success: true, promotion: promotionsStore[promoIndex] });
+  } catch (error) {
+    console.error('Promotions toggle error:', error);
+    return res.status(500).json({ error: 'Failed to toggle promo code' });
+  }
+});
+
+// POST /api/shop/promotions/validate (Validate Promo Code against Cart Subtotal)
+router.post('/promotions/validate', async (req, res) => {
+  try {
+    const { code, subtotal } = req.body;
+
+    if (!code) {
+      return res.status(400).json({ error: 'Promo Code is required' });
+    }
+
+    const cleanCode = code.trim().toUpperCase();
+    const cartSubtotal = Number(subtotal) || 0;
+
+    const promo = promotionsStore.find((p) => p.code === cleanCode && p.isActive);
+
+    if (!promo) {
+      return res.status(404).json({ error: `Promo code "${cleanCode}" is invalid or expired.` });
+    }
+
+    if (cartSubtotal < promo.minOrderValue) {
+      return res.status(400).json({
+        error: `Promo code "${cleanCode}" requires a minimum order value of $${promo.minOrderValue.toFixed(2)}.`
+      });
+    }
+
+    let discountAmount = 0;
+    if (promo.discountType === 'percentage') {
+      discountAmount = (cartSubtotal * promo.discountValue) / 100;
+      if (promo.maxDiscount && discountAmount > promo.maxDiscount) {
+        discountAmount = promo.maxDiscount;
+      }
+    } else {
+      discountAmount = promo.discountValue;
+    }
+
+    discountAmount = Math.min(cartSubtotal, Number(discountAmount.toFixed(2)));
+
+    // Increment usage count
+    promo.usageCount += 1;
+
+    return res.json({
+      valid: true,
+      code: promo.code,
+      discountType: promo.discountType,
+      discountValue: promo.discountValue,
+      discountAmount,
+      message: `Promo code "${cleanCode}" applied! Saved $${discountAmount.toFixed(2)}`
+    });
+  } catch (error) {
+    console.error('Promotions validation error:', error);
+    return res.status(500).json({ error: 'Failed to validate promo code' });
   }
 });
 

@@ -36,7 +36,9 @@ export default function PublicStorefrontPage() {
   const [showCartDrawer, setShowCartDrawer] = useState(false);
   const [promoCode, setPromoCode] = useState('');
   const [discountPercent, setDiscountPercent] = useState(0);
+  const [discountAmountVal, setDiscountAmountVal] = useState(0);
   const [promoApplied, setPromoApplied] = useState(false);
+  const [promoMsg, setPromoMsg] = useState('');
 
   // Checkout State
   const [customerName, setCustomerName] = useState('');
@@ -132,18 +134,35 @@ export default function PublicStorefrontPage() {
     }
   };
 
-  const applyPromoCode = (e: React.FormEvent) => {
+  const applyPromoCode = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (promoCode.trim().toUpperCase() === 'NEXUS10' || promoCode.trim().toUpperCase() === 'SAVE10') {
-      setDiscountPercent(10);
-      setPromoApplied(true);
-    } else {
-      alert('Invalid promo code. Try "NEXUS10" for 10% OFF!');
+    if (!promoCode.trim()) return;
+
+    try {
+      const res = await fetch('/api/shop/promotions/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: promoCode.trim().toUpperCase(),
+          subtotal,
+        }),
+      });
+
+      const payload = await res.json();
+      if (res.ok && payload.valid) {
+        setDiscountAmountVal(payload.discountAmount);
+        setPromoApplied(true);
+        setPromoMsg(payload.message || 'Promo code applied!');
+      } else {
+        alert(payload.error || 'Invalid promo code');
+      }
+    } catch (err) {
+      alert('Network error validating promo code');
     }
   };
 
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-  const discountAmount = (subtotal * discountPercent) / 100;
+  const discountAmount = discountAmountVal > 0 ? discountAmountVal : (subtotal * discountPercent) / 100;
   const cartTotal = Math.max(0, subtotal - discountAmount);
   const loyaltyPointsEarned = Math.floor(cartTotal * 0.05);
 

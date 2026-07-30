@@ -224,9 +224,40 @@ export default function SmartScannerPOS({
     }
   };
 
+  // POS Promo Code State
+  const [posPromoCode, setPosPromoCode] = useState('');
+  const [posDiscount, setPosDiscount] = useState(0);
+  const [posPromoMsg, setPosPromoMsg] = useState('');
+
+  const applyPosPromo = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!posPromoCode.trim()) return;
+
+    try {
+      const res = await fetch('/api/shop/promotions/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: posPromoCode.trim().toUpperCase(),
+          subtotal: cartSubtotal,
+        }),
+      });
+      const payload = await res.json();
+      if (res.ok && payload.valid) {
+        setPosDiscount(payload.discountAmount);
+        setPosPromoMsg(payload.message || 'Promo applied!');
+      } else {
+        alert(payload.error || 'Invalid promo code');
+      }
+    } catch (err) {
+      alert('Network error validating promo code');
+    }
+  };
+
   const cartSubtotal = cart.reduce((acc, item) => acc + item.price * item.qty, 0);
-  const cartTax = cartSubtotal * 0.18; // 18% GST / Standard Retail Tax
-  const cartTotal = cartSubtotal + cartTax;
+  const netSubtotal = Math.max(0, cartSubtotal - posDiscount);
+  const cartTax = netSubtotal * 0.18; // 18% GST / Standard Retail Tax
+  const cartTotal = netSubtotal + cartTax;
 
   const tenderedAmount = parseFloat(cashTendered) || 0;
   const changeDue = Math.max(0, tenderedAmount - cartTotal);
@@ -658,12 +689,35 @@ export default function SmartScannerPOS({
               </div>
             )}
 
+            {/* POS Promo Code Input */}
+            <form onSubmit={applyPosPromo} className="flex items-center gap-1.5">
+              <input
+                type="text"
+                placeholder="PROMO CODE (E.G. SAVE20)"
+                value={posPromoCode}
+                onChange={(e) => setPosPromoCode(e.target.value)}
+                className="w-full h-8 bg-slate-950 border border-white/10 rounded-lg px-2.5 text-[11px] font-mono font-bold text-indigo-300 placeholder-zinc-500 uppercase focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              />
+              <button
+                type="submit"
+                className="px-3 h-8 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-[10px] rounded-lg shadow transition shrink-0 cursor-pointer"
+              >
+                Apply
+              </button>
+            </form>
+
             {/* Subtotal, Tax & Total Calculation */}
             <div className="space-y-1 text-xs">
               <div className="flex justify-between text-zinc-400">
                 <span>Subtotal:</span>
                 <span className="font-mono">{formatAmount(cartSubtotal, { decimals: 2 })}</span>
               </div>
+              {posDiscount > 0 && (
+                <div className="flex justify-between text-emerald-400 font-mono">
+                  <span>Coupon Discount:</span>
+                  <span>-{formatAmount(posDiscount, { decimals: 2 })}</span>
+                </div>
+              )}
               <div className="flex justify-between text-zinc-400">
                 <span>Tax (GST 18%):</span>
                 <span className="font-mono">{formatAmount(cartTax, { decimals: 2 })}</span>
