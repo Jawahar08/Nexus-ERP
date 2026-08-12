@@ -55,6 +55,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [user, setUser] = useState<any>(null);
   const { currentCountry, setCountry } = useCurrencyStore();
   const [currencyDropdownOpen, setCurrencyDropdownOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -325,13 +326,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <div className="relative">
                 <button
                   onClick={() => setCurrencyDropdownOpen(!currencyDropdownOpen)}
-                  className="flex items-center gap-2 px-2 py-1.5 rounded-lg border border-white/5 bg-white/[0.02] text-zinc-400 hover:text-white hover:bg-white/5 transition cursor-pointer text-xs"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#14171F]/10 bg-white text-[#14171F] hover:bg-[#FAF7F2] transition cursor-pointer text-xs shadow-xs"
+                  title="Switch currency & region"
                 >
-                  <span className="text-[9px] uppercase font-extrabold px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-zinc-300 font-mono tracking-wider">
+                  <span className="text-[9px] uppercase font-extrabold px-1.5 py-0.5 rounded-md bg-[#FAF7F2] border border-[#14171F]/10 text-[#4F5565] font-mono tracking-wider">
                     {currentCountry.code}
                   </span>
-                  <span className="font-semibold text-white">{currentCountry.currencyCode}</span>
-                  <span className="text-[10px] text-zinc-500">({currentCountry.symbol})</span>
+                  <span className="font-bold text-[#14171F] font-mono">{currentCountry.currencyCode}</span>
+                  <span className="text-xs font-bold text-[#5C64ED] font-mono">({currentCountry.symbol})</span>
                 </button>
 
                 <AnimatePresence>
@@ -343,9 +345,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="glass-panel absolute right-0 mt-2 w-60 p-2 rounded-xl z-40 shadow-xl space-y-1"
+                        className="absolute right-0 mt-2 w-64 p-2.5 rounded-2xl bg-white border border-[#14171F]/15 shadow-2xl z-40 space-y-1 text-[#14171F]"
                       >
-                        <div className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider px-2 py-1 border-b border-white/5 mb-1">
+                        <div className="text-[10px] font-bold text-[#4F5565] uppercase tracking-wider px-3 py-1.5 border-b border-[#14171F]/10 mb-1 font-mono">
                           Workspace Currency
                         </div>
                         {COUNTRIES.map((c) => (
@@ -356,19 +358,24 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                               setCurrencyDropdownOpen(false);
                             }}
                             className={cn(
-                              "w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer text-left",
+                              "w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition cursor-pointer text-left",
                               currentCountry.code === c.code
-                                ? "bg-indigo-600/95 text-white"
-                                : "text-zinc-400 hover:text-white hover:bg-white/5"
+                                ? "bg-[#14171F] text-white"
+                                : "text-[#14171F] hover:bg-[#FAF7F2]"
                             )}
                           >
                             <div className="flex items-center gap-2">
-                              <span className="text-[9px] uppercase font-extrabold px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-zinc-400 w-8 text-center shrink-0 font-mono">
+                              <span className={cn(
+                                "text-[9px] uppercase font-bold px-1.5 py-0.5 rounded-md border text-center shrink-0 font-mono w-8",
+                                currentCountry.code === c.code
+                                  ? "bg-white/20 border-white/20 text-white"
+                                  : "bg-[#FAF7F2] border-[#14171F]/10 text-[#4F5565]"
+                              )}>
                                 {c.code}
                               </span>
                               <span>{c.name}</span>
                             </div>
-                            <span className="font-mono text-[9px] opacity-80">{c.currencyCode} ({c.symbol})</span>
+                            <span className="font-mono text-xs font-bold">{c.currencyCode} ({c.symbol})</span>
                           </button>
                         ))}
                       </motion.div>
@@ -381,11 +388,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <div className="relative">
                 <button
                   onClick={() => setNotificationsOpen(!notificationsOpen)}
-                  className="p-2 rounded-lg border border-white/5 text-zinc-400 hover:text-white hover:bg-white/5 transition cursor-pointer relative"
+                  className="p-2 rounded-full border border-[#14171F]/10 bg-white text-[#4F5565] hover:text-[#14171F] hover:bg-[#FAF7F2] transition cursor-pointer relative shadow-xs"
+                  title="System notifications"
                 >
                   <Bell size={16} />
                   {notifications.length > 0 && (
-                    <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-indigo-500 shadow-[0_0_8px_#6366f1]" />
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#5C64ED]" />
                   )}
                 </button>
 
@@ -399,13 +407,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="glass-panel absolute right-0 mt-2 w-80 p-4 rounded-xl z-40 shadow-xl"
+                        className="absolute right-0 mt-2 w-80 p-4 rounded-2xl bg-white border border-[#14171F]/15 shadow-2xl z-40 text-[#14171F]"
                       >
-                        <div className="flex items-center justify-between border-b border-white/5 pb-2 mb-2">
-                          <span className="font-bold text-xs text-white">System Alerts ({notifications.length})</span>
+                        <div className="flex items-center justify-between border-b border-[#14171F]/10 pb-2 mb-2">
+                          <span className="font-bold text-xs text-[#14171F]">System Alerts ({notifications.length})</span>
                           <button
                             onClick={() => setNotificationsOpen(false)}
-                            className="text-[10px] text-zinc-500 hover:text-white"
+                            className="text-[10px] text-[#4F5565] hover:text-[#14171F] cursor-pointer"
                           >
                             Close
                           </button>
@@ -414,28 +422,28 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                           {notifications.map((n) => (
                             <div
                               key={n.id}
-                              className="p-2 rounded bg-white/[0.02] border border-white/5 text-[11px] space-y-1 relative group"
+                              className="p-2.5 rounded-xl bg-[#FAF7F2] border border-[#14171F]/10 text-[11px] space-y-1 relative group"
                             >
                               <div className="flex justify-between items-start">
                                 <span className={cn(
-                                  "font-semibold",
-                                  n.type === "warning" ? "text-amber-400" : n.type === "success" ? "text-emerald-400" : "text-indigo-400"
+                                  "font-bold",
+                                  n.type === "warning" ? "text-amber-800" : n.type === "success" ? "text-emerald-800" : "text-[#5C64ED]"
                                 )}>
                                   {n.title}
                                 </span>
-                                <span className="text-[9px] text-zinc-500">{n.time}</span>
+                                <span className="text-[9px] text-[#4F5565] font-mono">{n.time}</span>
                               </div>
-                              <p className="text-zinc-400 leading-normal">{n.message}</p>
+                              <p className="text-[#4F5565] leading-normal">{n.message}</p>
                               <button
                                 onClick={() => dismissNotification(n.id)}
-                                className="absolute top-1 right-1 p-0.5 opacity-0 group-hover:opacity-100 text-zinc-500 hover:text-white transition-opacity"
+                                className="absolute top-1.5 right-1.5 p-0.5 opacity-0 group-hover:opacity-100 text-[#4F5565] hover:text-[#14171F] transition-opacity cursor-pointer"
                               >
                                 <X size={12} />
                               </button>
                             </div>
                           ))}
                           {notifications.length === 0 && (
-                            <p className="text-xs text-zinc-500 text-center py-4">No notifications present</p>
+                            <p className="text-xs text-[#4F5565] text-center py-4">No notifications present</p>
                           )}
                         </div>
                       </motion.div>
@@ -444,9 +452,70 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </AnimatePresence>
               </div>
 
-              {/* Quick profile drop for actions */}
-              <div className="w-8 h-8 rounded-full bg-zinc-800 border border-white/5 flex items-center justify-center font-bold text-xs text-white">
-                {user.fullName?.charAt(0) || "U"}
+              {/* Interactive User Avatar Menu with Logout */}
+              <div className="relative">
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="w-9 h-9 rounded-full bg-[#14171F] hover:bg-[#202532] text-white flex items-center justify-center font-bold text-xs shadow-xs transition cursor-pointer border border-[#14171F]/20 relative"
+                  title="User profile & actions"
+                >
+                  <span className="font-serif uppercase tracking-wider">{user.fullName?.charAt(0) || "U"}</span>
+                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white" />
+                </button>
+
+                <AnimatePresence>
+                  {userMenuOpen && (
+                    <>
+                      <div className="fixed inset-0 z-30" onClick={() => setUserMenuOpen(false)} />
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute right-0 mt-2 w-64 p-3 rounded-2xl bg-white border border-[#14171F]/15 shadow-2xl z-40 text-[#14171F] space-y-3"
+                      >
+                        {/* User Info Header */}
+                        <div className="flex items-center gap-3 p-2 bg-[#FAF7F2] rounded-xl border border-[#14171F]/10">
+                          <div className="w-10 h-10 rounded-xl bg-[#14171F] text-white flex items-center justify-center font-bold text-sm shrink-0">
+                            {user.fullName?.charAt(0) || "U"}
+                          </div>
+                          <div className="min-w-0">
+                            <div className="font-bold text-xs text-[#14171F] truncate">{user.fullName || "Jawahar"}</div>
+                            <div className="text-[10px] text-[#4F5565] truncate font-mono">{user.email || "admin@nexus.erp"}</div>
+                            <div className="text-[9px] font-bold text-[#5C64ED] font-mono mt-0.5 uppercase tracking-wider">
+                              {user.role || "ADMIN"} ACCESS
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Quick links & Logout */}
+                        <div className="space-y-1">
+                          <button
+                            onClick={() => {
+                              setUserMenuOpen(false);
+                              router.push("/dashboard/admin");
+                            }}
+                            className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-[#14171F] hover:bg-[#FAF7F2] rounded-xl transition cursor-pointer"
+                          >
+                            <Settings size={15} className="text-[#5C64ED]" />
+                            <span>Workspace Settings</span>
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              setUserMenuOpen(false);
+                              handleLogout();
+                            }}
+                            className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 rounded-xl transition cursor-pointer border border-rose-200"
+                          >
+                            <LogOut size={15} className="text-rose-700" />
+                            <span>Sign Out / Log Out</span>
+                          </button>
+                        </div>
+                      </motion.div>
+                    </>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
           </header>
