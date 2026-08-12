@@ -442,45 +442,45 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-[var(--border)] text-[var(--text-muted)] h-10 uppercase tracking-wider font-bold">
-                    <th className="pb-2">Name</th>
-                    <th className="pb-2">SKU</th>
-                    <th className="pb-2">Warehouse</th>
-                    <th className="pb-2">Category</th>
-                    <th className="pb-2 text-right">Price</th>
-                    <th className="pb-2 text-right">Stock</th>
-                    <th className="pb-2 text-right">Actions</th>
+                  <tr className="border-b border-[#14171F]/10 text-[#4F5565] h-11 uppercase tracking-wider font-bold font-mono text-[11px]">
+                    <th className="pb-3 px-2">Name</th>
+                    <th className="pb-3 px-2">SKU</th>
+                    <th className="pb-3 px-2">Warehouse</th>
+                    <th className="pb-3 px-2">Category</th>
+                    <th className="pb-3 px-2 text-right">Price</th>
+                    <th className="pb-3 px-2 text-right">Stock</th>
+                    <th className="pb-3 px-2 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-[#14171F]/10">
                   {data.products.map((p: any) => {
                     const isLow = p.stock <= p.minStock;
                     return (
-                      <tr key={p.id} className="border-b border-[var(--border)] hover:bg-[rgba(255,255,255,0.01)] h-12 transition-colors">
-                        <td className="font-bold text-white">
+                      <tr key={p.id} className="hover:bg-[#FAF7F2] h-13 transition-colors">
+                        <td className="font-bold text-[#14171F] px-2">
                           <div className="flex items-center gap-2">
-                            {p.name}
+                            <span>{p.name}</span>
                             {isLow && (
-                              <span className="bg-red-950/80 text-red-400 border border-red-800/40 px-2 py-0.5 rounded-full text-[9px] uppercase tracking-wider font-bold animate-pulse">
+                              <span className="bg-rose-100 text-rose-800 border border-rose-300 px-2 py-0.5 rounded-full text-[9px] uppercase tracking-wider font-mono font-bold">
                                 Low Stock
                               </span>
                             )}
                           </div>
                         </td>
-                        <td className="font-mono text-[var(--text-muted)]">{p.sku}</td>
-                        <td>{p.warehouse?.name}</td>
-                        <td>
-                          <span className="bg-slate-800 text-[var(--text-muted)] px-2 py-0.5 rounded text-[10px]">
+                        <td className="font-mono text-[#4F5565] font-semibold px-2">{p.sku}</td>
+                        <td className="text-[#4F5565] font-medium px-2">{p.warehouse?.name || 'Main Hub'}</td>
+                        <td className="px-2">
+                          <span className="bg-[#FAF7F2] text-[#14171F] border border-[#14171F]/10 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase">
                             {p.category}
                           </span>
                         </td>
-                        <td className="text-right font-mono font-bold">{formatAmount(p.price, { decimals: 2 })}</td>
-                        <td className="text-right">
-                          <span className={`font-mono font-bold px-2 py-0.5 rounded ${isLow ? 'bg-red-950/40 text-red-400 border border-red-800/20' : 'text-white'}`}>
+                        <td className="text-right font-mono font-bold text-[#14171F] px-2">{formatAmount(p.price, { decimals: 2 })}</td>
+                        <td className="text-right px-2">
+                          <span className={`font-mono font-bold px-2.5 py-0.5 rounded-full text-xs ${isLow ? 'bg-rose-100 text-rose-800 border border-rose-300' : 'bg-[#FAF7F2] text-[#14171F] border border-[#14171F]/10'}`}>
                             {p.stock}
                           </span>
                         </td>
-                        <td className="text-right">
+                        <td className="text-right px-2">
                           <div className="flex items-center justify-end gap-1.5">
                             <button 
                               onClick={() => {
@@ -491,17 +491,17 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
                                 }));
                                 setShowMovementModal(true);
                               }}
-                              className="bg-[var(--primary)]/10 hover:bg-[var(--primary)]/20 text-[var(--primary)] px-2.5 py-1 rounded text-[10px] font-bold border border-[var(--primary)]/20 transition cursor-pointer"
+                              className="bg-[#5C64ED]/10 hover:bg-[#5C64ED]/20 text-[#5C64ED] px-3 py-1 rounded-full text-xs font-bold border border-[#5C64ED]/30 transition cursor-pointer"
                             >
                               Movement
                             </button>
 
                             <button 
                               onClick={() => handleDeleteProduct(p.id, p.name)}
-                              className="p-1 rounded bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-800/40 transition cursor-pointer"
+                              className="p-1.5 rounded-full hover:bg-rose-100 text-zinc-400 hover:text-rose-700 transition cursor-pointer"
                               title="Delete Product SKU"
                             >
-                              <Trash2 size={13} />
+                              <Trash2 size={14} />
                             </button>
                           </div>
                         </td>
@@ -518,23 +518,23 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
                 const totalStock = whProducts.reduce((acc: number, p: any) => acc + p.stock, 0);
                 
                 return (
-                  <div key={wh.id} className="p-4 rounded-lg bg-[rgba(255,255,255,0.02)] border border-[var(--border)] flex flex-col justify-between gap-3">
+                  <div key={wh.id} className="p-5 rounded-[22px] bg-[#FAF7F2] border border-[#14171F]/10 flex flex-col justify-between gap-3 shadow-2xs">
                     <div>
                       <div className="flex items-center justify-between mb-1">
-                        <span className="font-bold text-white flex items-center gap-1.5">
-                          <Warehouse size={14} className="text-[var(--primary)]" />
+                        <span className="font-bold text-[#14171F] flex items-center gap-1.5">
+                          <Warehouse size={15} className="text-[#5C64ED]" />
                           {wh.name}
                         </span>
-                        <span className="text-[10px] font-mono text-[var(--text-muted)] bg-white/5 px-2 py-0.5 rounded">
+                        <span className="text-[10px] font-mono text-[#4F5565] bg-white border border-[#14171F]/10 px-2.5 py-0.5 rounded-full">
                           {wh.location}
                         </span>
                       </div>
-                      <p className="text-xs text-[var(--text-muted)]">{whProducts.length} SKUs registered</p>
+                      <p className="text-xs text-[#4F5565] font-medium">{whProducts.length} SKUs registered</p>
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-[var(--border)] pt-2 text-xs">
-                      <span className="text-[var(--text-muted)]">Total Units:</span>
-                      <span className="font-mono font-bold text-emerald-400">{totalStock} Units</span>
+                    <div className="flex items-center justify-between border-t border-[#14171F]/10 pt-2 text-xs">
+                      <span className="text-[#4F5565] font-mono font-medium">Total Units:</span>
+                      <span className="font-mono font-bold text-emerald-800 text-sm">{totalStock} Units</span>
                     </div>
                   </div>
                 );
@@ -548,25 +548,25 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
           <div className="flex flex-col gap-6">
             
             {/* Recent Audit movements */}
-            <div className="glass p-6 rounded-xl border border-[var(--border)] flex flex-col gap-4">
-              <h3 className="font-bold text-sm flex items-center gap-2">
-                <RotateCcw size={16} />
+            <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs flex flex-col gap-4 text-[#14171F]">
+              <h3 className="font-serif font-bold text-sm text-[#14171F] flex items-center gap-2">
+                <RotateCcw size={16} className="text-[#5C64ED]" />
                 Movement Log History
               </h3>
 
               <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1">
                 {data.movements.length === 0 ? (
-                  <p className="text-xs text-[var(--text-muted)]">No movement logs recorded.</p>
+                  <p className="text-xs text-[#4F5565] font-medium">No movement logs recorded.</p>
                 ) : (
                   data.movements.slice(0, 10).map((m: any) => (
-                    <div key={m.id} className="p-2.5 rounded bg-[rgba(255,255,255,0.01)] border border-[var(--border)] text-xs flex flex-col gap-1">
-                      <div className="flex justify-between items-center font-bold">
-                        <span className="uppercase text-[10px] tracking-wider text-[var(--primary)]">{m.type}</span>
-                        <span className="font-mono text-[var(--text-muted)] text-[10px]">{new Date(m.date).toLocaleDateString()}</span>
+                    <div key={m.id} className="p-3 rounded-2xl bg-[#FAF7F2] border border-[#14171F]/10 text-xs flex flex-col gap-1.5 shadow-2xs">
+                      <div className="flex justify-between items-center">
+                        <span className="uppercase text-[10px] tracking-wider text-[#5C64ED] font-mono font-bold">{m.type}</span>
+                        <span className="font-mono text-[#4F5565] text-[10px]">{new Date(m.date).toLocaleDateString()}</span>
                       </div>
-                      <div className="flex justify-between items-center font-mono">
-                        <span className="text-white">{m.product?.name || 'Product'}</span>
-                        <span className="font-bold text-emerald-400">Qty: {m.qty}</span>
+                      <div className="flex justify-between items-center">
+                        <span className="text-[#14171F] font-bold truncate max-w-[150px]">{m.product?.name || 'Product'}</span>
+                        <span className="font-mono font-bold text-emerald-800 text-xs">Qty: {m.qty}</span>
                       </div>
                     </div>
                   ))
@@ -575,25 +575,25 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
             </div>
 
             {/* Purchase orders */}
-            <div className="glass p-6 rounded-xl border border-[var(--border)] flex flex-col gap-4">
-              <h3 className="font-bold text-sm flex items-center gap-2">
-                <ShoppingBag size={16} />
+            <div className="bg-white p-6 rounded-[28px] border border-[#14171F]/10 shadow-xs flex flex-col gap-4 text-[#14171F]">
+              <h3 className="font-serif font-bold text-sm text-[#14171F] flex items-center gap-2">
+                <ShoppingBag size={16} className="text-[#5C64ED]" />
                 Purchase Orders (POs)
               </h3>
 
               <div className="space-y-3 max-h-[250px] overflow-y-auto pr-1">
                 {data.purchaseOrders.length === 0 ? (
-                  <p className="text-xs text-[var(--text-muted)]">No POs generated.</p>
+                  <p className="text-xs text-[#4F5565] font-medium">No POs generated.</p>
                 ) : (
                   data.purchaseOrders.map((po: any) => (
-                    <div key={po.id} className="p-3 rounded bg-[rgba(255,255,255,0.01)] border border-[var(--border)] text-xs flex items-center justify-between">
+                    <div key={po.id} className="p-3.5 rounded-2xl bg-[#FAF7F2] border border-[#14171F]/10 text-xs flex items-center justify-between shadow-2xs">
                       <div>
-                        <span className="font-mono text-white font-bold block">PO-{po.id.substring(0, 5).toUpperCase()}</span>
-                        <span className="text-[10px] text-[var(--text-muted)]">{po.supplier?.name}</span>
+                        <span className="font-mono text-[#14171F] font-bold block">PO-{po.id.substring(0, 5).toUpperCase()}</span>
+                        <span className="text-[10px] text-[#4F5565] font-mono block mt-0.5">{po.supplier?.name || 'B2B Supplier'}</span>
                       </div>
                       <div className="text-right font-mono">
-                        <span className="font-bold text-white block">{formatAmount(po.total, { decimals: 2 })}</span>
-                        <span className={`text-[9px] uppercase px-1.5 py-0.5 rounded font-bold ${po.status === 'approved' ? 'bg-emerald-950 text-emerald-400' : 'bg-amber-950 text-amber-400'}`}>
+                        <span className="font-bold text-[#14171F] block text-xs">{formatAmount(po.total, { decimals: 2 })}</span>
+                        <span className={`text-[9px] uppercase px-2 py-0.5 rounded-full font-bold border ${po.status === 'approved' || po.status === 'received' ? 'bg-emerald-100 text-emerald-900 border-emerald-300' : 'bg-amber-100 text-amber-900 border-amber-300'}`}>
                           {po.status}
                         </span>
                       </div>
@@ -610,51 +610,51 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
 
       {/* BULK CSV/JSON IMPORT MODAL */}
       {showBulkImportModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-150">
-          <div className="glass max-w-xl w-full p-6 rounded-2xl border border-purple-500/40 bg-slate-900/95 space-y-5 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="max-w-xl w-full p-6 rounded-[28px] bg-white border border-[#14171F]/15 space-y-5 shadow-2xl relative text-[#14171F]">
             <button
               onClick={() => setShowBulkImportModal(false)}
-              className="absolute right-4 top-4 text-zinc-400 hover:text-white p-1 rounded-lg bg-white/5 border border-white/10"
+              className="absolute right-5 top-5 text-[#4F5565] hover:text-[#14171F] p-1.5 rounded-full hover:bg-[#FAF7F2] transition cursor-pointer"
             >
               <X size={18} />
             </button>
 
             <div>
-              <h3 className="text-xl font-extrabold text-white flex items-center gap-2">
-                <FileSpreadsheet size={22} className="text-purple-400" />
+              <h3 className="text-lg font-serif font-bold text-[#14171F] flex items-center gap-2">
+                <FileSpreadsheet size={20} className="text-[#5C64ED]" />
                 Bulk CSV / JSON File Importer (500–1,000+ Items)
               </h3>
-              <p className="text-xs text-zinc-400 mt-1">
+              <p className="text-xs text-[#4F5565] mt-1 font-medium">
                 Upload a CSV or JSON file to batch import or update hundreds of inventory SKUs in a single click.
               </p>
             </div>
 
             {/* Template Download & Auto-Generate 500 Items */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3 font-sans">
               <button
                 onClick={handleDownloadSampleCSV}
-                className="p-3.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 text-xs font-semibold text-zinc-200 flex items-center justify-center gap-2 transition cursor-pointer"
+                className="p-3.5 rounded-2xl bg-[#FAF7F2] hover:bg-[#F2ECE4] border border-[#14171F]/10 text-xs font-bold text-[#14171F] flex items-center justify-center gap-2 transition cursor-pointer"
               >
-                <Download size={16} className="text-purple-400" />
-                Download Sample CSV Template
+                <Download size={16} className="text-[#5C64ED]" />
+                Download CSV Template
               </button>
 
               <button
                 onClick={handleGenerate500Items}
                 disabled={importing}
-                className="p-3.5 rounded-xl bg-purple-950/60 hover:bg-purple-900/80 border border-purple-500/40 text-xs font-semibold text-purple-300 flex items-center justify-center gap-2 transition cursor-pointer"
+                className="p-3.5 rounded-2xl bg-[#5C64ED]/10 hover:bg-[#5C64ED]/20 border border-[#5C64ED]/30 text-xs font-bold text-[#5C64ED] flex items-center justify-center gap-2 transition cursor-pointer"
               >
-                <Sparkles size={16} className="text-purple-400" />
-                Generate & Import 500 Test Items
+                <Sparkles size={16} className="text-[#5C64ED]" />
+                Generate 500 Demo Items
               </button>
             </div>
 
             {/* File Upload Zone */}
-            <div className="p-6 rounded-2xl border-2 border-dashed border-purple-500/30 bg-purple-950/10 text-center space-y-3">
-              <Upload size={32} className="mx-auto text-purple-400 animate-pulse" />
+            <div className="p-6 rounded-2xl border-2 border-dashed border-[#5C64ED]/30 bg-[#FAF7F2] text-center space-y-3">
+              <Upload size={32} className="mx-auto text-[#5C64ED]" />
               <div>
-                <span className="text-sm font-bold text-white block">Upload CSV or JSON Inventory File</span>
-                <span className="text-xs text-zinc-400">Accepts headers: name, sku, category, price, cost, stock, minStock</span>
+                <span className="text-sm font-bold text-[#14171F] block">Upload CSV or JSON Inventory File</span>
+                <span className="text-xs text-[#4F5565] font-mono">Headers: name, sku, category, price, cost, stock, minStock</span>
               </div>
 
               <input
@@ -662,12 +662,12 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
                 accept=".csv, .json"
                 onChange={handleFileUpload}
                 disabled={importing}
-                className="block w-full text-xs text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-500 cursor-pointer"
+                className="block w-full text-xs text-[#4F5565] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#14171F] file:text-white hover:file:bg-[#202532] cursor-pointer"
               />
             </div>
 
             {importing && (
-              <div className="flex items-center justify-center gap-2 text-xs text-purple-300 font-mono">
+              <div className="flex items-center justify-center gap-2 text-xs text-[#5C64ED] font-mono font-bold">
                 <RefreshCw size={14} className="animate-spin" /> Batch processing inventory items...
               </div>
             )}
@@ -677,22 +677,22 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
 
       {/* DAILY STOCK PHYSICAL COUNT SYNC MODAL */}
       {showDailyStockModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-150">
-          <div className="glass max-w-2xl w-full p-6 rounded-2xl border border-indigo-500/40 bg-slate-900/95 space-y-5 shadow-2xl relative max-h-[85vh] flex flex-col justify-between">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="max-w-2xl w-full p-6 rounded-[28px] bg-white border border-[#14171F]/15 space-y-5 shadow-2xl relative max-h-[85vh] flex flex-col justify-between text-[#14171F]">
             <div>
-              <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
+              <div className="flex items-center justify-between border-b border-[#14171F]/10 pb-3 mb-4">
                 <div>
-                  <h3 className="text-xl font-extrabold text-white flex items-center gap-2">
-                    <RefreshCw size={20} className="text-indigo-400" />
+                  <h3 className="text-lg font-serif font-bold text-[#14171F] flex items-center gap-2">
+                    <RefreshCw size={18} className="text-[#5C64ED]" />
                     Daily Physical Stock Count Batch Adjuster
                   </h3>
-                  <p className="text-xs text-zinc-400 mt-0.5">
+                  <p className="text-xs text-[#4F5565] mt-0.5 font-medium">
                     Update current physical stock levels across your inventory catalog for end-of-day reconciliation.
                   </p>
                 </div>
                 <button
                   onClick={() => setShowDailyStockModal(false)}
-                  className="text-zinc-400 hover:text-white p-1 rounded-lg bg-white/5 border border-white/10"
+                  className="text-[#4F5565] hover:text-[#14171F] p-1.5 rounded-full hover:bg-[#FAF7F2] transition cursor-pointer"
                 >
                   <X size={18} />
                 </button>
@@ -701,22 +701,22 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
               {/* Inventory Table */}
               <form onSubmit={handleSaveDailyStockSync} className="space-y-4">
                 <div className="max-h-[350px] overflow-y-auto pr-1">
-                  <table className="w-full text-left text-xs border-collapse">
+                  <table className="w-full text-left text-xs border-collapse font-sans">
                     <thead>
-                      <tr className="border-b border-white/10 text-zinc-400 h-9 uppercase font-bold">
-                        <th className="pb-2">Product Name</th>
-                        <th className="pb-2">SKU</th>
-                        <th className="pb-2 text-right">Current System Stock</th>
-                        <th className="pb-2 text-right">Updated Count</th>
+                      <tr className="border-b border-[#14171F]/10 text-[#4F5565] h-9 uppercase font-bold font-mono text-[11px]">
+                        <th className="pb-2 px-2">Product Name</th>
+                        <th className="pb-2 px-2">SKU</th>
+                        <th className="pb-2 px-2 text-right">System Stock</th>
+                        <th className="pb-2 px-2 text-right">Updated Count</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="divide-y divide-[#14171F]/10">
                       {data.products.map((prod: any) => (
-                        <tr key={prod.id} className="border-b border-white/5 h-12">
-                          <td className="font-bold text-white">{prod.name}</td>
-                          <td className="font-mono text-zinc-400">{prod.sku}</td>
-                          <td className="text-right font-mono font-bold text-zinc-400">{prod.stock}</td>
-                          <td className="text-right">
+                        <tr key={prod.id} className="h-12 hover:bg-[#FAF7F2]">
+                          <td className="font-bold text-[#14171F] px-2">{prod.name}</td>
+                          <td className="font-mono text-[#4F5565] px-2">{prod.sku}</td>
+                          <td className="text-right font-mono font-bold text-[#4F5565] px-2">{prod.stock}</td>
+                          <td className="text-right px-2">
                             <input
                               type="number"
                               min="0"
@@ -727,7 +727,7 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
                                   [prod.id]: Number(e.target.value),
                                 }))
                               }
-                              className="w-24 h-8 bg-slate-900 border border-white/10 rounded-lg px-2 text-right font-mono font-bold text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                              className="w-24 h-8.5 bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-2.5 text-right font-mono font-bold text-[#14171F] focus:outline-none focus:border-[#5C64ED]"
                             />
                           </td>
                         </tr>
@@ -736,18 +736,18 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
                   </table>
                 </div>
 
-                <div className="border-t border-white/10 pt-3 flex justify-end gap-2">
+                <div className="border-t border-[#14171F]/10 pt-3 flex justify-end gap-2">
                   <button
                     type="button"
                     onClick={() => setShowDailyStockModal(false)}
-                    className="px-4 py-2 bg-white/5 hover:bg-white/10 text-zinc-300 text-xs font-semibold rounded-xl border border-white/10"
+                    className="px-4 py-2 rounded-full bg-[#FAF7F2] hover:bg-[#F2ECE4] text-[#14171F] text-xs font-bold transition cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={savingDailyStock}
-                    className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl shadow-lg transition flex items-center gap-1.5 cursor-pointer"
+                    className="px-5 py-2 bg-[#14171F] hover:bg-[#202532] text-white text-xs font-bold rounded-full shadow-xs transition flex items-center gap-1.5 cursor-pointer"
                   >
                     <CheckCircle2 size={15} />
                     {savingDailyStock ? 'Saving Stock Sync...' : 'Save Daily Physical Stock Count'}
@@ -761,91 +761,96 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
 
       {/* ADD SINGLE PRODUCT MODAL */}
       {showAddProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
-          <div className="glass max-w-lg w-full p-6 rounded-xl border border-[var(--border)] flex flex-col gap-4 relative">
-            <h3 className="font-bold text-base">Onboard New Product SKU</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="max-w-lg w-full p-6 rounded-[28px] bg-white border border-[#14171F]/15 flex flex-col gap-4 relative shadow-2xl text-[#14171F]">
+            <div className="flex items-center justify-between border-b border-[#14171F]/10 pb-3">
+              <h3 className="font-serif font-bold text-lg text-[#14171F]">Onboard New Product SKU</h3>
+              <button onClick={() => setShowAddProduct(false)} className="text-[#4F5565] hover:text-[#14171F] cursor-pointer">
+                <X size={18} />
+              </button>
+            </div>
             
-            <form onSubmit={handleAddProductSubmit} className="flex flex-col gap-3 text-xs">
+            <form onSubmit={handleAddProductSubmit} className="flex flex-col gap-3.5 text-xs font-sans">
               <div>
-                <label className="text-[var(--text-muted)] block mb-1">Product Title / Name</label>
+                <label className="text-[#4F5565] font-bold uppercase font-mono text-[11px] block mb-1">Product Title / Name</label>
                 <input 
                   type="text" required placeholder="e.g. Quantum CPU Core X9"
                   value={newProd.name}
                   onChange={e => setNewProd({...newProd, name: e.target.value})}
-                  className="w-full bg-[var(--background)] border border-[var(--border)] rounded px-3 py-2 text-white"
+                  className="w-full bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3.5 py-2.5 text-[#14171F] placeholder-[#4F5565] focus:outline-none focus:border-[#5C64ED]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[var(--text-muted)] block mb-1">Unique SKU Code</label>
+                  <label className="text-[#4F5565] font-bold uppercase font-mono text-[11px] block mb-1">Unique SKU Code</label>
                   <input 
                     type="text" required placeholder="e.g. CPU-QT-990"
                     value={newProd.sku}
                     onChange={e => setNewProd({...newProd, sku: e.target.value})}
-                    className="w-full bg-[var(--background)] border border-[var(--border)] rounded px-3 py-2 text-white font-mono"
+                    className="w-full bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3.5 py-2.5 text-[#14171F] font-mono focus:outline-none focus:border-[#5C64ED]"
                   />
                 </div>
                 <div>
-                  <label className="text-[var(--text-muted)] block mb-1">Category</label>
+                  <label className="text-[#4F5565] font-bold uppercase font-mono text-[11px] block mb-1">Category</label>
                   <input 
                     type="text" required placeholder="e.g. Hardware"
                     value={newProd.category}
                     onChange={e => setNewProd({...newProd, category: e.target.value})}
-                    className="w-full bg-[var(--background)] border border-[var(--border)] rounded px-3 py-2 text-white"
+                    className="w-full bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3.5 py-2.5 text-[#14171F] focus:outline-none focus:border-[#5C64ED]"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[var(--text-muted)] block mb-1">Retail Selling Price ($)</label>
+                  <label className="text-[#4F5565] font-bold uppercase font-mono text-[11px] block mb-1">Retail Selling Price ($)</label>
                   <input 
                     type="number" step="0.01" required placeholder="499.00"
                     value={newProd.price}
                     onChange={e => setNewProd({...newProd, price: Number(e.target.value)})}
-                    className="w-full bg-[var(--background)] border border-[var(--border)] rounded px-3 py-2 text-white font-mono"
+                    className="w-full bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3.5 py-2.5 text-[#14171F] font-mono focus:outline-none focus:border-[#5C64ED]"
                   />
                 </div>
                 <div>
-                  <label className="text-[var(--text-muted)] block mb-1">Wholesale Cost ($)</label>
+                  <label className="text-[#4F5565] font-bold uppercase font-mono text-[11px] block mb-1">Wholesale Cost ($)</label>
                   <input 
                     type="number" step="0.01" required placeholder="320.00"
                     value={newProd.cost}
                     onChange={e => setNewProd({...newProd, cost: Number(e.target.value)})}
-                    className="w-full bg-[var(--background)] border border-[var(--border)] rounded px-3 py-2 text-white font-mono"
+                    className="w-full bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3.5 py-2.5 text-[#14171F] font-mono focus:outline-none focus:border-[#5C64ED]"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[var(--text-muted)] block mb-1">Initial Stock Units</label>
+                  <label className="text-[#4F5565] font-bold uppercase font-mono text-[11px] block mb-1">Initial Stock Units</label>
                   <input 
                     type="number" required placeholder="100"
                     value={newProd.stock}
                     onChange={e => setNewProd({...newProd, stock: Number(e.target.value)})}
-                    className="w-full bg-[var(--background)] border border-[var(--border)] rounded px-3 py-2 text-white font-mono"
+                    className="w-full bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3.5 py-2.5 text-[#14171F] font-mono focus:outline-none focus:border-[#5C64ED]"
                   />
                 </div>
                 <div>
-                  <label className="text-[var(--text-muted)] block mb-1">Min Threshold Alert</label>
+                  <label className="text-[#4F5565] font-bold uppercase font-mono text-[11px] block mb-1">Min Threshold Alert</label>
                   <input 
                     type="number" required placeholder="10"
                     value={newProd.minStock}
                     onChange={e => setNewProd({...newProd, minStock: Number(e.target.value)})}
-                    className="w-full bg-[var(--background)] border border-[var(--border)] rounded px-3 py-2 text-white font-mono"
+                    className="w-full bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3.5 py-2.5 text-[#14171F] font-mono focus:outline-none focus:border-[#5C64ED]"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[var(--text-muted)] block mb-1">Target Warehouse</label>
+                  <label className="text-[#4F5565] font-bold uppercase font-mono text-[11px] block mb-1">Target Warehouse</label>
                   <select 
                     value={newProd.warehouseId}
                     onChange={e => setNewProd({...newProd, warehouseId: e.target.value})}
-                    className="w-full bg-[var(--background)] border border-[var(--border)] rounded px-3 py-2 text-white"
+                    className="w-full bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3.5 py-2.5 text-[#14171F] focus:outline-none focus:border-[#5C64ED]"
                   >
                     {data.warehouses.map((w: any) => (
                       <option key={w.id} value={w.id}>{w.name}</option>
@@ -853,11 +858,11 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
                   </select>
                 </div>
                 <div>
-                  <label className="text-[var(--text-muted)] block mb-1">Primary Supplier</label>
+                  <label className="text-[#4F5565] font-bold uppercase font-mono text-[11px] block mb-1">Primary Supplier</label>
                   <select 
                     value={newProd.supplierId}
                     onChange={e => setNewProd({...newProd, supplierId: e.target.value})}
-                    className="w-full bg-[var(--background)] border border-[var(--border)] rounded px-3 py-2 text-white"
+                    className="w-full bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3.5 py-2.5 text-[#14171F] focus:outline-none focus:border-[#5C64ED]"
                   >
                     {data.suppliers.map((s: any) => (
                       <option key={s.id} value={s.id}>{s.name}</option>
@@ -866,19 +871,19 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 mt-2">
+              <div className="flex justify-end gap-2 mt-3 pt-3 border-t border-[#14171F]/10">
                 <button 
                   type="button" 
                   onClick={() => setShowAddProduct(false)}
-                  className="px-4 py-2 rounded border border-[var(--border)] hover:bg-[var(--border)] cursor-pointer"
+                  className="px-4 py-2 rounded-full bg-[#FAF7F2] hover:bg-[#F2ECE4] text-[#14171F] text-xs font-bold cursor-pointer transition"
                 >
                   Cancel
                 </button>
                 <button 
                   type="submit"
-                  className="px-4 py-2 rounded bg-[var(--primary)] text-white font-semibold hover:bg-[var(--primary-hover)] cursor-pointer"
+                  className="px-5 py-2 rounded-full bg-[#14171F] hover:bg-[#202532] text-white text-xs font-bold shadow-xs cursor-pointer transition"
                 >
-                  Register Product
+                  Register Product SKU
                 </button>
               </div>
             </form>
@@ -888,17 +893,22 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
 
       {/* MOVEMENT WORKFLOW MODAL */}
       {showMovementModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
-          <div className="glass max-w-lg w-full p-6 rounded-xl border border-[var(--border)] flex flex-col gap-4 relative">
-            <h3 className="font-bold text-base">Execute Inventory Movement Workflow</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="max-w-lg w-full p-6 rounded-[28px] bg-white border border-[#14171F]/15 flex flex-col gap-4 relative shadow-2xl text-[#14171F]">
+            <div className="flex items-center justify-between border-b border-[#14171F]/10 pb-3">
+              <h3 className="font-serif font-bold text-lg text-[#14171F]">Execute Inventory Movement Workflow</h3>
+              <button onClick={() => setShowMovementModal(false)} className="text-[#4F5565] hover:text-[#14171F] cursor-pointer">
+                <X size={18} />
+              </button>
+            </div>
 
-            <form onSubmit={handleMovementSubmit} className="flex flex-col gap-3 text-xs">
+            <form onSubmit={handleMovementSubmit} className="flex flex-col gap-3.5 text-xs font-sans">
               <div>
-                <label className="text-[var(--text-muted)] block mb-1">Workflow Type</label>
+                <label className="text-[#4F5565] font-bold uppercase font-mono text-[11px] block mb-1">Workflow Type</label>
                 <select 
                   value={movementForm.type}
                   onChange={e => setMovementForm({...movementForm, type: e.target.value})}
-                  className="w-full bg-[var(--background)] border border-[var(--border)] rounded px-3 py-2 text-white"
+                  className="w-full bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3.5 py-2.5 text-[#14171F] focus:outline-none focus:border-[#5C64ED]"
                 >
                   <option value="transfer">Warehouse Transfer</option>
                   <option value="replenish">Purchase Replenishment (PO)</option>
@@ -907,11 +917,11 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
               </div>
 
               <div>
-                <label className="text-[var(--text-muted)] block mb-1">Product SKU</label>
+                <label className="text-[#4F5565] font-bold uppercase font-mono text-[11px] block mb-1">Product SKU</label>
                 <select 
                   value={movementForm.productId}
                   onChange={e => setMovementForm({...movementForm, productId: e.target.value})}
-                  className="w-full bg-[var(--background)] border border-[var(--border)] rounded px-3 py-2 text-white"
+                  className="w-full bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3.5 py-2.5 text-[#14171F] focus:outline-none focus:border-[#5C64ED]"
                 >
                   {data.products.map((p: any) => (
                     <option key={p.id} value={p.id}>{p.name} ({p.sku}) - Stock: {p.stock}</option>
@@ -920,22 +930,22 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
               </div>
 
               <div>
-                <label className="text-[var(--text-muted)] block mb-1">Quantity Units</label>
+                <label className="text-[#4F5565] font-bold uppercase font-mono text-[11px] block mb-1">Quantity Units</label>
                 <input 
                   type="number" min="1" required
                   value={movementForm.qty}
                   onChange={e => setMovementForm({...movementForm, qty: Number(e.target.value)})}
-                  className="w-full bg-[var(--background)] border border-[var(--border)] rounded px-3 py-2 text-white font-mono"
+                  className="w-full bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3.5 py-2.5 text-[#14171F] font-mono focus:outline-none focus:border-[#5C64ED]"
                 />
               </div>
 
               {movementForm.type === 'transfer' && (
                 <div>
-                  <label className="text-[var(--text-muted)] block mb-1">Destination Warehouse</label>
+                  <label className="text-[#4F5565] font-bold uppercase font-mono text-[11px] block mb-1">Destination Warehouse</label>
                   <select 
                     value={movementForm.toWarehouseId}
                     onChange={e => setMovementForm({...movementForm, toWarehouseId: e.target.value})}
-                    className="w-full bg-[var(--background)] border border-[var(--border)] rounded px-3 py-2 text-white"
+                    className="w-full bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3.5 py-2.5 text-[#14171F] focus:outline-none focus:border-[#5C64ED]"
                   >
                     {data.warehouses.map((w: any) => (
                       <option key={w.id} value={w.id}>{w.name}</option>
@@ -947,11 +957,11 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
               {movementForm.type === 'replenish' && (
                 <>
                   <div>
-                    <label className="text-[var(--text-muted)] block mb-1">Supplier</label>
+                    <label className="text-[#4F5565] font-bold uppercase font-mono text-[11px] block mb-1">Supplier</label>
                     <select 
                       value={movementForm.supplierId}
                       onChange={e => setMovementForm({...movementForm, supplierId: e.target.value})}
-                      className="w-full bg-[var(--background)] border border-[var(--border)] rounded px-3 py-2 text-white"
+                      className="w-full bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3.5 py-2.5 text-[#14171F] focus:outline-none focus:border-[#5C64ED]"
                     >
                       {data.suppliers.map((s: any) => (
                         <option key={s.id} value={s.id}>{s.name}</option>
@@ -959,28 +969,28 @@ Ultra HD Monitor 32,DISP-UHD-32,HARDWARE,399.00,280.00,30,5`;
                     </select>
                   </div>
                   <div>
-                    <label className="text-[var(--text-muted)] block mb-1">Total Order Cost ($)</label>
+                    <label className="text-[#4F5565] font-bold uppercase font-mono text-[11px] block mb-1">Total Order Cost ($)</label>
                     <input 
                       type="number" step="0.01" required
                       value={movementForm.totalCost}
                       onChange={e => setMovementForm({...movementForm, totalCost: Number(e.target.value)})}
-                      className="w-full bg-[var(--background)] border border-[var(--border)] rounded px-3 py-2 text-white font-mono"
+                      className="w-full bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3.5 py-2.5 text-[#14171F] font-mono focus:outline-none focus:border-[#5C64ED]"
                     />
                   </div>
                 </>
               )}
 
-              <div className="flex justify-end gap-2 mt-2">
+              <div className="flex justify-end gap-2 mt-3 pt-3 border-t border-[#14171F]/10">
                 <button 
                   type="button" 
                   onClick={() => setShowMovementModal(false)}
-                  className="px-4 py-2 rounded border border-[var(--border)] hover:bg-[var(--border)] cursor-pointer"
+                  className="px-4 py-2 rounded-full bg-[#FAF7F2] hover:bg-[#F2ECE4] text-[#14171F] text-xs font-bold cursor-pointer transition"
                 >
                   Cancel
                 </button>
                 <button 
                   type="submit"
-                  className="px-4 py-2 rounded bg-[var(--primary)] text-white font-semibold hover:bg-[var(--primary-hover)] cursor-pointer"
+                  className="px-5 py-2 rounded-full bg-[#14171F] hover:bg-[#202532] text-white text-xs font-bold shadow-xs cursor-pointer transition"
                 >
                   Execute Movement
                 </button>
