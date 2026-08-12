@@ -24,10 +24,12 @@ import {
   Plus
 } from "lucide-react";
 import { useCurrencyStore } from "@/store/currencyStore";
+import { useSupplier } from "../layout";
 import { cn } from "@/lib/utils";
 
 export default function SupplierDashboardPage() {
   const { formatAmount } = useCurrencyStore();
+  const supplierContext = useSupplier();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>({
     supplier: null,
@@ -36,7 +38,15 @@ export default function SupplierDashboardPage() {
     metrics: { activeOrdersCount: 0, vmiSkusCount: 0, totalReceivables: 0, avgDispatchDays: 2 }
   });
 
-  const [activeTab, setActiveTab] = useState<"vmi" | "orders" | "ledger">("vmi");
+  const [localTab, setLocalTab] = useState<"vmi" | "orders" | "ledger">("vmi");
+  const activeTab = supplierContext?.activeTab || localTab;
+  const setActiveTab = (tab: "vmi" | "orders" | "ledger") => {
+    if (supplierContext?.setActiveTab) {
+      supplierContext.setActiveTab(tab);
+    } else {
+      setLocalTab(tab);
+    }
+  };
   const [searchQuery, setSearchQuery] = useState("");
   const [notification, setNotification] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
