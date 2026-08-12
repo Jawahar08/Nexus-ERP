@@ -432,7 +432,7 @@ export default function PublicStorefrontPage() {
             <span className="uppercase tracking-wider font-mono text-[11px]">💳 Live Razorpay Payment Gateway Integration Active</span>
           </div>
           <span className="text-[#4F5565] font-mono text-[11px]">
-            Merchant Key: <strong className="bg-[#FAF7F2] border border-[#14171F]/10 px-2.5 py-0.5 rounded-md text-[#14171F] font-mono font-bold">rzp_test_Sg9h9VKe7yrwX7</strong>
+            Merchant Key: <strong className="bg-[#FAF7F2] border border-[#14171F]/10 px-2.5 py-0.5 rounded-md text-[#14171F] font-mono font-bold">rzp_test_TOudtiPsWOdXEu</strong>
           </span>
         </div>
 

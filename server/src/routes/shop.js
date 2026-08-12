@@ -328,8 +328,8 @@ router.post('/checkout', async (req, res) => {
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 
-const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || 'rzp_test_Sg9h9VKe7yrwX7';
-const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || 'ze4YD28IrJQahL3GkS94s3iW';
+const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || 'rzp_test_TOudtiPsWOdXEu';
+const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || 'wC2Hle3V5aO6HH7a7ir2osEf';
 
 const razorpayInstance = new Razorpay({
   key_id: RAZORPAY_KEY_ID,
