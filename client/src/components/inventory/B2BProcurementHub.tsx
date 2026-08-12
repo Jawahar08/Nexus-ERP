@@ -23,7 +23,8 @@ import {
   DollarSign,
   Mail,
   Phone,
-  ArrowRight
+  ArrowRight,
+  X
 } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { AnimatedButton } from "@/components/ui/AnimatedButton";
@@ -59,16 +60,17 @@ export default function B2BProcurementHub({
   const [submittingRfq, setSubmittingRfq] = useState(false);
   const [notification, setNotification] = useState<{ message: string; type: "success" | "error" } | null>(null);
 
+  // Fetch live supplier scorecards
   const fetchSupplierHealth = async () => {
     try {
       setLoadingHealth(true);
-      const res = await fetch("/api/inventory/procurement/suppliers-health");
+      const res = await fetch("/api/inventory/supplier-health");
       if (res.ok) {
         const data = await res.json();
-        setSupplierHealth(data.suppliers || []);
+        setSupplierHealth(data.scorecards || []);
       }
     } catch (err) {
-      console.error("Failed to fetch supplier health:", err);
+      console.error("Failed to load supplier health scorecards:", err);
     } finally {
       setLoadingHealth(false);
     }
@@ -76,81 +78,99 @@ export default function B2BProcurementHub({
 
   useEffect(() => {
     fetchSupplierHealth();
-  }, [purchaseOrders]);
+  }, [suppliers, purchaseOrders]);
 
+  // Handle PO status progression (Confirm -> In Transit -> Receive)
+  const handleStatusChange = async (poId: string, newStatus: string) => {
+    try {
+      const res = await fetch("/api/inventory/update-po-status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ poId, status: newStatus })
+      });
+
+      if (res.ok) {
+        setNotification({
+          message: `PO status upgraded to ${newStatus.toUpperCase()} and synced with inventory ledger.`,
+          type: "success"
+        });
+        onRefresh();
+        fetchSupplierHealth();
+      } else {
+        throw new Error("Failed to update status");
+      }
+    } catch (err) {
+      setNotification({ message: "Network error updating PO status.", type: "error" });
+    }
+  };
+
+  // Handle Manual RFQ Submit
   const handleCreateRfq = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedSupplierId) return;
+    if (!selectedProductId || !selectedSupplierId) {
+      alert("Please select both product and supplier.");
+      return;
+    }
 
+    setSubmittingRfq(true);
     try {
-      setSubmittingRfq(true);
-      const res = await fetch("/api/inventory/procurement/rfq", {
+      const selectedProd = products.find((p) => p.id === selectedProductId);
+      const unitCost = selectedProd?.cost || 50;
+      const totalAmount = unitCost * rfqQty;
+
+      const res = await fetch("/api/inventory/create-rfq", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          productId: selectedProductId || null,
+          productId: selectedProductId,
           supplierId: selectedSupplierId,
           qty: rfqQty,
+          total: totalAmount,
           notes: rfqNotes
         })
       });
 
-      const data = await res.json();
       if (res.ok) {
-        setNotification({ message: data.message || "Automated RFQ & PO generated successfully!", type: "success" });
         setShowRfqModal(false);
         setRfqNotes("");
+        setNotification({
+          message: `Autonomous RFQ created successfully (+${rfqQty} units request dispatched).`,
+          type: "success"
+        });
         onRefresh();
       } else {
-        setNotification({ message: data.error || "Failed to issue RFQ", type: "error" });
+        throw new Error("Failed to create RFQ");
       }
     } catch (err) {
-      setNotification({ message: "Network error generating procurement RFQ", type: "error" });
+      alert("Failed to submit RFQ");
     } finally {
       setSubmittingRfq(false);
     }
   };
 
-  const handleStatusChange = async (orderId: string, newStatus: string) => {
-    try {
-      const res = await fetch("/api/inventory/procurement/status", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId, status: newStatus })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setNotification({
-          message: newStatus === "received" 
-            ? "Order Intake Received! Stock levels & financial expense ledger updated automatically." 
-            : `Order status updated to '${newStatus}'.`,
-          type: "success"
-        });
-        onRefresh();
-      }
-    } catch (err) {
-      setNotification({ message: "Failed to update Purchase Order status", type: "error" });
-    }
-  };
-
-  // Compute Metrics
-  const pendingOrders = purchaseOrders.filter((po) => po.status === "pending" || po.status === "confirmed");
-  const inTransitOrders = purchaseOrders.filter((po) => po.status === "in_transit");
-  const totalSpend = purchaseOrders.reduce((acc, po) => acc + (po.total || 0), 0);
-  const avgLeadTime = supplierHealth.length > 0
-    ? Math.round(supplierHealth.reduce((acc, s) => acc + s.avgLeadTimeDays, 0) / supplierHealth.length)
-    : 3;
-
+  // Filter Purchase Orders
   const filteredOrders = purchaseOrders.filter((po) => {
-    const matchesStatus = statusFilter === "all" || po.status === statusFilter;
-    const supplierName = po.supplier?.name || "";
-    const matchesSearch = supplierName.toLowerCase().includes(searchQuery.toLowerCase()) || po.id.includes(searchQuery);
+    const matchesStatus = statusFilter === "all" || po.status?.toLowerCase() === statusFilter.toLowerCase();
+    const query = searchQuery.toLowerCase();
+    const matchesSearch =
+      !searchQuery ||
+      po.id?.toLowerCase().includes(query) ||
+      po.supplier?.name?.toLowerCase().includes(query) ||
+      po.status?.toLowerCase().includes(query);
     return matchesStatus && matchesSearch;
   });
 
+  // Calculate summary metrics
+  const pendingOrders = purchaseOrders.filter((p) => p.status === "pending");
+  const inTransitOrders = purchaseOrders.filter((p) => p.status === "in_transit");
+  const totalSpend = purchaseOrders.reduce((acc, curr) => acc + (curr.total || 0), 0);
+  const avgLeadTime = supplierHealth.length > 0
+    ? Math.round(supplierHealth.reduce((acc, curr) => acc + (curr.avgLeadTimeDays || 3), 0) / supplierHealth.length)
+    : 3;
+
   return (
-    <div className="space-y-6">
-      {/* Toast Notification */}
+    <div className="space-y-6 text-[#14171F]">
+      {/* NOTIFICATION TOAST */}
       <AnimatePresence>
         {notification && (
           <motion.div
@@ -158,17 +178,17 @@ export default function B2BProcurementHub({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             className={cn(
-              "p-4 rounded-xl border text-sm font-medium flex items-center justify-between shadow-lg",
+              "p-4 rounded-2xl border flex items-center justify-between text-xs font-semibold shadow-xs",
               notification.type === "success"
-                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-300"
-                : "bg-red-500/10 border-red-500/30 text-red-300"
+                ? "bg-emerald-50 text-emerald-900 border-emerald-300"
+                : "bg-rose-50 text-rose-900 border-rose-300"
             )}
           >
             <div className="flex items-center gap-2">
-              <CheckCircle2 size={18} className="shrink-0" />
+              <CheckCircle2 size={16} className="text-emerald-700" />
               <span>{notification.message}</span>
             </div>
-            <button onClick={() => setNotification(null)} className="text-xs opacity-70 hover:opacity-100">
+            <button onClick={() => setNotification(null)} className="text-xs opacity-70 hover:opacity-100 cursor-pointer">
               Dismiss
             </button>
           </motion.div>
@@ -176,94 +196,94 @@ export default function B2BProcurementHub({
       </AnimatePresence>
 
       {/* HEADER BANNER */}
-      <GlassCard className="p-6 relative overflow-hidden bg-gradient-to-r from-indigo-950/40 via-purple-950/20 to-zinc-900/60 border-indigo-500/20">
+      <div className="p-6 rounded-[28px] bg-white border border-[#14171F]/10 shadow-xs relative overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="px-2.5 py-0.5 text-[10px] font-bold tracking-widest text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 rounded-full flex items-center gap-1">
-                <Sparkles size={11} className="text-indigo-400" /> B2B AUTONOMOUS PROCUREMENT ENGINE
+              <span className="px-3 py-1 text-[10px] font-bold tracking-widest text-[#5C64ED] bg-[#5C64ED]/10 border border-[#5C64ED]/20 rounded-full flex items-center gap-1.5 font-mono">
+                <Sparkles size={12} className="text-[#5C64ED]" /> B2B AUTONOMOUS PROCUREMENT ENGINE
               </span>
             </div>
-            <h2 className="text-2xl font-extrabold text-white tracking-tight flex items-center gap-2">
+            <h2 className="text-2xl font-serif font-bold text-[#14171F] tracking-tight">
               Supplier Portal & Reorder Automation
             </h2>
-            <p className="text-xs text-zinc-400 mt-1 max-w-2xl leading-relaxed">
+            <p className="text-xs text-[#4F5565] mt-1 max-w-2xl leading-relaxed font-medium">
               Issue automated Requests for Quotation (RFQs), evaluate supplier health scorecards, track live shipments, and auto-sync received stock directly into financial ledgers.
             </p>
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
-            <AnimatedButton
+            <button
               onClick={() => {
                 if (products.length > 0) setSelectedProductId(products[0].id);
                 if (suppliers.length > 0) setSelectedSupplierId(suppliers[0].id);
                 setShowRfqModal(true);
               }}
-              className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium text-xs px-4 py-2.5 rounded-lg shadow-lg shadow-indigo-500/20 flex items-center gap-2 cursor-pointer"
+              className="bg-[#14171F] hover:bg-[#202532] text-white font-bold text-xs px-4.5 py-2.5 rounded-full shadow-xs flex items-center gap-2 cursor-pointer transition"
             >
               <Plus size={14} /> Create Automated RFQ
-            </AnimatedButton>
+            </button>
           </div>
         </div>
-      </GlassCard>
+      </div>
 
       {/* METRICS ROW */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <GlassCard className="p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+        <div className="p-5 rounded-[22px] bg-white border border-[#14171F]/10 shadow-xs flex items-center gap-3.5">
+          <div className="p-2.5 rounded-xl bg-[#5C64ED]/10 text-[#5C64ED] border border-[#5C64ED]/20">
             <ShoppingBag size={20} />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Active Orders / RFQs</span>
-            <div className="text-xl font-extrabold text-white mt-0.5">{pendingOrders.length + inTransitOrders.length}</div>
-            <span className="text-[10px] text-zinc-400">{pendingOrders.length} pending, {inTransitOrders.length} in transit</span>
+            <span className="text-[10px] font-bold text-[#4F5565] uppercase tracking-wider block font-mono">Active Orders / RFQs</span>
+            <div className="text-xl font-extrabold text-[#14171F] font-mono mt-0.5">{pendingOrders.length + inTransitOrders.length}</div>
+            <span className="text-[10px] text-[#4F5565]">{pendingOrders.length} pending, {inTransitOrders.length} in transit</span>
           </div>
-        </GlassCard>
+        </div>
 
-        <GlassCard className="p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+        <div className="p-5 rounded-[22px] bg-white border border-[#14171F]/10 shadow-xs flex items-center gap-3.5">
+          <div className="p-2.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200">
             <DollarSign size={20} />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Total B2B Spend</span>
-            <div className="text-xl font-extrabold text-white mt-0.5">{formatAmount(totalSpend)}</div>
-            <span className="text-[10px] text-emerald-400 flex items-center gap-0.5"><TrendingUp size={10} /> Active ledger sync</span>
+            <span className="text-[10px] font-bold text-[#4F5565] uppercase tracking-wider block font-mono">Total B2B Spend</span>
+            <div className="text-xl font-extrabold text-[#14171F] font-mono mt-0.5">{formatAmount(totalSpend)}</div>
+            <span className="text-[10px] text-emerald-700 font-bold flex items-center gap-0.5"><TrendingUp size={11} /> Active ledger sync</span>
           </div>
-        </GlassCard>
+        </div>
 
-        <GlassCard className="p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20">
+        <div className="p-5 rounded-[22px] bg-white border border-[#14171F]/10 shadow-xs flex items-center gap-3.5">
+          <div className="p-2.5 rounded-xl bg-purple-50 text-purple-700 border border-purple-200">
             <Clock size={20} />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Avg Vendor Lead Time</span>
-            <div className="text-xl font-extrabold text-white mt-0.5">{avgLeadTime} Days</div>
-            <span className="text-[10px] text-zinc-400">Based on historical fulfillment</span>
+            <span className="text-[10px] font-bold text-[#4F5565] uppercase tracking-wider block font-mono">Avg Vendor Lead Time</span>
+            <div className="text-xl font-extrabold text-[#14171F] font-mono mt-0.5">{avgLeadTime} Days</div>
+            <span className="text-[10px] text-[#4F5565]">Historical fulfillment rate</span>
           </div>
-        </GlassCard>
+        </div>
 
-        <GlassCard className="p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+        <div className="p-5 rounded-[22px] bg-white border border-[#14171F]/10 shadow-xs flex items-center gap-3.5">
+          <div className="p-2.5 rounded-xl bg-amber-50 text-amber-700 border border-amber-200">
             <ShieldCheck size={20} />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Verified Suppliers</span>
-            <div className="text-xl font-extrabold text-white mt-0.5">{suppliers.length}</div>
-            <span className="text-[10px] text-amber-400">Active B2B network nodes</span>
+            <span className="text-[10px] font-bold text-[#4F5565] uppercase tracking-wider block font-mono">Verified Suppliers</span>
+            <div className="text-xl font-extrabold text-[#14171F] font-mono mt-0.5">{suppliers.length}</div>
+            <span className="text-[10px] text-amber-700 font-bold">Active network partners</span>
           </div>
-        </GlassCard>
+        </div>
       </div>
 
       {/* VIEW TABS & CONTROLS */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/5 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#14171F]/10 pb-4">
         <div className="flex items-center gap-2">
           <button
             onClick={() => setActiveTab("pos")}
             className={cn(
-              "px-4 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-2",
+              "px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-2 border shadow-2xs",
               activeTab === "pos"
-                ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/30"
-                : "bg-white/[0.03] text-zinc-400 hover:text-white hover:bg-white/[0.06]"
+                ? "bg-[#14171F] text-white border-[#14171F]"
+                : "bg-[#FAF7F2] text-[#14171F] border-[#14171F]/10 hover:bg-[#F2ECE4]"
             )}
           >
             <FileCheck size={14} /> Purchase Orders & RFQs ({purchaseOrders.length})
@@ -271,10 +291,10 @@ export default function B2BProcurementHub({
           <button
             onClick={() => setActiveTab("suppliers")}
             className={cn(
-              "px-4 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-2",
+              "px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-2 border shadow-2xs",
               activeTab === "suppliers"
-                ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/30"
-                : "bg-white/[0.03] text-zinc-400 hover:text-white hover:bg-white/[0.06]"
+                ? "bg-[#14171F] text-white border-[#14171F]"
+                : "bg-[#FAF7F2] text-[#14171F] border-[#14171F]/10 hover:bg-[#F2ECE4]"
             )}
           >
             <Building2 size={14} /> Supplier Health Scorecards ({suppliers.length})
@@ -284,19 +304,19 @@ export default function B2BProcurementHub({
         {activeTab === "pos" && (
           <div className="flex items-center gap-2">
             <div className="relative">
-              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4F5565]" />
               <input
                 type="text"
                 placeholder="Search PO or supplier..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-8 pl-9 pr-3 bg-white/[0.04] border border-white/10 rounded-lg text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-indigo-500"
+                className="h-8.5 pl-9 pr-3.5 bg-[#FAF7F2] border border-[#14171F]/10 rounded-full text-xs text-[#14171F] placeholder-[#4F5565] focus:outline-none focus:border-[#5C64ED]"
               />
             </div>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="h-8 px-2.5 bg-white/[0.04] border border-white/10 rounded-lg text-xs text-zinc-300 focus:outline-none focus:border-indigo-500"
+              className="h-8.5 px-3 bg-[#FAF7F2] border border-[#14171F]/10 rounded-full text-xs text-[#14171F] focus:outline-none focus:border-[#5C64ED]"
             >
               <option value="all">All Statuses</option>
               <option value="pending">Pending</option>
@@ -310,11 +330,11 @@ export default function B2BProcurementHub({
 
       {/* TAB 1: PURCHASE ORDERS & RFQS */}
       {activeTab === "pos" && (
-        <GlassCard className="p-6">
+        <div className="p-6 bg-white rounded-[28px] border border-[#14171F]/10 shadow-xs overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full text-left text-xs font-sans">
               <thead>
-                <tr className="border-b border-white/10 text-zinc-400 font-semibold uppercase tracking-wider">
+                <tr className="border-b border-[#14171F]/10 text-[#4F5565] font-bold uppercase tracking-wider font-mono">
                   <th className="pb-3 px-3">Order ID</th>
                   <th className="pb-3 px-3">Supplier Vendor</th>
                   <th className="pb-3 px-3">Quantity</th>
@@ -324,35 +344,35 @@ export default function B2BProcurementHub({
                   <th className="pb-3 px-3 text-right">Lifecycle Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-[#14171F]/10">
                 {filteredOrders.map((po) => {
                   const statusColors: { [key: string]: string } = {
-                    pending: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-                    confirmed: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
-                    in_transit: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-                    received: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                    pending: "bg-amber-100 text-amber-900 border-amber-300",
+                    confirmed: "bg-indigo-100 text-indigo-900 border-indigo-300",
+                    in_transit: "bg-purple-100 text-purple-900 border-purple-300",
+                    received: "bg-emerald-100 text-emerald-900 border-emerald-300"
                   };
 
                   return (
-                    <tr key={po.id} className="hover:bg-white/[0.02] transition-colors">
-                      <td className="py-3.5 px-3 font-mono text-zinc-300 font-bold">
+                    <tr key={po.id} className="hover:bg-[#FAF7F2] transition-colors">
+                      <td className="py-3.5 px-3 font-mono text-[#14171F] font-bold">
                         PO-{po.id.slice(0, 8)}
                       </td>
                       <td className="py-3.5 px-3">
-                        <div className="font-semibold text-white">{po.supplier?.name || "Standard Vendor"}</div>
-                        <div className="text-[10px] text-zinc-500 font-mono">{po.supplier?.email || "vendor@b2b.com"}</div>
+                        <div className="font-bold text-[#14171F]">{po.supplier?.name || "Standard Vendor"}</div>
+                        <div className="text-[10px] text-[#4F5565] font-mono">{po.supplier?.email || "vendor@b2b.com"}</div>
                       </td>
-                      <td className="py-3.5 px-3 font-semibold text-zinc-300">
+                      <td className="py-3.5 px-3 font-semibold text-[#14171F] font-mono">
                         {po.qty || 20} units
                       </td>
-                      <td className="py-3.5 px-3 font-bold text-white font-mono">
+                      <td className="py-3.5 px-3 font-bold text-[#14171F] font-mono">
                         {formatAmount(po.total || 0)}
                       </td>
-                      <td className="py-3.5 px-3 text-zinc-400">
+                      <td className="py-3.5 px-3 text-[#4F5565] font-mono">
                         {new Date(po.date || Date.now()).toLocaleDateString()}
                       </td>
                       <td className="py-3.5 px-3">
-                        <span className={cn("px-2.5 py-1 rounded-full text-[10px] font-bold border uppercase tracking-wider", statusColors[po.status] || statusColors.pending)}>
+                        <span className={cn("px-2.5 py-0.5 rounded-full text-[10px] font-bold border uppercase tracking-wider font-mono", statusColors[po.status] || statusColors.pending)}>
                           {po.status}
                         </span>
                       </td>
@@ -361,7 +381,7 @@ export default function B2BProcurementHub({
                           {po.status === "pending" && (
                             <button
                               onClick={() => handleStatusChange(po.id, "confirmed")}
-                              className="px-2.5 py-1 rounded bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 font-semibold text-[10px] transition cursor-pointer"
+                              className="px-3 py-1 rounded-full bg-[#5C64ED]/10 hover:bg-[#5C64ED]/20 border border-[#5C64ED]/30 text-[#5C64ED] font-bold text-[10px] transition cursor-pointer"
                             >
                               Confirm PO
                             </button>
@@ -369,22 +389,22 @@ export default function B2BProcurementHub({
                           {po.status === "confirmed" && (
                             <button
                               onClick={() => handleStatusChange(po.id, "in_transit")}
-                              className="px-2.5 py-1 rounded bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 text-purple-300 font-semibold text-[10px] transition cursor-pointer flex items-center gap-1"
+                              className="px-3 py-1 rounded-full bg-purple-100 hover:bg-purple-200 border border-purple-300 text-purple-900 font-bold text-[10px] transition cursor-pointer flex items-center gap-1"
                             >
-                              <Truck size={10} /> Mark In Transit
+                              <Truck size={11} /> Mark In Transit
                             </button>
                           )}
                           {po.status === "in_transit" && (
                             <button
                               onClick={() => handleStatusChange(po.id, "received")}
-                              className="px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold text-[10px] transition cursor-pointer flex items-center gap-1 shadow-sm"
+                              className="px-3 py-1 rounded-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-[10px] transition cursor-pointer flex items-center gap-1 shadow-xs"
                             >
-                              <CheckCircle2 size={10} /> Receive & Intake Stock
+                              <CheckCircle2 size={11} /> Receive & Intake Stock
                             </button>
                           )}
                           {po.status === "received" && (
-                            <span className="text-[10px] text-emerald-400 font-mono flex items-center gap-1">
-                              <CheckCircle2 size={12} /> Stock & Ledger Synced
+                            <span className="text-[10px] text-emerald-700 font-mono font-bold flex items-center gap-1">
+                              <CheckCircle2 size={13} /> Stock & Ledger Synced
                             </span>
                           )}
                         </div>
@@ -394,7 +414,7 @@ export default function B2BProcurementHub({
                 })}
                 {filteredOrders.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="py-8 text-center text-zinc-500 text-xs">
+                    <td colSpan={7} className="py-8 text-center text-[#4F5565] text-xs font-medium">
                       No Purchase Orders found matching the current filters.
                     </td>
                   </tr>
@@ -402,26 +422,26 @@ export default function B2BProcurementHub({
               </tbody>
             </table>
           </div>
-        </GlassCard>
+        </div>
       )}
 
       {/* TAB 2: SUPPLIER HEALTH SCORECARDS */}
       {activeTab === "suppliers" && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {supplierHealth.map((sup) => (
-            <GlassCard key={sup.id} className="p-5 relative space-y-4">
+            <div key={sup.id} className="p-5 rounded-[24px] bg-white border border-[#14171F]/10 shadow-xs relative space-y-4">
               <div className="flex items-start justify-between">
                 <div>
-                  <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                  <h4 className="text-sm font-bold text-[#14171F] flex items-center gap-2">
                     {sup.name}
                   </h4>
-                  <span className="text-[10px] text-zinc-500 font-mono block mt-0.5">{sup.contact}</span>
+                  <span className="text-[10px] text-[#4F5565] font-mono block mt-0.5">{sup.contact}</span>
                 </div>
                 <span className={cn(
-                  "px-2.5 py-0.5 rounded-full text-[10px] font-extrabold border uppercase tracking-wider",
+                  "px-2.5 py-0.5 rounded-full text-[10px] font-extrabold border uppercase tracking-wider font-mono",
                   sup.healthScore >= 85
-                    ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
-                    : "bg-amber-500/10 text-amber-400 border-amber-500/30"
+                    ? "bg-emerald-100 text-emerald-900 border-emerald-300"
+                    : "bg-amber-100 text-amber-900 border-amber-300"
                 )}>
                   {sup.healthScore}/100 {sup.status}
                 </span>
@@ -429,46 +449,46 @@ export default function B2BProcurementHub({
 
               {/* Progress Bar for Score */}
               <div className="space-y-1">
-                <div className="flex justify-between text-[10px] text-zinc-400">
+                <div className="flex justify-between text-[10px] text-[#4F5565] font-mono">
                   <span>Vendor Performance Rating</span>
-                  <span className="font-bold text-white">{sup.fulfillmentRate}% On-Time Delivery</span>
+                  <span className="font-bold text-[#14171F]">{sup.fulfillmentRate}% On-Time</span>
                 </div>
-                <div className="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
+                <div className="w-full h-2 rounded-full bg-[#FAF7F2] border border-[#14171F]/10 overflow-hidden">
                   <div
                     className={cn(
                       "h-full rounded-full transition-all duration-500",
-                      sup.healthScore >= 85 ? "bg-emerald-500" : "bg-amber-500"
+                      sup.healthScore >= 85 ? "bg-emerald-600" : "bg-amber-600"
                     )}
                     style={{ width: `${sup.healthScore}%` }}
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 text-xs pt-2 border-t border-white/5">
-                <div className="bg-white/[0.02] p-2 rounded border border-white/5">
-                  <span className="text-[10px] text-zinc-500 block">Total PO Volume</span>
-                  <span className="font-bold text-white">{sup.poCount} Orders</span>
+              <div className="grid grid-cols-2 gap-2 text-xs pt-2 border-t border-[#14171F]/10">
+                <div className="bg-[#FAF7F2] p-2.5 rounded-xl border border-[#14171F]/10">
+                  <span className="text-[10px] text-[#4F5565] block font-mono">Total PO Volume</span>
+                  <span className="font-bold text-[#14171F] text-sm mt-0.5 block">{sup.poCount} Orders</span>
                 </div>
-                <div className="bg-white/[0.02] p-2 rounded border border-white/5">
-                  <span className="text-[10px] text-zinc-500 block">Total Procurement Spend</span>
-                  <span className="font-bold text-emerald-400 font-mono">{formatAmount(sup.totalSpend)}</span>
+                <div className="bg-[#FAF7F2] p-2.5 rounded-xl border border-[#14171F]/10">
+                  <span className="text-[10px] text-[#4F5565] block font-mono">Procurement Spend</span>
+                  <span className="font-bold text-emerald-700 font-mono text-sm mt-0.5 block">{formatAmount(sup.totalSpend)}</span>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-1 text-[11px] text-zinc-400 border-t border-white/5">
-                <span className="flex items-center gap-1 text-zinc-500">
-                  <Clock size={12} /> Lead Time: <strong className="text-zinc-200">{sup.avgLeadTimeDays} Days</strong>
+              <div className="flex items-center justify-between pt-1 text-[11px] text-[#4F5565] border-t border-[#14171F]/10 font-mono">
+                <span className="flex items-center gap-1">
+                  <Clock size={12} /> Lead Time: <strong className="text-[#14171F]">{sup.avgLeadTimeDays} Days</strong>
                 </span>
                 <div className="flex items-center gap-2">
-                  <a href={`mailto:${sup.email}`} className="p-1.5 rounded bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white transition">
+                  <a href={`mailto:${sup.email}`} className="p-1.5 rounded-full bg-[#FAF7F2] hover:bg-[#F2ECE4] border border-[#14171F]/10 text-[#14171F] transition">
                     <Mail size={13} />
                   </a>
-                  <a href={`tel:${sup.phone || "+15550192"}`} className="p-1.5 rounded bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white transition">
+                  <a href={`tel:${sup.phone || "+15550192"}`} className="p-1.5 rounded-full bg-[#FAF7F2] hover:bg-[#F2ECE4] border border-[#14171F]/10 text-[#14171F] transition">
                     <Phone size={13} />
                   </a>
                 </div>
               </div>
-            </GlassCard>
+            </div>
           ))}
         </div>
       )}
@@ -479,39 +499,39 @@ export default function B2BProcurementHub({
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0 }}
-              animate={{ opacity: 0.6 }}
+              animate={{ opacity: 0.5 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowRfqModal(false)}
-              className="fixed inset-0 bg-black"
+              className="fixed inset-0 bg-black/60 backdrop-blur-xs"
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className="glass-panel w-full max-w-lg p-6 rounded-2xl relative z-10 shadow-2xl space-y-5"
+              className="w-full max-w-lg p-6 rounded-[28px] bg-white border border-[#14171F]/15 shadow-2xl relative z-10 space-y-5 text-[#14171F]"
             >
-              <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                  <Sparkles className="text-indigo-400" size={18} /> Issue B2B Purchase Order / RFQ
+              <div className="flex items-center justify-between border-b border-[#14171F]/10 pb-3">
+                <h3 className="text-lg font-serif font-bold text-[#14171F] flex items-center gap-2">
+                  <Sparkles className="text-[#5C64ED]" size={18} /> Issue B2B Purchase Order / RFQ
                 </h3>
-                <button onClick={() => setShowRfqModal(false)} className="text-zinc-500 hover:text-white text-sm">
-                  ✕
+                <button onClick={() => setShowRfqModal(false)} className="text-[#4F5565] hover:text-[#14171F] text-sm cursor-pointer">
+                  <X size={18} />
                 </button>
               </div>
 
-              <form onSubmit={handleCreateRfq} className="space-y-4 text-xs">
+              <form onSubmit={handleCreateRfq} className="space-y-4 text-xs font-sans">
                 <div>
-                  <label className="text-zinc-400 font-semibold uppercase tracking-wider block mb-1">
+                  <label className="text-[#4F5565] font-bold uppercase tracking-wider block mb-1 font-mono text-[11px]">
                     Select Target Product
                   </label>
                   <select
                     value={selectedProductId}
                     onChange={(e) => setSelectedProductId(e.target.value)}
-                    className="w-full h-10 bg-white/[0.04] border border-white/10 rounded-lg px-3 text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full h-10 bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3 text-[#14171F] focus:outline-none focus:border-[#5C64ED]"
                   >
                     <option value="">-- Select Product Catalogue Item --</option>
                     {products.map((p) => (
-                      <option key={p.id} value={p.id} className="bg-zinc-900 text-white">
+                      <option key={p.id} value={p.id}>
                         {p.name} (Stock: {p.stock} | Cost: ${p.cost})
                       </option>
                     ))}
@@ -519,18 +539,18 @@ export default function B2BProcurementHub({
                 </div>
 
                 <div>
-                  <label className="text-zinc-400 font-semibold uppercase tracking-wider block mb-1">
+                  <label className="text-[#4F5565] font-bold uppercase tracking-wider block mb-1 font-mono text-[11px]">
                     Select B2B Supplier Vendor
                   </label>
                   <select
                     required
                     value={selectedSupplierId}
                     onChange={(e) => setSelectedSupplierId(e.target.value)}
-                    className="w-full h-10 bg-white/[0.04] border border-white/10 rounded-lg px-3 text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full h-10 bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3 text-[#14171F] focus:outline-none focus:border-[#5C64ED]"
                   >
                     <option value="">-- Select Registered Vendor --</option>
                     {suppliers.map((s) => (
-                      <option key={s.id} value={s.id} className="bg-zinc-900 text-white">
+                      <option key={s.id} value={s.id}>
                         {s.name} ({s.contact})
                       </option>
                     ))}
@@ -539,7 +559,7 @@ export default function B2BProcurementHub({
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-zinc-400 font-semibold uppercase tracking-wider block mb-1">
+                    <label className="text-[#4F5565] font-bold uppercase tracking-wider block mb-1 font-mono text-[11px]">
                       Quantity Requested
                     </label>
                     <input
@@ -548,22 +568,22 @@ export default function B2BProcurementHub({
                       required
                       value={rfqQty}
                       onChange={(e) => setRfqQty(Number(e.target.value))}
-                      className="w-full h-10 bg-white/[0.04] border border-white/10 rounded-lg px-3 text-white focus:outline-none focus:border-indigo-500 font-mono"
+                      className="w-full h-10 bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3 text-[#14171F] focus:outline-none focus:border-[#5C64ED] font-mono"
                     />
                   </div>
 
                   <div>
-                    <label className="text-zinc-400 font-semibold uppercase tracking-wider block mb-1">
+                    <label className="text-[#4F5565] font-bold uppercase tracking-wider block mb-1 font-mono text-[11px]">
                       Estimated PO Total
                     </label>
-                    <div className="w-full h-10 bg-white/[0.02] border border-white/10 rounded-lg px-3 text-indigo-400 font-bold font-mono flex items-center">
+                    <div className="w-full h-10 bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3 text-[#5C64ED] font-bold font-mono flex items-center">
                       {formatAmount((products.find((p) => p.id === selectedProductId)?.cost || 50) * rfqQty)}
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-zinc-400 font-semibold uppercase tracking-wider block mb-1">
+                  <label className="text-[#4F5565] font-bold uppercase tracking-wider block mb-1 font-mono text-[11px]">
                     Special Procurement Terms / Delivery Notes
                   </label>
                   <textarea
@@ -571,25 +591,25 @@ export default function B2BProcurementHub({
                     placeholder="Specify delivery timeline, packing guidelines, or payment terms..."
                     value={rfqNotes}
                     onChange={(e) => setRfqNotes(e.target.value)}
-                    className="w-full bg-white/[0.04] border border-white/10 rounded-lg p-3 text-white placeholder-zinc-600 focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl p-3 text-[#14171F] placeholder-[#4F5565] focus:outline-none focus:border-[#5C64ED]"
                   />
                 </div>
 
-                <div className="pt-3 border-t border-white/10 flex justify-end gap-2">
+                <div className="pt-3 border-t border-[#14171F]/10 flex justify-end gap-2">
                   <button
                     type="button"
                     onClick={() => setShowRfqModal(false)}
-                    className="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-zinc-300 font-medium"
+                    className="px-4 py-2 rounded-full bg-[#FAF7F2] hover:bg-[#F2ECE4] text-[#14171F] font-bold cursor-pointer"
                   >
                     Cancel
                   </button>
-                  <AnimatedButton
+                  <button
                     type="submit"
-                    isLoading={submittingRfq}
-                    className="px-5 py-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium shadow-lg shadow-indigo-500/20"
+                    disabled={submittingRfq}
+                    className="px-5 py-2 rounded-full bg-[#14171F] hover:bg-[#202532] text-white font-bold shadow-xs cursor-pointer flex items-center gap-1.5"
                   >
-                    Submit Purchase Order RFQ <ArrowRight size={14} />
-                  </AnimatedButton>
+                    {submittingRfq ? "Submitting..." : <><span>Submit Purchase Order RFQ</span> <ArrowRight size={14} /></>}
+                  </button>
                 </div>
               </form>
             </motion.div>
