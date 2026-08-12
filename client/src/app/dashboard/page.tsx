@@ -182,10 +182,10 @@ export default function DashboardHero() {
 
   // Mock Data
   const kpis = [
-    { title: "Gross Revenue", value: 142500, prefix: "$", trend: "+12.4%", desc: "vs last month", icon: TrendingUp, color: "text-emerald-400" },
-    { title: "Product Inventory", value: 2450, suffix: " units", trend: "-2.3%", desc: "safety limits alert", icon: Package, color: "text-amber-400" },
-    { title: "Active Workforce", value: 34, suffix: " members", trend: "+4.1%", desc: "all departments active", icon: Users, color: "text-indigo-400" },
-    { title: "Pending Approvals", value: 8, suffix: " tasks", trend: "0%", desc: "awaiting audit review", icon: CheckCircle, color: "text-purple-400" },
+    { title: "Gross Revenue", value: 142500, prefix: "$", trend: "+12.4%", desc: "vs last month", icon: TrendingUp, color: "text-emerald-600" },
+    { title: "Product Inventory", value: 2450, suffix: " units", trend: "-2.3%", desc: "safety limits alert", icon: Package, color: "text-amber-600" },
+    { title: "Active Workforce", value: 34, suffix: " members", trend: "+4.1%", desc: "all departments active", icon: Users, color: "text-[#5C64ED]" },
+    { title: "Pending Approvals", value: 8, suffix: " tasks", trend: "0%", desc: "awaiting audit review", icon: CheckCircle, color: "text-purple-600" },
   ];
 
   const aiInsights = [
@@ -254,22 +254,22 @@ export default function DashboardHero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: idx * 0.1 }}
           >
-            <GlassCard interactive className="p-5 flex justify-between items-start relative overflow-hidden group">
+            <GlassCard interactive className="p-5 flex justify-between items-start relative overflow-hidden group bg-white border border-[#14171F]/10 rounded-[24px] shadow-xs hover:shadow-md transition-all">
               <div className="space-y-1">
-                <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest block">
+                <span className="text-[11px] font-bold text-[#4F5565] uppercase tracking-wider block font-mono">
                   {kpi.title}
                 </span>
-                <h3 className="text-2xl font-extrabold tracking-tight text-white mt-1">
+                <h3 className="text-2xl font-extrabold tracking-tight text-[#14171F] mt-1 font-mono">
                   <Counter value={kpi.value} prefix={kpi.prefix} suffix={kpi.suffix} />
                 </h3>
-                <div className="flex items-center gap-1.5 text-xs text-zinc-400 mt-2">
-                  <span className={kpi.trend.startsWith("+") ? "text-emerald-400 font-semibold" : "text-zinc-500 font-medium"}>
+                <div className="flex items-center gap-1.5 text-xs text-[#4F5565] mt-2">
+                  <span className={kpi.trend.startsWith("+") ? "text-emerald-600 font-bold" : "text-amber-700 font-bold"}>
                     {kpi.trend}
                   </span>
                   <span>{kpi.desc}</span>
                 </div>
               </div>
-              <div className={cn("p-2 rounded-lg bg-white/5 border border-white/5", kpi.color)}>
+              <div className={cn("p-2.5 rounded-xl bg-[#FAF7F2] border border-[#14171F]/10 shadow-2xs", kpi.color)}>
                 <kpi.icon size={18} />
               </div>
             </GlassCard>
@@ -459,31 +459,31 @@ export default function DashboardHero() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="glass-panel w-80 h-96 rounded-xl overflow-hidden shadow-2xl flex flex-col mb-4 border border-white/10"
+              className="w-80 h-96 rounded-2xl overflow-hidden shadow-2xl flex flex-col mb-4 bg-white border border-[#14171F]/15 text-[#14171F]"
             >
               {/* Header */}
-              <div className="bg-white/[0.02] border-b border-white/5 p-3 flex justify-between items-center">
-                <span className="font-bold text-xs text-white flex items-center gap-1.5">
-                  <Sparkles size={12} className="text-yellow-400 animate-pulse" /> Nexus Copilot
+              <div className="bg-[#FAF7F2] border-b border-[#14171F]/10 p-3.5 flex justify-between items-center">
+                <span className="font-bold text-xs text-[#14171F] flex items-center gap-1.5 font-mono">
+                  <Sparkles size={13} className="text-[#5C64ED]" /> Nexus Copilot AI
                 </span>
                 <button
                   onClick={() => setChatOpen(false)}
-                  className="text-zinc-500 hover:text-white"
+                  className="text-[#4F5565] hover:text-[#14171F] cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
               {/* Message History */}
-              <div className="flex-1 p-3 overflow-y-auto space-y-3">
+              <div className="flex-1 p-3.5 overflow-y-auto space-y-3 bg-[#FAF7F2]/50">
                 {chatMessages.map((msg, idx) => (
                   <div
                     key={idx}
                     className={cn(
-                      "p-2.5 rounded-lg text-xs max-w-[85%] leading-relaxed",
+                      "p-3 rounded-2xl text-xs max-w-[85%] leading-relaxed shadow-2xs font-sans",
                       msg.role === "user"
-                        ? "bg-indigo-600/90 text-white ml-auto"
-                        : "bg-white/[0.04] text-zinc-300 border border-white/5 mr-auto"
+                        ? "bg-[#5C64ED] text-white ml-auto rounded-tr-none"
+                        : "bg-white text-[#14171F] border border-[#14171F]/10 mr-auto rounded-tl-none font-medium"
                     )}
                   >
                     {msg.content}
@@ -492,17 +492,17 @@ export default function DashboardHero() {
               </div>
 
               {/* Chat Input */}
-              <form onSubmit={handleChatSubmit} className="p-3 border-t border-white/5 flex gap-2">
+              <form onSubmit={handleChatSubmit} className="p-3 border-t border-[#14171F]/10 bg-white flex gap-2">
                 <input
                   type="text"
                   placeholder="Ask a dashboard query..."
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
-                  className="flex-1 h-9 bg-white/[0.03] border border-white/5 rounded-lg px-3 text-xs text-white placeholder-zinc-500 focus:outline-none"
+                  className="flex-1 h-9 bg-[#FAF7F2] border border-[#14171F]/10 rounded-xl px-3 text-xs text-[#14171F] placeholder-[#4F5565] focus:outline-none focus:border-[#5C64ED]"
                 />
                 <button
                   type="submit"
-                  className="h-9 w-9 bg-indigo-600 hover:bg-indigo-700 rounded-lg flex items-center justify-center text-white shrink-0 transition"
+                  className="h-9 w-9 bg-[#5C64ED] hover:bg-[#4B52D9] rounded-xl flex items-center justify-center text-white shrink-0 transition cursor-pointer shadow-xs"
                 >
                   <Send size={14} />
                 </button>
