@@ -23,8 +23,6 @@ import {
   Send,
   Plus
 } from "lucide-react";
-import { GlassCard } from "@/components/ui/GlassCard";
-import { AnimatedButton } from "@/components/ui/AnimatedButton";
 import { useCurrencyStore } from "@/store/currencyStore";
 import { cn } from "@/lib/utils";
 
@@ -91,7 +89,10 @@ export default function SupplierDashboardPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500" />
+        <div className="flex items-center gap-3">
+          <RefreshCw size={20} className="animate-spin text-[#5C64ED]" />
+          <span className="text-xs font-mono font-bold text-[#4F5565]">Loading live vendor node...</span>
+        </div>
       </div>
     );
   }
@@ -107,7 +108,7 @@ export default function SupplierDashboardPage() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-[#14171F]">
       {/* Toast Notification */}
       <AnimatePresence>
         {notification && (
@@ -116,17 +117,17 @@ export default function SupplierDashboardPage() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             className={cn(
-              "p-4 rounded-xl border text-sm font-medium flex items-center justify-between shadow-lg",
+              "p-4 rounded-2xl border text-xs font-bold flex items-center justify-between shadow-xs",
               notification.type === "success"
-                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-300"
-                : "bg-red-500/10 border-red-500/30 text-red-300"
+                ? "bg-emerald-50 border-emerald-300 text-emerald-900"
+                : "bg-rose-50 border-rose-300 text-rose-900"
             )}
           >
             <div className="flex items-center gap-2">
-              <CheckCircle2 size={18} className="shrink-0" />
+              <CheckCircle2 size={16} className="shrink-0 text-emerald-700" />
               <span>{notification.message}</span>
             </div>
-            <button onClick={() => setNotification(null)} className="text-xs opacity-70 hover:opacity-100">
+            <button onClick={() => setNotification(null)} className="text-xs opacity-70 hover:opacity-100 cursor-pointer">
               Dismiss
             </button>
           </motion.div>
@@ -134,92 +135,90 @@ export default function SupplierDashboardPage() {
       </AnimatePresence>
 
       {/* HEADER BANNER */}
-      <GlassCard className="p-6 relative overflow-hidden bg-gradient-to-r from-purple-950/40 via-indigo-950/20 to-zinc-900/60 border-purple-500/20">
+      <div className="p-6 rounded-[28px] bg-white border border-[#14171F]/10 shadow-xs relative overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="px-2.5 py-0.5 text-[10px] font-bold tracking-widest text-purple-300 bg-purple-500/10 border border-purple-500/20 rounded-full flex items-center gap-1">
-                <Truck size={11} className="text-purple-400" /> INTERCONNECTED B2B SUPPLIER NODE
+              <span className="px-3 py-1 text-[10px] font-bold tracking-widest text-[#5C64ED] bg-[#5C64ED]/10 border border-[#5C64ED]/20 rounded-full flex items-center gap-1.5 font-mono">
+                <Truck size={12} className="text-[#5C64ED]" /> INTERCONNECTED B2B SUPPLIER NODE
               </span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight flex items-center gap-2">
+            <h1 className="text-2xl md:text-3xl font-serif font-bold text-[#14171F] tracking-tight">
               {supplier?.name || "Intelisys Vendor Operations"}
             </h1>
-            <p className="text-xs text-zinc-400 mt-1 max-w-2xl leading-relaxed">
+            <p className="text-xs text-[#4F5565] mt-1 max-w-2xl leading-relaxed font-medium">
               Live Vendor-Managed Inventory (VMI) monitor, incoming retail store Purchase Orders, dispatch tracking, and financial B2B ledger clearing.
             </p>
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
-            <AnimatedButton
+            <button
               onClick={fetchSupplierData}
-              variant="outline"
-              size="sm"
-              className="gap-1.5 border-purple-500/30 text-purple-300 hover:bg-purple-500/10"
+              className="px-4 py-2 rounded-full bg-[#FAF7F2] hover:bg-[#F2ECE4] text-[#14171F] border border-[#14171F]/10 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-2xs"
             >
-              <RefreshCw size={13} /> Refresh Data
-            </AnimatedButton>
+              <RefreshCw size={13} className="text-[#5C64ED]" /> Refresh Data
+            </button>
           </div>
         </div>
-      </GlassCard>
+      </div>
 
       {/* METRICS ROW */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <GlassCard className="p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20">
+        <div className="p-5 rounded-[22px] bg-white border border-[#14171F]/10 shadow-xs flex items-center gap-3.5">
+          <div className="p-2.5 rounded-xl bg-[#5C64ED]/10 text-[#5C64ED] border border-[#5C64ED]/20">
             <FileCheck size={20} />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Active B2B Orders</span>
-            <div className="text-xl font-extrabold text-white mt-0.5">{metrics.activeOrdersCount}</div>
-            <span className="text-[10px] text-purple-300">Pending & In Transit</span>
+            <span className="text-[10px] font-bold text-[#4F5565] uppercase tracking-wider block font-mono">Active B2B Orders</span>
+            <div className="text-xl font-extrabold text-[#14171F] font-mono mt-0.5">{metrics.activeOrdersCount}</div>
+            <span className="text-[10px] text-[#4F5565]">Pending & In Transit</span>
           </div>
-        </GlassCard>
+        </div>
 
-        <GlassCard className="p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+        <div className="p-5 rounded-[22px] bg-white border border-[#14171F]/10 shadow-xs flex items-center gap-3.5">
+          <div className="p-2.5 rounded-xl bg-indigo-50 text-indigo-700 border border-indigo-200">
             <Package size={20} />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Monitored VMI SKUs</span>
-            <div className="text-xl font-extrabold text-white mt-0.5">{metrics.vmiSkusCount}</div>
-            <span className="text-[10px] text-zinc-400">Connected shop warehouses</span>
+            <span className="text-[10px] font-bold text-[#4F5565] uppercase tracking-wider block font-mono">Monitored VMI SKUs</span>
+            <div className="text-xl font-extrabold text-[#14171F] font-mono mt-0.5">{metrics.vmiSkusCount}</div>
+            <span className="text-[10px] text-[#4F5565]">Connected warehouses</span>
           </div>
-        </GlassCard>
+        </div>
 
-        <GlassCard className="p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+        <div className="p-5 rounded-[22px] bg-white border border-[#14171F]/10 shadow-xs flex items-center gap-3.5">
+          <div className="p-2.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200">
             <DollarSign size={20} />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Total B2B Receivables</span>
-            <div className="text-xl font-extrabold text-white mt-0.5">{formatAmount(metrics.totalReceivables)}</div>
-            <span className="text-[10px] text-emerald-400 flex items-center gap-0.5"><TrendingUp size={10} /> Active shop ledger</span>
+            <span className="text-[10px] font-bold text-[#4F5565] uppercase tracking-wider block font-mono">Total Receivables</span>
+            <div className="text-xl font-extrabold text-[#14171F] font-mono mt-0.5">{formatAmount(metrics.totalReceivables)}</div>
+            <span className="text-[10px] text-emerald-700 font-bold flex items-center gap-0.5"><TrendingUp size={11} /> Active shop ledger</span>
           </div>
-        </GlassCard>
+        </div>
 
-        <GlassCard className="p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+        <div className="p-5 rounded-[22px] bg-white border border-[#14171F]/10 shadow-xs flex items-center gap-3.5">
+          <div className="p-2.5 rounded-xl bg-amber-50 text-amber-700 border border-amber-200">
             <Clock size={20} />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Avg Dispatch Speed</span>
-            <div className="text-xl font-extrabold text-white mt-0.5">{metrics.avgDispatchDays} Days</div>
-            <span className="text-[10px] text-amber-400">Order-to-ship SLA</span>
+            <span className="text-[10px] font-bold text-[#4F5565] uppercase tracking-wider block font-mono">Avg Dispatch Speed</span>
+            <div className="text-xl font-extrabold text-[#14171F] font-mono mt-0.5">{metrics.avgDispatchDays} Days</div>
+            <span className="text-[10px] text-amber-700 font-bold">Order-to-ship SLA</span>
           </div>
-        </GlassCard>
+        </div>
       </div>
 
       {/* NAVIGATION TABS & SEARCH */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/5 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#14171F]/10 pb-4">
         <div className="flex items-center gap-2">
           <button
             onClick={() => setActiveTab("vmi")}
             className={cn(
-              "px-4 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-2",
+              "px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-2 border shadow-2xs",
               activeTab === "vmi"
-                ? "bg-purple-600 text-white shadow-lg shadow-purple-600/30"
-                : "bg-white/[0.03] text-zinc-400 hover:text-white hover:bg-white/[0.06]"
+                ? "bg-[#14171F] text-white border-[#14171F]"
+                : "bg-[#FAF7F2] text-[#14171F] border-[#14171F]/10 hover:bg-[#F2ECE4]"
             )}
           >
             <Package size={14} /> Live VMI Stock Monitor ({vmiStock.length})
@@ -227,10 +226,10 @@ export default function SupplierDashboardPage() {
           <button
             onClick={() => setActiveTab("orders")}
             className={cn(
-              "px-4 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-2",
+              "px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-2 border shadow-2xs",
               activeTab === "orders"
-                ? "bg-purple-600 text-white shadow-lg shadow-purple-600/30"
-                : "bg-white/[0.03] text-zinc-400 hover:text-white hover:bg-white/[0.06]"
+                ? "bg-[#14171F] text-white border-[#14171F]"
+                : "bg-[#FAF7F2] text-[#14171F] border-[#14171F]/10 hover:bg-[#F2ECE4]"
             )}
           >
             <FileCheck size={14} /> B2B Purchase Orders ({purchaseOrders.length})
@@ -238,10 +237,10 @@ export default function SupplierDashboardPage() {
           <button
             onClick={() => setActiveTab("ledger")}
             className={cn(
-              "px-4 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-2",
+              "px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-2 border shadow-2xs",
               activeTab === "ledger"
-                ? "bg-purple-600 text-white shadow-lg shadow-purple-600/30"
-                : "bg-white/[0.03] text-zinc-400 hover:text-white hover:bg-white/[0.06]"
+                ? "bg-[#14171F] text-white border-[#14171F]"
+                : "bg-[#FAF7F2] text-[#14171F] border-[#14171F]/10 hover:bg-[#F2ECE4]"
             )}
           >
             <DollarSign size={14} /> B2B Invoices & Payouts
@@ -249,33 +248,33 @@ export default function SupplierDashboardPage() {
         </div>
 
         <div className="relative">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4F5565]" />
           <input
             type="text"
             placeholder="Search items or orders..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="h-8 pl-9 pr-3 bg-white/[0.04] border border-white/10 rounded-lg text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500"
+            className="h-8.5 pl-9 pr-3.5 bg-[#FAF7F2] border border-[#14171F]/10 rounded-full text-xs text-[#14171F] placeholder-[#4F5565] focus:outline-none focus:border-[#5C64ED]"
           />
         </div>
       </div>
 
       {/* TAB 1: LIVE VMI STOCK MONITOR */}
       {activeTab === "vmi" && (
-        <GlassCard className="p-6">
-          <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-4">
+        <div className="p-6 rounded-[28px] bg-white border border-[#14171F]/10 shadow-xs space-y-4">
+          <div className="flex items-center justify-between border-b border-[#14171F]/10 pb-3">
             <div>
-              <h3 className="font-bold text-sm text-white flex items-center gap-2">
-                <ShieldCheck size={16} className="text-purple-400" /> Vendor-Managed Inventory (VMI) Balances
+              <h3 className="font-serif font-bold text-base text-[#14171F] flex items-center gap-2">
+                <ShieldCheck size={17} className="text-[#5C64ED]" /> Vendor-Managed Inventory (VMI) Balances
               </h3>
-              <p className="text-xs text-zinc-400 mt-0.5">Real-time stock monitoring of your products across connected retailer shop warehouses.</p>
+              <p className="text-xs text-[#4F5565] mt-0.5 font-medium">Real-time stock monitoring of your products across connected retailer shop warehouses.</p>
             </div>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full text-left text-xs font-sans">
               <thead>
-                <tr className="border-b border-white/10 text-zinc-400 font-semibold uppercase tracking-wider">
+                <tr className="border-b border-[#14171F]/10 text-[#4F5565] font-bold uppercase tracking-wider font-mono text-[11px]">
                   <th className="pb-3 px-3">Product Name</th>
                   <th className="pb-3 px-3">SKU</th>
                   <th className="pb-3 px-3">Target Warehouse</th>
@@ -285,37 +284,37 @@ export default function SupplierDashboardPage() {
                   <th className="pb-3 px-3">Stock Health Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-[#14171F]/10">
                 {filteredVmi.map((item: any) => (
-                  <tr key={item.id} className="hover:bg-white/[0.02] transition-colors">
-                    <td className="py-3.5 px-3 font-semibold text-white">
+                  <tr key={item.id} className="hover:bg-[#FAF7F2] transition-colors h-12">
+                    <td className="py-3 px-3 font-bold text-[#14171F]">
                       {item.name}
                     </td>
-                    <td className="py-3.5 px-3 font-mono text-zinc-400">
+                    <td className="py-3 px-3 font-mono text-[#4F5565] font-semibold">
                       {item.sku}
                     </td>
-                    <td className="py-3.5 px-3 text-zinc-300">
+                    <td className="py-3 px-3 text-[#4F5565] font-medium">
                       {item.warehouseName}
                     </td>
-                    <td className="py-3.5 px-3 text-right font-mono font-semibold text-zinc-200">
+                    <td className="py-3 px-3 text-right font-mono font-bold text-[#14171F]">
                       {formatAmount(item.cost || item.price * 0.6)}
                     </td>
-                    <td className="py-3.5 px-3 text-right font-bold text-white">
+                    <td className="py-3 px-3 text-right font-bold text-[#14171F] font-mono">
                       {item.stock} units
                     </td>
-                    <td className="py-3.5 px-3 text-right text-zinc-400 font-mono">
+                    <td className="py-3 px-3 text-right text-[#4F5565] font-mono font-medium">
                       {item.minStock} units
                     </td>
-                    <td className="py-3.5 px-3">
+                    <td className="py-3 px-3">
                       <span
                         className={cn(
-                          "px-2.5 py-0.5 rounded-full text-[10px] font-bold border uppercase tracking-wider inline-flex items-center gap-1",
+                          "px-2.5 py-0.5 rounded-full text-[10px] font-bold border uppercase tracking-wider inline-flex items-center gap-1 font-mono",
                           item.isLowStock
-                            ? "bg-amber-500/10 text-amber-400 border-amber-500/30"
-                            : "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
+                            ? "bg-rose-100 text-rose-800 border-rose-300"
+                            : "bg-emerald-100 text-emerald-900 border-emerald-300"
                         )}
                       >
-                        {item.isLowStock ? <AlertTriangle size={10} /> : <CheckCircle2 size={10} />}
+                        {item.isLowStock ? <AlertTriangle size={11} /> : <CheckCircle2 size={11} />}
                         {item.status}
                       </span>
                     </td>
@@ -323,7 +322,7 @@ export default function SupplierDashboardPage() {
                 ))}
                 {filteredVmi.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="py-8 text-center text-zinc-500 text-xs">
+                    <td colSpan={7} className="py-8 text-center text-[#4F5565] text-xs font-medium">
                       No VMI product records found for this vendor node.
                     </td>
                   </tr>
@@ -331,25 +330,25 @@ export default function SupplierDashboardPage() {
               </tbody>
             </table>
           </div>
-        </GlassCard>
+        </div>
       )}
 
       {/* TAB 2: INCOMING B2B PURCHASE ORDERS */}
       {activeTab === "orders" && (
-        <GlassCard className="p-6">
-          <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-4">
+        <div className="p-6 rounded-[28px] bg-white border border-[#14171F]/10 shadow-xs space-y-4">
+          <div className="flex items-center justify-between border-b border-[#14171F]/10 pb-3">
             <div>
-              <h3 className="font-bold text-sm text-white flex items-center gap-2">
-                <FileCheck size={16} className="text-purple-400" /> Incoming Retailer Purchase Orders & RFQs
+              <h3 className="font-serif font-bold text-base text-[#14171F] flex items-center gap-2">
+                <FileCheck size={17} className="text-[#5C64ED]" /> Incoming Retailer Purchase Orders & RFQs
               </h3>
-              <p className="text-xs text-zinc-400 mt-0.5">Manage incoming B2B supply orders, accept POs, update dispatch status, and trigger stock intake.</p>
+              <p className="text-xs text-[#4F5565] mt-0.5 font-medium">Manage incoming B2B supply orders, accept POs, update dispatch status, and trigger stock intake.</p>
             </div>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full text-left text-xs font-sans">
               <thead>
-                <tr className="border-b border-white/10 text-zinc-400 font-semibold uppercase tracking-wider">
+                <tr className="border-b border-[#14171F]/10 text-[#4F5565] font-bold uppercase tracking-wider font-mono text-[11px]">
                   <th className="pb-3 px-3">PO Number</th>
                   <th className="pb-3 px-3">Target Retailer</th>
                   <th className="pb-3 px-3">Requested Qty</th>
@@ -359,47 +358,47 @@ export default function SupplierDashboardPage() {
                   <th className="pb-3 px-3 text-right">Vendor Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-[#14171F]/10">
                 {filteredOrders.map((po: any) => {
                   const statusColors: { [key: string]: string } = {
-                    pending: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-                    confirmed: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
-                    in_transit: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-                    received: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                    pending: "bg-amber-100 text-amber-900 border-amber-300",
+                    confirmed: "bg-indigo-100 text-indigo-900 border-indigo-300",
+                    in_transit: "bg-purple-100 text-purple-900 border-purple-300",
+                    received: "bg-emerald-100 text-emerald-900 border-emerald-300"
                   };
 
                   const isLoadingThis = actionLoading === po.id;
 
                   return (
-                    <tr key={po.id} className="hover:bg-white/[0.02] transition-colors">
-                      <td className="py-3.5 px-3 font-mono text-white font-bold">
+                    <tr key={po.id} className="hover:bg-[#FAF7F2] transition-colors h-13">
+                      <td className="py-3 px-3 font-mono text-[#14171F] font-bold">
                         PO-{po.id.slice(0, 8)}
                       </td>
-                      <td className="py-3.5 px-3">
-                        <div className="font-semibold text-white">{po.supplier?.name || "Retail Shop"}</div>
-                        <div className="text-[10px] text-zinc-500 font-mono">Domain: nexus.erp</div>
+                      <td className="py-3 px-3">
+                        <div className="font-bold text-[#14171F]">{po.supplier?.name || "Retail Shop"}</div>
+                        <div className="text-[10px] text-[#4F5565] font-mono">Domain: nexus.erp</div>
                       </td>
-                      <td className="py-3.5 px-3 font-semibold text-zinc-300">
+                      <td className="py-3 px-3 font-semibold text-[#14171F] font-mono">
                         {po.qty || 50} units
                       </td>
-                      <td className="py-3.5 px-3 font-bold text-emerald-400 font-mono">
+                      <td className="py-3 px-3 font-bold text-emerald-800 font-mono text-sm">
                         {formatAmount(po.total || 0)}
                       </td>
-                      <td className="py-3.5 px-3 text-zinc-400">
+                      <td className="py-3 px-3 text-[#4F5565] font-mono">
                         {new Date(po.date || Date.now()).toLocaleDateString()}
                       </td>
-                      <td className="py-3.5 px-3">
-                        <span className={cn("px-2.5 py-1 rounded-full text-[10px] font-bold border uppercase tracking-wider", statusColors[po.status] || statusColors.pending)}>
+                      <td className="py-3 px-3">
+                        <span className={cn("px-2.5 py-0.5 rounded-full text-[10px] font-bold border uppercase tracking-wider font-mono", statusColors[po.status] || statusColors.pending)}>
                           {po.status}
                         </span>
                       </td>
-                      <td className="py-3.5 px-3 text-right">
+                      <td className="py-3 px-3 text-right">
                         <div className="flex items-center justify-end gap-1.5">
                           {po.status === "pending" && (
                             <button
                               disabled={isLoadingThis}
                               onClick={() => handleOrderAction(po.id, "accept")}
-                              className="px-2.5 py-1 rounded bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-500/40 text-indigo-300 font-semibold text-[10px] transition cursor-pointer"
+                              className="px-3 py-1 rounded-full bg-[#5C64ED] hover:bg-[#4B52D9] text-white font-bold text-[10px] transition cursor-pointer shadow-xs"
                             >
                               Accept PO
                             </button>
@@ -408,23 +407,23 @@ export default function SupplierDashboardPage() {
                             <button
                               disabled={isLoadingThis}
                               onClick={() => handleOrderAction(po.id, "dispatch")}
-                              className="px-2.5 py-1 rounded bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-purple-300 font-semibold text-[10px] transition cursor-pointer flex items-center gap-1"
+                              className="px-3 py-1 rounded-full bg-[#14171F] hover:bg-[#202532] text-white font-bold text-[10px] transition cursor-pointer flex items-center gap-1 shadow-xs"
                             >
-                              <Truck size={10} /> Dispatch Shipment
+                              <Truck size={11} /> Dispatch Shipment
                             </button>
                           )}
                           {po.status === "in_transit" && (
                             <button
                               disabled={isLoadingThis}
                               onClick={() => handleOrderAction(po.id, "deliver")}
-                              className="px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold text-[10px] transition cursor-pointer flex items-center gap-1 shadow-sm"
+                              className="px-3 py-1 rounded-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-[10px] transition cursor-pointer flex items-center gap-1 shadow-xs"
                             >
-                              <CheckCircle2 size={10} /> Confirm Delivery Intake
+                              <CheckCircle2 size={11} /> Confirm Delivery Intake
                             </button>
                           )}
                           {po.status === "received" && (
-                            <span className="text-[10px] text-emerald-400 font-mono flex items-center gap-1">
-                              <CheckCircle2 size={12} /> Fulfilled & Cleared
+                            <span className="text-[10px] text-emerald-700 font-mono font-bold flex items-center gap-1">
+                              <CheckCircle2 size={13} /> Fulfilled & Cleared
                             </span>
                           )}
                         </div>
@@ -435,45 +434,45 @@ export default function SupplierDashboardPage() {
               </tbody>
             </table>
           </div>
-        </GlassCard>
+        </div>
       )}
 
       {/* TAB 3: B2B INVOICES & LEDGER */}
       {activeTab === "ledger" && (
-        <GlassCard className="p-6 space-y-4">
-          <div className="flex items-center justify-between border-b border-white/10 pb-4">
+        <div className="p-6 rounded-[28px] bg-white border border-[#14171F]/10 shadow-xs space-y-4">
+          <div className="flex items-center justify-between border-b border-[#14171F]/10 pb-3">
             <div>
-              <h3 className="font-bold text-sm text-white flex items-center gap-2">
-                <DollarSign size={16} className="text-emerald-400" /> B2B Financial Settlement Ledger
+              <h3 className="font-serif font-bold text-base text-[#14171F] flex items-center gap-2">
+                <DollarSign size={17} className="text-[#5C64ED]" /> B2B Financial Settlement Ledger
               </h3>
-              <p className="text-xs text-zinc-400 mt-0.5">Summary of order receivables, fulfilled invoices, and pending store payouts.</p>
+              <p className="text-xs text-[#4F5565] mt-0.5 font-medium">Summary of order receivables, fulfilled invoices, and pending store payouts.</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
-              <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Total Invoiced Amount</span>
-              <div className="text-2xl font-extrabold text-white font-mono">{formatAmount(metrics.totalReceivables)}</div>
-              <span className="text-[10px] text-zinc-400">Cumulative order value</span>
+            <div className="p-5 rounded-[22px] bg-[#FAF7F2] border border-[#14171F]/10 space-y-1">
+              <span className="text-[10px] font-bold text-[#4F5565] uppercase tracking-wider block font-mono">Total Invoiced Amount</span>
+              <div className="text-2xl font-extrabold text-[#14171F] font-mono mt-1">{formatAmount(metrics.totalReceivables)}</div>
+              <span className="text-[10px] text-[#4F5565] font-mono">Cumulative order value</span>
             </div>
 
-            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
-              <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Cleared Payouts</span>
-              <div className="text-2xl font-extrabold text-emerald-400 font-mono">
+            <div className="p-5 rounded-[22px] bg-[#FAF7F2] border border-[#14171F]/10 space-y-1">
+              <span className="text-[10px] font-bold text-[#4F5565] uppercase tracking-wider block font-mono">Cleared Payouts</span>
+              <div className="text-2xl font-extrabold text-emerald-800 font-mono mt-1">
                 {formatAmount(purchaseOrders.filter((po: any) => po.status === "received").reduce((acc: number, po: any) => acc + (po.total || 0), 0))}
               </div>
-              <span className="text-[10px] text-emerald-400">Stock received & expense booked</span>
+              <span className="text-[10px] text-emerald-700 font-bold font-mono">Stock received & ledger booked</span>
             </div>
 
-            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
-              <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Pending Processing</span>
-              <div className="text-2xl font-extrabold text-amber-400 font-mono">
+            <div className="p-5 rounded-[22px] bg-[#FAF7F2] border border-[#14171F]/10 space-y-1">
+              <span className="text-[10px] font-bold text-[#4F5565] uppercase tracking-wider block font-mono">Pending Processing</span>
+              <div className="text-2xl font-extrabold text-amber-800 font-mono mt-1">
                 {formatAmount(purchaseOrders.filter((po: any) => po.status !== "received").reduce((acc: number, po: any) => acc + (po.total || 0), 0))}
               </div>
-              <span className="text-[10px] text-amber-400">Active shipments & POs</span>
+              <span className="text-[10px] text-amber-700 font-bold font-mono">Active shipments & POs</span>
             </div>
           </div>
-        </GlassCard>
+        </div>
       )}
     </div>
   );
